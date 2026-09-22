@@ -623,9 +623,9 @@ function renderMerchant(){
       '<div class="items">' + o.items.map(i => i.qty + '\u00D7 ' + esc(i.name)).join(' &middot; ') +
         '<span class="mono tot">' + rp(o.total) + '</span></div>' +
       '<div class="act">' +
-        (o.status === 'waiting'    ? '<button class="btn btn-primary btn-sm" data-set="' + o.id + ':processing" type="button">Proses</button>' : '') +
-        (o.status === 'processing' ? '<button class="btn btn-primary btn-sm" data-set="' + o.id + ':ready"      type="button">Selesai &rarr; Siap</button>' : '') +
-        (o.status === 'ready'      ? '<button class="btn btn-primary btn-sm" data-set="' + o.id + ':completed"  type="button">Sudah diambil</button>' : '') +
+        (o.status === 'waiting'    ? '<button class="btn btn-primary btn-sm" data-set="' + o.id + ':processing" type="button">Proses Pesanan</button>' : '') +
+        (o.status === 'processing' ? '<button class="btn btn-primary btn-sm" data-set="' + o.id + ':ready"      type="button">Siap Diambil &rarr;</button>' : '') +
+        (o.status === 'ready'      ? '<button class="btn btn-primary btn-sm" data-set="' + o.id + ':completed"  type="button">Selesai / Diserahkan</button>' : '') +
         '<span class="st ' + o.status + '">' + statusLabel[o.status] + '</span>' +
       '</div>' +
     '</div>';
