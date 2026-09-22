@@ -2,44 +2,32 @@
 
 Fondasi web prototipe untuk demo di stand: antrean digital UMKM sesuai **PRD BazarQ v1.0**. Tanpa server, tanpa build, tanpa internet. Cukup buka satu file.
 
-## Menjalankan
+## Menjalankan & Demo 4 Device (Gelar Karya)
 
-1. Buka `prototype/index.html` di browser (Chrome/Edge disarankan). Selesai.
-2. Untuk demo penuh, buka `index.html` di **dua tab** dan tampilkan berdampingan:
-   - Windows: klik tab lalu tekan `Win + ←` dan `Win + →`.
-   - Tab 1: peran **Pembeli** (`#pembeli`), Tab 2: peran **Merchant** (`#merchant`, PIN `1234`).
-3. Semua perubahan tersinkron otomatis antar tab (localStorage + BroadcastChannel + polling). Bisa juga 3 tab sekaligus dengan **Event Organizer** (`#eo`).
-4. Tekan **Reset demo** di kanan atas sebelum pengunjung berikutnya.
+Aplikasi telah terhubung ke **Firebase Realtime Database** sehingga sinkron secara nyata antar perangkat secara instan tanpa perlu berada di satu browser yang sama!
 
-## Alur demo (2 menit)
+### Skenario Demo 4 Device:
+1. **Device 1 (Laptop/Tablet / HP Penjual)**:
+   - Buka `https://<domain-vercel-kamu>.vercel.app/#merchant`
+   - Masukkan PIN: `1234`
+   - Buka QR Code Standee via tombol **"Lihat QR Standee"** agar bisa langsung di-scan kamera HP pengunjung/pembeli.
+2. **Device 2 (HP Pembeli 1)**:
+   - Scan QR Code atau buka `https://<domain-vercel-kamu>.vercel.app/#pembeli`
+   - Pilih menu, isi no WA (misal `081234567891`), klik **Ambil Nomor Antrean** -> Mendapat nomor `A-001`.
+3. **Device 3 (HP Pembeli 2)**:
+   - Buka `#pembeli` -> Ambil nomor antrean -> Mendapat nomor `A-002`.
+4. **Device 4 (HP Pembeli 3)**:
+   - Buka `#pembeli` -> Ambil nomor antrean -> Mendapat nomor `A-003`.
 
-| # | Tab Pembeli | Tab Merchant |
-|---|---|---|
-| 1 | Scan QR (tombol simulasi) → pilih menu → isi nomor WA → **Ambil nomor antrean** | Antrean baru langsung muncul di kolom Menunggu |
-| 2 | Tiket `A-00x` + estimasi waktu tampil | Tekan **Proses** → status pembeli ikut berubah |
-| 3 | Notifikasi WA tersimulasi saat tinggal 2 nomor | Aktivitas tercatat di kolom aktivitas |
-| 4 | Notifikasi "pesanan siap" | Tekan **Selesai (siap)** |
-| 5 | Pesanan selesai | Tekan **Sudah diambil**, rekap & omzet bertambah |
-| 6 | Coba buka form baru → terblokir dengan peringatan | Nyalakan toggle **Dapur Penuh** (estimasi ×2) |
-| 7 | | Buka tab **Event Organizer**: volume per tenant, jam sibuk, kejadian Dapur Penuh |
+### Aksi Real-time yang Terjadi Sesuai PRD:
+- **Di Device Penjual**: Muncul suara chime notifikasi pesanan masuk! Ketiga antrean langsung muncul di kolom **"Menunggu"**.
+- **Di Device Pembeli 2 & 3**: Tampil estimasi waktu dan sisa antrean di depan mereka secara live.
+- **Penjual klik "Mulai Proses" pada A-001**: Di HP Pembeli 1, status tiket langsung berubah real-time jadi biru ("Sedang Disiapkan").
+- **Penjual klik "Selesai (Siap)" pada A-001**: Di HP Pembeli 1, berbunyi notifikasi siap + tampil banner hijau besar "Silakan Ambil Pesanan di Booth!". Di HP Pembeli 2, muncul simulasi notifikasi WhatsApp: *"Pesanan Anda segera diproses (sisa 1 antrean lagi)"*.
+- **Penjual aktifkan toggle "Dapur Penuh"**: Jika pembeli baru mencoba order, sistem menahan/memperingatkan dan estimasi waktu otomatis dikalikan 2.
+- **Monitoring Event Organizer**: Buka `#eo` di layar proyektor stand untuk menampilkan metrik volume UMKM, peak hour, dan status Dapur Penuh secara live.
 
-## Kesesuaian dengan PRD
-
-| PRD | Di prototipe |
-|---|---|
-| UC-01 / US-01 · zero-app, tanpa registrasi | Halaman pesanan terbuka langsung, tanpa akun |
-| US-02 · nomor + estimasi otomatis, diperbarui saat antrean berubah | Estimasi = posisi antrean × 4 menit, sinkron antar tab |
-| US-03 · notifikasi WA di 2 momen, tidak berulang | Bubble WA tersimulasi, sekali per kondisi (produksi: gateway Fonnte) |
-| US-04 · merchant ubah status dari ponselnya | Dashboard satu tombol: Proses → Selesai → Diambil |
-| US-05 · toggle Dapur Penuh | Blokir pesanan baru + peringatan + estimasi ×2 |
-| US-06 / UC-05 · dasbor EO | Agregat lintas tenant, jam sibuk, kejadian dapur penuh |
-| Non-fungsional · < 100 KB | Seluruh demo ±50 KB (HTML + CSS + JS, tanpa framework) |
-| Non-fungsional · tanpa pelatihan | PIN demo `1234`, tombol berlabel jelas |
-| WON'T HAVE · payment | Pesanan dibayar di booth, sistem hanya antrean |
-
-## Batas demo (disengaja)
-
-- Sinkronisasi lintas-tab berlaku di satu browser/laptop yang sama. Demo lintas perangkat (HP sungguhan scan QR) butuh backend sesuai PRD bagian 6: Express/Laravel + SQLite + Cloudflare Tunnel; struktur state di `js/app.js` sudah meniru skema data PRD (booth, menu_item, queue, settings) supaya mudah dipindah.
+### Catatan Simulasi:
 - Notifikasi WhatsApp disimulasikan sebagai bubble; tidak mengirim pesan sungguhan.
 - QR pada halaman pembeli adalah pola visual standee, bukan kode yang bisa discan.
 - Data EO selain booth demo adalah contoh statis untuk menggambarkan agregasi multi-tenant.
@@ -48,7 +36,9 @@ Fondasi web prototipe untuk demo di stand: antrean digital UMKM sesuai **PRD Baz
 
 ```
 prototype/
-  index.html      # kerangka + header/footer
-  css/styles.css  # token desain + semua komponen
-  js/app.js       # state bersama, sinkron antar tab, 4 tampilan
+  index.html            # kerangka + header/footer + presence indicator
+  css/styles.css        # token desain BazarQ Blue Spectrum + semua komponen
+  js/
+    firebase-config.js  # kredensial Firebase RTDB & demo URL
+    app.js              # sinkronisasi realtime, audio synth, 4 tampilan peran
 ```
