@@ -1,6 +1,23 @@
+# Dependencies & Environment
 node_modules/
-.DS_Store
-Thumbs.db
-*.log
 .env
 .env.local
+*.log
+
+# OS / Editor Files
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode/
+.idea/
+
+# AI IDE / Agent runtime & memory caches
+.gemini/
+.claude/
+.windsurf/
+.agents/
+
+# Confidential / Internal Specs & Documentation
+bazarq_frontend_skill_rules.md
+PRD BazarQ.pdf
+*.pdf
