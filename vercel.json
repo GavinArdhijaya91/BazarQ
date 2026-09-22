@@ -1,0 +1,6 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/prototype/$1" }
+  ]
+}
