@@ -516,6 +516,24 @@ function illusHandoff(){
   '</svg>';
 }
 
+/* Umbul-umbul penyambut ala spanduk pintu masuk bazar: tali + bendera segitiga
+   palet BazarQ, membentang penuh barat→timur. Geometris sederhana sesuai skill. */
+function illusGarland(){
+  const W = 1200, N = 26;
+  const cols = ['#2563EB', '#60A5FA', '#F97316', '#10B981', '#1E40AF', '#FBEFD4'];
+  const y = x => 26 + 62 * Math.sin(Math.PI * x / W);
+  let flags = '';
+  for (let i = 0; i < N; i++){
+    const x = 30 + i * (W - 60) / (N - 1);
+    const yy = y(x), c = cols[i % cols.length];
+    flags += '<polygon points="' + (x - 15) + ',' + yy.toFixed(1) + ' ' + (x + 15) + ',' + yy.toFixed(1) + ' ' + x + ',' + (yy + 36).toFixed(1) + '" fill="' + c + '" stroke="#0F172A" stroke-width="3" stroke-linejoin="round"/>';
+  }
+  let d = '';
+  for (let x = 0; x <= W; x += 40){ d += (x === 0 ? 'M' : 'L') + x + ',' + y(x).toFixed(1); }
+  return '<svg viewBox="0 0 ' + W + ' 140" role="img" aria-label="Umbul-umbul penyambut booth UMKM">' +
+    '<path d="' + d + '" fill="none" stroke="#0F172A" stroke-width="4" stroke-linecap="round"/>' + flags + '</svg>';
+}
+
 /* ---------- tur interaktif 1 menit (pengunjung baru) ---------- */
 const TOUR_STEPS = [
   { t:'Pindai QR di booth', d:'Arahkan kamera digital ke QR standee. Halaman pemesanan langsung terbuka, tanpa pasang aplikasi, tanpa buat akun.', img:'scan', cta:['Buka halaman pembeli', 'pembeli'] },
@@ -899,6 +917,7 @@ function renderLanding(){
       '</div>' +
     '</div>' +
   '</section>' +
+  '<div class="garland" aria-hidden="true">' + illusGarland() + '</div>' +
   '<section class="sec">' +
     '<h2>Kendala lama, jawaban sederhana</h2>' +
     '<p class="sub">Di bazar dan pasar kaget, antrean fisik membuat pembeli pergi dan UMKM kehilangan penjualan. BazarQ menggantinya dengan nomor antrean digital yang berjalan di perangkat digital standar, tanpa aplikasi, tanpa akun.</p>' +
