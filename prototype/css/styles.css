@@ -44,7 +44,7 @@ a{color:inherit}
 }
 
 /* ---------- header (glass navy) ---------- */
-.top{position:sticky;top:0;z-index:20;background:rgb(15 23 42 / .78);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);border-bottom:1px solid rgb(255 255 255 / .16);box-shadow:0 8px 24px rgb(15 23 42 / .18)}
+.top{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,rgb(15 23 42 / .62),rgb(15 23 42 / .46));-webkit-backdrop-filter:blur(18px) saturate(1.6);backdrop-filter:blur(18px) saturate(1.6);border-bottom:1px solid rgb(255 255 255 / .22);box-shadow:0 10px 30px rgb(15 23 42 / .22),inset 0 1px 0 rgb(255 255 255 / .12)}
 .top-in{display:flex;align-items:center;gap:14px;min-height:64px;flex-wrap:wrap;padding-top:10px;padding-bottom:10px}
 .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.15rem;letter-spacing:-.01em;text-decoration:none;margin-right:16px;color:#fff;flex:none}
 .brand .mark{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;overflow:hidden;flex:none}
@@ -279,11 +279,11 @@ ul.tight li+li{margin-top:var(--s1)}
 .hb .h{font-family:var(--mono);font-size:.72rem;color:var(--ink-soft)}
 
 /* ---------- background ambient UMKM (subtil, <35% opacity) ---------- */
-.ambient{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:.12}
+.ambient{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:.2}
 .ambient i{position:absolute;display:block;animation:drift 9s ease-in-out infinite alternate}
 .ambient svg{display:block;width:100%;height:auto}
 @media (prefers-reduced-motion:no-preference){
-  @keyframes drift{from{transform:translateY(0) rotate(-5deg)}to{transform:translateY(-20px) rotate(5deg)}}
+  @keyframes drift{from{transform:translate3d(0,0,0) rotate(-6deg)}50%{transform:translate3d(10px,-16px,0) rotate(4deg)}to{transform:translate3d(-10px,-26px,0) rotate(7deg)}}
 }
 main#app,.foot{position:relative;z-index:1}
 
@@ -446,6 +446,29 @@ h1{font-size:clamp(2rem,4.6vw + 1rem,3.5rem)}
   .qr-overlay{gap:6px;padding:12px}
   .tour-card{max-height:94vh;padding:14px}
   .hero{padding:var(--s3) 0}
+}
+
+/* ---------- lapisan hidup: aurora + denyut (filosofi "web yang bernapas") ----------
+   Semua loop lembut, non-interaktif, mati otomatis saat prefers-reduced-motion. */
+body::before{content:"";position:fixed;inset:-20%;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(38% 30% at 12% 18%, rgb(96 165 250 / .35), transparent 70%),
+    radial-gradient(30% 26% at 85% 12%, rgb(37 99 235 / .30), transparent 70%),
+    radial-gradient(34% 30% at 78% 88%, rgb(16 185 129 / .26), transparent 70%),
+    radial-gradient(28% 24% at 15% 85%, rgb(249 115 22 / .20), transparent 70%);
+  filter:blur(30px)}
+.presence-dot{position:relative}
+.presence-dot::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--sky)}
+@media (prefers-reduced-motion:no-preference){
+  body::before{animation:aurora 26s ease-in-out infinite alternate}
+  @keyframes aurora{
+    from{transform:translate3d(-3%,-2%,0) scale(1)}
+    50%{transform:translate3d(3%,2%,0) scale(1.08) rotate(4deg)}
+    to{transform:translate3d(-2%,3%,0) scale(1.04) rotate(-3deg)}}
+  .presence-dot::after{animation:ping 1.8s ease-out infinite}
+  @keyframes ping{from{transform:scale(.5);opacity:1}to{transform:scale(1.2);opacity:0}}
+  .stub-glow{animation:glowPulse 5s ease-in-out infinite}
+  @keyframes glowPulse{50%{opacity:.7;filter:blur(20px)}}
 }
 
 
