@@ -426,8 +426,8 @@ body{background:
 
 /* ---------- hardening responsif: satu basis, rapi di mobile & desktop ----------
    Prinsip: kontainer fluida · tipografi clamp · sentuh ≥44px · tanpa scroll-x. */
-html{-webkit-text-size-adjust:100%}
-body{overflow-x:clip}
+html{background:var(--canvas);-webkit-text-size-adjust:100%}
+body{overflow-x:clip;min-height:100dvh}
 img,svg,canvas,video{max-width:100%}
 .wrap{padding-left:clamp(16px,4vw,32px);padding-right:clamp(16px,4vw,32px)}
 h1{font-size:clamp(2rem,4.6vw + 1rem,3.5rem)}
