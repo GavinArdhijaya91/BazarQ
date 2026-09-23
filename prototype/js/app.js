@@ -119,6 +119,7 @@ let toastTimer = null;
 let prevSeq = 0;
 let myPresenceRef = null;
 let boothMissing = false;
+let lastRoute = '';
 
 /* ---------- sound engine ---------- */
 const BazarQAudio = {
@@ -798,6 +799,14 @@ function renderNotFound(){
   '</div></section>';
 }
 function renderAll(){
+  // Transisi halaman: hanya saat rute (view/slug/hash) berubah, bukan saat sync data
+  const rk = (boothMissing ? 'missing' : view()) + '|' + SLUG + '|' + location.hash;
+  if (rk !== lastRoute){
+    lastRoute = rk;
+    appEl.classList.remove('page-enter');
+    void appEl.offsetWidth;
+    appEl.classList.add('page-enter');
+  }
   if (boothMissing){ document.body.classList.add('app-mode'); renderNotFound(); return; }
   if (!S) return;
   const r = view();

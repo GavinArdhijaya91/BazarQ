@@ -454,6 +454,17 @@ h1{font-size:clamp(2rem,4.6vw + 1rem,3.5rem)}
   .hero{padding:var(--s3) 0}
 }
 
+/* ---------- transisi halaman (skill: fluid CSS, transform+opacity, reduced-motion aman) ----------
+   Motivasi: umpan balik transisi rute. Hanya jalan saat rute berubah (kelas page-enter
+   dipasang JS), bukan saat sync data, agar dashboard live tidak berkedip tiap ada order. */
+@media (prefers-reduced-motion:no-preference){
+  #app.page-enter > section{animation:viewIn .5s cubic-bezier(.16,1,.3,1) both}
+  #app.page-enter > section:nth-of-type(2){animation-delay:.06s}
+  #app.page-enter > section:nth-of-type(3){animation-delay:.12s}
+  #app.page-enter > section:nth-of-type(4){animation-delay:.18s}
+  @keyframes viewIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+}
+
 /* ---------- Tailwind recipe → CSS murni (tanpa dependensi baru) ----------
    Navbar: bg-white/70 + backdrop-blur-md + border-b slate-200/50, px-6 py-4.
    Tombol: rounded-xl, primary blue-600→700 + shadow, hover lift, active scale-95. */
