@@ -428,6 +428,93 @@ function illusScan(){
   '</svg>';
 }
 
+function illusHandoff(){
+  return '<svg viewBox="0 0 240 130" role="img" aria-label="Ilustrasi penyerahan pesanan dengan tiket">' +
+    '<line x1="10" y1="116" x2="230" y2="116" stroke="#E4D8C2" stroke-width="3" stroke-linecap="round"/>' +
+    '<rect x="16" y="34" width="72" height="8" rx="4" fill="#1A56C4"/>' +
+    '<rect x="18" y="42" width="4" height="74" fill="#241B12"/><rect x="82" y="42" width="4" height="74" fill="#241B12"/>' +
+    '<rect x="16" y="74" width="72" height="42" rx="6" fill="#FDF8EE" stroke="#241B12" stroke-width="3"/>' +
+    '<circle cx="52" cy="56" r="10" fill="#FBEFD4" stroke="#241B12" stroke-width="3"/>' +
+    '<rect x="42" y="42" width="20" height="7" rx="3.5" fill="#1A56C4"/>' +
+    '<rect x="40" y="64" width="24" height="14" rx="6" fill="#1A56C4"/>' +
+    '<rect x="96" y="58" width="34" height="44" rx="4" fill="#fff" stroke="#241B12" stroke-width="3"/>' +
+    '<text x="113" y="76" text-anchor="middle" font-family="monospace" font-size="13" font-weight="bold" fill="#1A56C4">A-007</text>' +
+    '<text x="113" y="90" text-anchor="middle" font-family="monospace" font-size="8" fill="#6B5D4C">SIAP</text>' +
+    '<circle cx="196" cy="52" r="10" fill="#FBEFD4" stroke="#241B12" stroke-width="3"/>' +
+    '<rect x="185" y="61" width="22" height="30" rx="9" fill="#24512F"/>' +
+    '<rect x="168" y="72" width="24" height="20" rx="4" fill="#FBEFD4" stroke="#241B12" stroke-width="3"/>' +
+    '<path d="M172 72 q4 -6 8 0" stroke="#241B12" stroke-width="2.5" fill="none"/>' +
+    '<path d="M141 66 l-6 -8 M141 66 l8 -6" stroke="#24512F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>' +
+  '</svg>';
+}
+
+/* ---------- tur interaktif 1 menit (pengunjung baru) ---------- */
+const TOUR_STEPS = [
+  { t:'Pindai QR di booth', d:'Arahkan kamera HP ke QR standee. Halaman order langsung terbuka — tanpa pasang aplikasi, tanpa buat akun.', img:'scan', cta:['Buka halaman pembeli', 'pembeli'] },
+  { t:'Pilih menu, tiket terbit', d:'Tandai menu, isi nomor WhatsApp, kirim. Nomor antrean (mis. A-007) dan estimasi tunggu langsung tampil.', img:'hero', cta:['Coba pesan sekarang', 'pembeli'] },
+  { t:'Bayar di kasir, bebas jelajah', d:'Pilih QRIS atau tunai. Kasir menekan Konfirmasi Lunas, pesanan diteruskan ke dapur. Notifikasi masuk saat tinggal 2 antrean.', img:'scan', cta:['Lihat dashboard merchant', 'merchant'] },
+  { t:'Tunjukkan tiket, bawa pulang', d:'Status berubah Siap Diambil. Tunjukkan tiket ke booth, pesanan diserahkan, selesai.', img:'handoff', cta:['Mulai sebagai pembeli', 'pembeli'] }
+];
+const tourImg = k => k === 'hero' ? illusHero() : k === 'handoff' ? illusHandoff() : illusScan();
+let tourIdx = 0;
+function startTour(){
+  BazarQAudio.unlock();
+  tourIdx = 0;
+  closeTour(false);
+  const ov = document.createElement('div');
+  ov.className = 'tour-overlay'; ov.id = 'tourOverlay';
+  ov.innerHTML =
+    '<div class="tour-card" role="dialog" aria-label="Tur interaktif BazarQ">' +
+      '<div class="tour-illus" id="tourImg"></div>' +
+      '<p class="tour-step" id="tourStep"></p>' +
+      '<h3 id="tourTitle"></h3>' +
+      '<p class="tour-desc" id="tourDesc"></p>' +
+      '<div class="tour-dots" id="tourDots"></div>' +
+      '<div class="btn-row">' +
+        '<button class="btn btn-ghost btn-sm" id="tourBack" type="button">Kembali</button>' +
+        '<button class="btn btn-ghost btn-sm" id="tourSkip" type="button">Lewati</button>' +
+        '<button class="btn btn-primary btn-sm" id="tourNext" type="button">Lanjut</button>' +
+      '</div>' +
+      '<div class="btn-row"><a class="btn btn-ghost btn-sm wide" id="tourCta" href="#">Coba langsung</a></div>' +
+    '</div>';
+  document.body.appendChild(ov);
+  const paint = () => {
+    const s = TOUR_STEPS[tourIdx];
+    $('#tourImg').innerHTML = tourImg(s.img);
+    $('#tourStep').textContent = 'Langkah ' + (tourIdx + 1) + ' dari ' + TOUR_STEPS.length;
+    $('#tourTitle').textContent = s.t;
+    $('#tourDesc').textContent = s.d;
+    $('#tourDots').innerHTML = TOUR_STEPS.map((_, i) => '<span class="tour-dot' + (i === tourIdx ? ' on' : '') + '"></span>').join('');
+    $('#tourBack').disabled = tourIdx === 0;
+    $('#tourNext').textContent = tourIdx === TOUR_STEPS.length - 1 ? 'Selesai' : 'Lanjut';
+    const cta = $('#tourCta');
+    cta.textContent = s.cta[0] + ' →';
+    cta.href = '#' + s.cta[1] + '/' + SLUG;
+    cta.onclick = () => closeTour(true);
+  };
+  $('#tourBack').addEventListener('click', () => { if (tourIdx > 0){ tourIdx -= 1; paint(); } });
+  $('#tourSkip').addEventListener('click', () => closeTour(true));
+  $('#tourNext').addEventListener('click', () => {
+    if (tourIdx < TOUR_STEPS.length - 1){ tourIdx += 1; paint(); }
+    else closeTour(true);
+  });
+  ov.addEventListener('click', e => { if (e.target === ov) closeTour(true); });
+  paint();
+}
+function closeTour(done){
+  const ov = document.getElementById('tourOverlay');
+  if (ov) ov.remove();
+  if (done){ try { localStorage.setItem('bazarq.tourDone', '1'); } catch(e){} }
+}
+function maybeAutoTour(){
+  try {
+    if (localStorage.getItem('bazarq.tourDone')) return;
+    if (sessionStorage.getItem('bazarq.tourShown')) return;
+    sessionStorage.setItem('bazarq.tourShown', '1');
+    setTimeout(() => { if (view() === 'beranda' && !document.getElementById('tourOverlay')) startTour(); }, 900);
+  } catch(e){}
+}
+
 /* ---------- toast ---------- */
 function toast(msg){
   const t = $('#toast');
@@ -629,6 +716,7 @@ function renderLanding(){
         '<p class="lede">Scan QR di booth, pilih menu, dapat nomor antrean dan estimasi waktu. Pembeli bebas jelajah — dagangan tetap terkendali.</p>' +
         '<div class="cta-row">' +
           '<a class="btn btn-primary" href="#pembeli/' + esc(SLUG) + '">Coba sebagai Pembeli</a>' +
+          '<button class="btn btn-ghost" id="btnTour" type="button">Ikuti Tur 1 Menit</button>' +
           '<a class="btn btn-ghost" href="#merchant/' + esc(SLUG) + '">Buka Merchant</a>' +
           '<a class="btn btn-ghost" href="#daftar">Buka Booth Sendiri +</a>' +
         '</div>' +
@@ -681,6 +769,9 @@ function renderLanding(){
       '<a class="role" href="#daftar"><span class="t">Buka Booth Sendiri</span><span class="d">Daftar 1 menit, dapat QR asli siap cetak untuk booth-mu sendiri.</span><span class="go">Daftar booth &rarr;</span></a>' +
     '</div>' +
   '</section>';
+  const bt = document.getElementById('btnTour');
+  if (bt) bt.addEventListener('click', () => startTour());
+  maybeAutoTour();
 }
 
 /* ---------- pembeli ---------- */
