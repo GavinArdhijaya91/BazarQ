@@ -247,8 +247,11 @@ function load(){
 
   stateRef.once('value').then(async snap => {
     const val = snap.val();
-    if (val && Array.isArray(val.orders) && val.profile){
+    if (val && val.profile){
       S = val;
+      // RTDB menghapus array kosong (booth baru: orders:[] tidak tersimpan) → normalisasi agar tidak dikira hilang
+      if (!Array.isArray(S.orders)) S.orders = [];
+      if (!Array.isArray(S.log)) S.log = [];
       if (!Array.isArray(S.menu) || !S.menu.length) S.menu = DEFAULT_MENU;
       // Migrasi PIN plaintext lama → pinHash (sekali, lalu save tanpa field pin)
       if (S.profile && S.profile.pin && !/^[0-9a-f]{64}$/i.test(String(S.profile.pinHash || ''))){

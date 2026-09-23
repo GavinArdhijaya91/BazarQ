@@ -20,7 +20,7 @@
           ".read": true,
           "$slug": {
             ".write": "newData.exists()",
-            ".validate": "newData.hasChildren(['profile', 'menu', 'seq', 'kitchenFull', 'orders']) && newData.child('seq').isNumber() && newData.child('seq').val() >= 0 && newData.child('seq').val() <= 9999 && newData.child('kitchenFull').isBoolean()",
+            ".validate": "newData.hasChildren(['profile', 'menu', 'seq', 'kitchenFull']) && newData.child('seq').isNumber() && newData.child('seq').val() >= 0 && newData.child('seq').val() <= 9999 && newData.child('kitchenFull').isBoolean()",
             "profile": {
               ".validate": "newData.hasChildren(['name', 'pinHash']) && !newData.hasChild('pin') && newData.child('name').isString() && newData.child('name').val().length > 2 && newData.child('name').val().length <= 60 && newData.child('pinHash').isString() && newData.child('pinHash').val().matches(/^[0-9a-f]{64}$/) && (!newData.hasChild('qrisImageUrl') || (newData.child('qrisImageUrl').isString() && newData.child('qrisImageUrl').val().length <= 500)) && (!newData.hasChild('desc') || (newData.child('desc').isString() && newData.child('desc').val().length <= 120))"
             },
