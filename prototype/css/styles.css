@@ -285,6 +285,17 @@ ul.tight li+li{margin-top:8px}
 .tour-dot.on{background:var(--sambal)}
 .tour-card .btn-row{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
 
+/* ---------- mode aplikasi penuh (dashboard terpisah tanpa routing baru) ----------
+   Aktif saat body.app-mode: landing/marketing hilang total, sisa UI fungsional. */
+body.app-mode .nav,
+body.app-mode #btnReset,
+body.app-mode footer.foot{display:none!important}
+body.app-mode #btnExit{display:inline-flex}
+body.app-mode .top-in{flex-wrap:nowrap;gap:10px}
+body.app-mode .presence-badge{margin-left:auto;font-size:.78rem}
+body.app-mode #app{min-height:70vh}
+body.app-mode .view{padding-top:24px}
+
 /* ---------- responsif ---------- */
 @media (max-width:920px){
   .hero{padding:44px 0 40px}

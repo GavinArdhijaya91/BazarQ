@@ -752,9 +752,15 @@ function renderNotFound(){
   '</div></section>';
 }
 function renderAll(){
-  if (boothMissing){ renderNotFound(); return; }
+  if (boothMissing){ document.body.classList.add('app-mode'); renderNotFound(); return; }
   if (!S) return;
   const r = view();
+  // Mode aplikasi penuh: pembeli/merchant/tiket = UI fungsional saja,
+  // landing (nav marketing, reset, footer) disembunyikan total.
+  const isApp = r === 'pembeli' || r === 'order' || r === 'merchant';
+  document.body.classList.toggle('app-mode', isApp);
+  const btnExit = document.getElementById('btnExit');
+  if (btnExit) btnExit.hidden = !isApp;
   $$('.nav a').forEach(a => a.classList.toggle('on', a.dataset.nav === r));
   if (myPresenceRef) try { myPresenceRef.update({ role: r }); } catch(e){}
   VIEWS[r]();
