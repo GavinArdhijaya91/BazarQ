@@ -614,7 +614,7 @@ function renderPembeli(){
   appEl.innerHTML =
   '<section class="view buyer-wrap">' +
     '<div class="booth-head">' +
-      '<span class="booth-ic" aria-hidden="true">🍗</span>' +
+      '<span class="booth-ic" aria-hidden="true">BQ</span>' +
       '<div><b>' + esc(BOOTH().name) + '</b><div class="booth-sub">' + esc(BOOTH().desc || '') + ' · <span class="mono">' + esc(SLUG) + '</span></div></div>' +
       '<span class="chip ' + (S.kitchenFull ? 'off' : 'on') + '" id="boothChip">' + (S.kitchenFull ? 'Dapur penuh' : 'Buka') + '</span>' +
     '</div>' +
@@ -649,7 +649,7 @@ function renderMenu(body){
   '<div class="panel">' +
     '<h2 class="menu-title">Pesan dulu, nomor langsung terbit</h2>' +
     '<div id="kitchenGate">' + (S.kitchenFull
-      ? '<div class="warn"><b>⚠️ Dapur sedang penuh.</b> Estimasi +15 menit. Pesanan tetap diterima.</div>'
+      ? '<div class="warn"><b>Dapur sedang penuh.</b> Estimasi +15 menit. Pesanan tetap diterima.</div>'
       : '') + '</div>' +
     '<div class="menu-list">' + menu.map(m =>
       '<div class="menu-row">' +
@@ -668,8 +668,8 @@ function renderMenu(body){
     '</div>' +
     '<div class="total-row"><span>Total pesanan</span><span class="rp" data-total>' + rp(total) + '</span></div>' +
     '<div class="field"><label>Metode pembayaran (verifikasi di kasir)</label>' +
-      '<label style="display:flex;gap:8px;align-items:center;font-weight:600"><input type="radio" name="pay" value="qris" checked> 📲 QRIS / E-Wallet (scan QR toko)</label>' +
-      '<label style="display:flex;gap:8px;align-items:center;font-weight:600;margin-top:6px"><input type="radio" name="pay" value="cash"> 💵 Tunai di kasir</label>' +
+      '<label style="display:flex;gap:8px;align-items:center;font-weight:600"><input type="radio" name="pay" value="qris" checked> QRIS / E-Wallet (scan QR toko)</label>' +
+      '<label style="display:flex;gap:8px;align-items:center;font-weight:600;margin-top:6px"><input type="radio" name="pay" value="cash"> Tunai di kasir</label>' +
       (BOOTH().qrisImageUrl ? '<img src="' + esc(BOOTH().qrisImageUrl) + '" alt="QRIS toko" style="max-width:220px;border-radius:12px;margin-top:10px;border:1px solid #e2e8f0">' : '<p class="tiny">QRIS toko tampil di sini setelah merchant mengisi URL gambar QRIS di dashboard kasir.</p>') +
     '</div>' +
     '<button class="btn btn-primary wide menu-btn-gap" id="btnOrder" type="button">Kirim Pesanan &amp; Dapatkan Tiket</button>' +
@@ -702,7 +702,7 @@ function updateMenuBits(body){
   }
   const g = $('#kitchenGate', body);
   if (g) g.innerHTML = S.kitchenFull
-    ? '<div class="warn"><b>⚠️ Dapur sedang penuh.</b> Estimasi +15 menit. Pesanan tetap diterima.</div>'
+    ? '<div class="warn"><b>Dapur sedang penuh.</b> Estimasi +15 menit. Pesanan tetap diterima.</div>'
     : '';
   const chip = $('#boothChip');
   if (chip){ chip.textContent = S.kitchenFull ? 'Dapur penuh' : 'Buka'; chip.className = 'chip ' + (S.kitchenFull ? 'off' : 'on'); }
@@ -732,7 +732,7 @@ function renderTicket(body, o){
   const payBadge = o.paid ? 'Lunas ✓' : 'Menunggu Pembayaran';
   const payCls = o.paid ? 'on' : 'off';
   const waMsgs = S.log.filter(l => l.type === 'wa' && l.phone === o.phone).slice(0, 4);
-  const soundLabel = () => (BazarQAudio.enabled ? '🔊' : '🔇') + ' Suara panggilan';
+  const soundLabel = () => 'Suara panggilan: ' + (BazarQAudio.enabled ? 'ON' : 'OFF');
   body.innerHTML =
   '<div class="stub big print">' +
     '<div class="stub-glow"></div>' +
@@ -849,11 +849,11 @@ function renderMerchant(){
 
   const ocCashier = o =>
     '<div class="ocard">' +
-      '<div class="top-row"><span class="tk">' + esc(o.ticket) + '</span><span class="el mono">' + rp(o.total) + ' · ' + (o.payMethod === 'qris' ? '📲 QRIS' : '💵 Tunai') + '</span></div>' +
+      '<div class="top-row"><span class="tk">' + esc(o.ticket) + '</span><span class="el mono">' + rp(o.total) + ' · ' + (o.payMethod === 'qris' ? 'QRIS' : 'Tunai') + '</span></div>' +
       '<div class="items">' + o.items.map(i => i.qty + '× ' + esc(i.name)).join(' &middot; ') +
         '<br><span class="tiny">WA: ' + esc(maskPhone(o.phone)) + ' · ' + hhmm(o.createdAt) + '</span></div>' +
       '<div class="act">' +
-        '<button class="btn btn-primary btn-sm" data-paid="' + o.id + '" type="button">✅ Konfirmasi Lunas</button>' +
+        '<button class="btn btn-primary btn-sm" data-paid="' + o.id + '" type="button">Konfirmasi Lunas</button>' +
         '<span class="st waiting">Belum Bayar</span>' +
       '</div>' +
     '</div>';
@@ -863,8 +863,8 @@ function renderMerchant(){
       '<div class="items">' + o.items.map(i => i.qty + '× ' + esc(i.name)).join(' &middot; ') +
         '<span class="mono tot">' + rp(o.total) + '</span></div>' +
       '<div class="act">' +
-        (o.status === 'processing' ? '<button class="btn btn-primary btn-sm" data-set="' + o.id + ':ready" type="button">🔔 Pesanan Siap / Panggil</button>' : '') +
-        (o.status === 'ready'      ? '<button class="btn btn-primary btn-sm" data-set="' + o.id + ':completed" type="button">✅ Diserahkan / Selesai</button>' : '') +
+        (o.status === 'processing' ? '<button class="btn btn-primary btn-sm" data-set="' + o.id + ':ready" type="button">Pesanan Siap / Panggil</button>' : '') +
+        (o.status === 'ready'      ? '<button class="btn btn-primary btn-sm" data-set="' + o.id + ':completed" type="button">Diserahkan / Selesai</button>' : '') +
       '</div>' +
     '</div>';
 
@@ -876,19 +876,19 @@ function renderMerchant(){
         '<p class="sub2">Booth <b class="mono">' + esc(SLUG) + '</b> · View B (Kasir) + View C (Dapur) sesuai PRD.</p>' +
       '</div>' +
       '<div class="m-actions">' +
-        '<button class="btn btn-ghost btn-sm" id="btnQRFull" type="button">QR Standee ⬈</button>' +
-        '<button class="sound-btn ' + (BazarQAudio.enabled ? 'on' : '') + '" id="btnMSound" type="button">' + (BazarQAudio.enabled ? '🔊' : '🔇') + ' Suara</button>' +
+        '<button class="btn btn-ghost btn-sm" id="btnQRFull" type="button">QR Standee</button>' +
+        '<button class="sound-btn ' + (BazarQAudio.enabled ? 'on' : '') + '" id="btnMSound" type="button">Suara: ' + (BazarQAudio.enabled ? 'ON' : 'OFF') + '</button>' +
         '<button class="switch ' + (S.kitchenFull ? 'on' : '') + '" id="btnKitchen" type="button" aria-pressed="' + S.kitchenFull + '">' +
-          '<span class="track" aria-hidden="true"></span><span>🔥 Dapur Penuh (+15 mnt)</span>' +
+          '<span class="track" aria-hidden="true"></span><span>Dapur Penuh (+15 mnt)</span>' +
         '</button>' +
       '</div>' +
     '</div>' +
     (S.kitchenFull
-      ? '<div class="warn big"><b>🔥 Dapur Penuh aktif.</b> Estimasi tiket baru +15 menit (smart throttling PRD).</div>'
+      ? '<div class="warn big"><b>Dapur Penuh aktif.</b> Estimasi tiket baru +15 menit (smart throttling PRD).</div>'
       : '') +
     '<div class="btn-row" style="margin:12px 0">' +
-      '<button class="btn btn-sm ' + (merchantTab === 'kasir' ? 'btn-primary' : 'btn-ghost') + '" id="tabKasir" type="button">💵 Kasir (' + waitUnpaid.length + ' menunggu)</button>' +
-      '<button class="btn btn-sm ' + (merchantTab === 'dapur' ? 'btn-primary' : 'btn-ghost') + '" id="tabDapur" type="button">🍳 Dapur (' + (proc.length + ready.length) + ' aktif)</button>' +
+      '<button class="btn btn-sm ' + (merchantTab === 'kasir' ? 'btn-primary' : 'btn-ghost') + '" id="tabKasir" type="button">Kasir (' + waitUnpaid.length + ' menunggu)</button>' +
+      '<button class="btn btn-sm ' + (merchantTab === 'dapur' ? 'btn-primary' : 'btn-ghost') + '" id="tabDapur" type="button">Dapur (' + (proc.length + ready.length) + ' aktif)</button>' +
     '</div>' +
     '<div class="stat-chips">' +
       '<div class="stat"><span class="v">' + S.orders.length  + '</span><span class="l">masuk hari ini</span></div>' +
@@ -932,14 +932,14 @@ function renderMerchant(){
   $('#tabDapur').addEventListener('click', () => { merchantTab = 'dapur'; renderAll(); });
   $('#btnKitchen').addEventListener('click', () => {
     toggleKitchen(); renderAll();
-    toast(S.kitchenFull ? '🔥 Dapur Penuh aktif: estimasi +15 mnt.' : 'Dapur Penuh dimatikan.');
+    toast(S.kitchenFull ? 'Dapur Penuh aktif: estimasi +15 mnt.' : 'Dapur Penuh dimatikan.');
   });
   $('#btnQRFull').addEventListener('click', showQRFullscreen);
   $('#btnMSound').addEventListener('click', () => {
     BazarQAudio.toggle();
     const btn = $('#btnMSound');
     btn.className = 'sound-btn' + (BazarQAudio.enabled ? ' on' : '');
-    btn.textContent = (BazarQAudio.enabled ? '🔊' : '🔇') + ' Suara';
+    btn.textContent = 'Suara: ' + (BazarQAudio.enabled ? 'ON' : 'OFF');
   });
   $$('[data-paid]').forEach(b => b.addEventListener('click', () => {
     confirmPaid(Number(b.dataset.paid));
