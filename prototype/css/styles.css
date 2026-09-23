@@ -395,7 +395,7 @@ body.app-mode .view{padding-top:24px}
 .mode-dapur .board{grid-template-columns:1fr 1fr}
 .mode-display .ocard.ready{border-left-color:var(--emerald);background:var(--daun-bg)}
 .mode-display .tk{font-size:clamp(1.6rem,5vw,2.2rem)}
-.m-subnav{position:sticky;top:60px;z-index:5;background:rgb(239 246 255 / .82);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);padding:8px 0}
+.m-subnav{position:sticky;top:60px;z-index:5;background:rgb(255 255 255 / .7);-webkit-backdrop-filter:blur(12px) saturate(1.5);backdrop-filter:blur(12px) saturate(1.5);border-bottom:1px solid rgb(226 232 240 / .55);padding:8px 0}
 @media (max-width:920px){.mode-dapur .board{grid-template-columns:1fr}}
 
 /* ---------- glassmorphism SaaS (SKS gelar karya: override di bawah, aturan lama tak diubah) ----------
