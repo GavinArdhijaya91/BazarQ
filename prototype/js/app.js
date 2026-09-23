@@ -18,12 +18,12 @@ const PREP_MIN = 4;
 const DEFAULT_MENU = [
   { id:'m1', name:'Ayam Geprek Level 5',   desc:'Nasi, lalapan, sambal bawang',   price:15000, active:true, icon:'geprek' },
   { id:'m2', name:'Paket Geprek + Es Teh', desc:'Nasi, ayam geprek, es teh jumbo', price:20000, active:true, icon:'paket' },
-  { id:'m3', name:'Tahu Krispi (5 pcs)',   desc:'Saus sambal kering',              price:8000,  active:true, icon:'tahu' },
+  { id:'m3', name:'Tahu Krispi (5 potong)',   desc:'Saus sambal kering',              price:8000,  active:true, icon:'tahu' },
   { id:'m4', name:'Es Teh Jumbo',          desc:'Teh tubruk manis dingin',         price:5000,  active:true, icon:'esteh' },
   { id:'m5', name:'Es Jeruk Peras',        desc:'Jeruk peras asli',                price:6000,  active:true, icon:'jeruk' },
 ];
 const PIN_HASH_DEFAULT = '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4'; // sha256('1234')
-const DEFAULT_PROFILE = { name:'Geprek Bintang', desc:'Booth UMKM demo · Gelar Karya UNNES', pinHash:PIN_HASH_DEFAULT, qrisImageUrl:'' };
+const DEFAULT_PROFILE = { name:'Geprek Bintang', desc:'Booth contoh · Gelar Karya UNNES', pinHash:PIN_HASH_DEFAULT, qrisImageUrl:'' };
 
 /* ---------- helpers ---------- */
 const appEl = document.getElementById('app');
@@ -345,9 +345,9 @@ function setupPresence(){
     presRef.on('value', snap => {
       const n = snap.numChildren();
       const el = document.getElementById('presenceCount');
-      if (el) el.textContent = n + ' device · ' + SLUG;
+      if (el) el.textContent = n + ' perangkat · ' + SLUG;
       const f = document.getElementById('presenceFoot');
-      if (f) f.textContent = '· ' + n + ' device live';
+      if (f) f.textContent = '· ' + n + ' perangkat terhubung';
     });
   } catch(e){}
 }
@@ -518,9 +518,9 @@ function illusHandoff(){
 
 /* ---------- tur interaktif 1 menit (pengunjung baru) ---------- */
 const TOUR_STEPS = [
-  { t:'Pindai QR di booth', d:'Arahkan kamera digital ke QR standee. Halaman order langsung terbuka, tanpa pasang aplikasi, tanpa buat akun.', img:'scan', cta:['Buka halaman pembeli', 'pembeli'] },
+  { t:'Pindai QR di booth', d:'Arahkan kamera digital ke QR standee. Halaman pemesanan langsung terbuka, tanpa pasang aplikasi, tanpa buat akun.', img:'scan', cta:['Buka halaman pembeli', 'pembeli'] },
   { t:'Pilih menu, tiket terbit', d:'Tandai menu, isi nomor WhatsApp, kirim. Nomor antrean (mis. A-007) dan estimasi tunggu langsung tampil.', img:'hero', cta:['Coba pesan sekarang', 'pembeli'] },
-  { t:'Bayar di kasir, bebas jelajah', d:'Pilih QRIS atau tunai. Kasir menekan Konfirmasi Lunas, pesanan diteruskan ke dapur. Notifikasi masuk saat tinggal 2 antrean.', img:'scan', cta:['Lihat dashboard merchant', 'merchant'] },
+  { t:'Bayar di kasir, bebas jelajah', d:'Pilih QRIS atau tunai. Penjual menekan Konfirmasi Lunas, pesanan diteruskan ke dapur. Notifikasi masuk saat tinggal 2 antrean.', img:'scan', cta:['Lihat dasbor penjual', 'merchant'] },
   { t:'Tunjukkan tiket, bawa pulang', d:'Status berubah Siap Diambil. Tunjukkan tiket ke booth, pesanan diserahkan, selesai.', img:'handoff', cta:['Mulai sebagai pembeli', 'pembeli'] }
 ];
 const tourImg = k => k === 'hero' ? illusHero() : k === 'handoff' ? illusHandoff() : illusScan();
@@ -716,7 +716,7 @@ function createOrder(phone, payMethod){
   }).filter(Boolean);
   if (!items.length || items.length > 10) return null;
   const totalQty = items.reduce((a,i) => a + i.qty, 0);
-  if (totalQty > 20){ toast('Maksimal 20 pcs per pesanan.'); return null; }
+  if (totalQty > 20){ toast('Maksimal 20 potong per pesanan.'); return null; }
   lastOrderAt = now;
   S.seq += 1;
   const o = {
@@ -766,7 +766,7 @@ function toggleKitchen(){
 }
 
 function resetDemo(){
-  if (!window.confirm('Reset booth ' + SLUG + '? Semua antrean di semua device ikut terhapus.')) return;
+  if (!window.confirm('Atur ulang booth ' + SLUG + '? Semua antrean di semua perangkat ikut terhapus.')) return;
   try {
     sessionStorage.removeItem(K_MY());
     sessionStorage.removeItem(K_AUTH());
@@ -776,7 +776,7 @@ function resetDemo(){
   if (SLUG === DEFAULT_SLUG) seedState(S);
   sel = {}; stage = 'scan'; lastPhone = '';
   prevSeq = S.seq;
-  save(); renderAll(); toast('Booth ' + SLUG + ' direset. Semua device di booth ini ikut reset.');
+  save(); renderAll(); toast('Booth ' + SLUG + ' diatur ulang. Semua perangkat di booth ini ikut diatur ulang.');
 }
 
 async function createBooth(name, pin, desc){
@@ -828,9 +828,9 @@ function renderNotFound(){
   appEl.innerHTML =
   '<section class="view buyer-wrap"><div class="panel">' +
     '<h2 class="menu-title">Booth <span class="mono">' + esc(SLUG) + '</span> tidak ditemukan</h2>' +
-    '<p class="tiny" style="margin:0 0 16px">Mungkin QR kedaluwarsa atau kode booth salah ketik. Buat booth baru gratis, atau kembali ke demo.</p>' +
+    '<p class="tiny" style="margin:0 0 16px">Mungkin QR kedaluwarsa atau kode booth salah ketik. Buat booth baru gratis, atau lihat booth contoh.</p>' +
     '<div class="btn-row"><a class="btn btn-primary" href="#daftar">Buat Booth Baru</a>' +
-    '<a class="btn btn-ghost" href="#pembeli/' + DEFAULT_SLUG + '">Buka Demo</a></div>' +
+    '<a class="btn btn-ghost" href="#pembeli/' + DEFAULT_SLUG + '">Lihat Contoh</a></div>' +
   '</div></section>';
 }
 function renderAll(){
@@ -880,8 +880,8 @@ function renderLanding(){
         '<div class="cta-row">' +
           '<a class="btn btn-primary" href="#pembeli/' + esc(SLUG) + '">Coba sebagai Pembeli</a>' +
           '<button class="btn btn-ghost" id="btnTour" type="button">Ikuti Tur 1 Menit</button>' +
-          '<a class="btn btn-ghost" href="#merchant/' + esc(SLUG) + '">Buka Merchant</a>' +
-          '<a class="btn btn-ghost" href="#daftar">Buka Booth Sendiri +</a>' +
+          '<a class="btn btn-ghost" href="#merchant/' + esc(SLUG) + '">Buka Dasbor Penjual</a>' +
+          '<a class="btn btn-ghost" href="#daftar">Buka Booth Sendiri</a>' +
         '</div>' +
         '<p class="tiny" style="margin-top:10px">Booth aktif: <b class="mono">' + esc(SLUG) + '</b> · <b>' + esc(BOOTH().name) + '</b></p>' +
       '</div>' +
@@ -895,7 +895,7 @@ function renderLanding(){
           '<div class="num" data-live-num>' + (live ? esc(live.ticket) : 'A-···') + '</div>' +
           '<div class="row sub"><span data-live-sub>' + (live ? estLabel(live) + ' &middot; ' + activeCount() + ' antrean aktif' : 'Belum ada antrean aktif') + '</span><span class="mono">BazarQ</span></div>' +
         '</div>' +
-        '<p class="stub-cap">Tiket contoh booth <b class="mono">' + esc(SLUG) + '</b>. Sinkron langsung antar device.</p>' +
+        '<p class="stub-cap">Tiket contoh booth <b class="mono">' + esc(SLUG) + '</b>. Tersinkron langsung antar perangkat.</p>' +
       '</div>' +
     '</div>' +
   '</section>' +
@@ -917,18 +917,18 @@ function renderLanding(){
   '</section>' +
   '<section class="sec">' +
     '<h2>Alur pembeli, dari scan sampai ambil</h2>' +
-    '<p class="sub">Lima langkah inilah yang didemokan langsung di stand, dari awal sampai akhir.</p>' +
+    '<p class="sub">Lima langkah inilah yang kami peragakan langsung di booth, dari awal sampai akhir.</p>' +
     '<div class="steps">' + flow.map((s,i) =>
       '<div class="step"><span class="n">0' + (i+1) + '</span><b>' + s[0] + '</b><p>' + s[1] + '</p></div>'
     ).join('') + '</div>' +
   '</section>' +
   '<section class="sec">' +
-    '<h2>Pilih peran untuk demo</h2>' +
+    '<h2>Pilih peran untuk mencoba</h2>' +
     '<p class="sub">Buka peran berbeda di perangkat digital berbeda, semua tersinkron otomatis di booth <b class="mono">' + esc(SLUG) + '</b>.</p>' +
     '<div class="roles">' +
       '<a class="role" href="#pembeli/' + esc(SLUG) + '"><span class="t">Pembeli</span><span class="d">Pesan tanpa aplikasi, pantau nomor antrean dan notifikasinya secara live.</span><span class="go">Buka tab pembeli &rarr;</span></a>' +
-      '<a class="role" href="#merchant/' + esc(SLUG) + '"><span class="t">Merchant UMKM</span><span class="d">Panggil antrean, ubah status pesanan, tampilkan QR standee, atur Dapur Penuh.</span><span class="go">Buka dashboard merchant &rarr;</span></a>' +
-      '<a class="role" href="#eo"><span class="t">Event Organizer</span><span class="d">Pantau volume antrean lintas tenant dan jam sibuk event secara keseluruhan.</span><span class="go">Buka dasbor EO &rarr;</span></a>' +
+      '<a class="role" href="#merchant/' + esc(SLUG) + '"><span class="t">Penjual UMKM</span><span class="d">Panggil antrean, ubah status pesanan, tampilkan QR standee, atur Dapur Penuh.</span><span class="go">Buka dasbor penjual &rarr;</span></a>' +
+      '<a class="role" href="#eo"><span class="t">Penyelenggara Acara</span><span class="d">Pantau volume antrean semua booth dan jam sibuk acara secara keseluruhan.</span><span class="go">Buka dasbor penyelenggara &rarr;</span></a>' +
       '<a class="role" href="#daftar"><span class="t">Buka Booth Sendiri</span><span class="d">Daftar 1 menit, dapat QR asli siap cetak untuk booth-mu sendiri.</span><span class="go">Daftar booth &rarr;</span></a>' +
     '</div>' +
   '</section>';
@@ -963,10 +963,10 @@ function renderScan(body){
   '<div class="panel">' +
     '<div class="illus-scan">' + illusScan() + '</div>' +
     '<div class="qr-card"><div id="qrScanBox" style="display:flex;justify-content:center"></div>' +
-      '<div class="qr-note">QR asli booth <b class="mono">' + esc(SLUG) + '</b>. Scan pakai kamera digital → membuka halaman ini. Di demo, pakai tombol simulasi di bawah.</div>' +
+      '<div class="qr-note">QR asli booth <b class="mono">' + esc(SLUG) + '</b>. Scan pakai kamera digital → membuka halaman ini. Untuk mencoba, tekan tombol simulasi di bawah.</div>' +
       '<p class="qr-url mono" style="word-break:break-all">' + esc(orderUrl()) + '</p>' +
     '</div>' +
-    '<button class="btn btn-primary wide" id="btnScan" type="button">Simulasi: scan QR standee</button>' +
+    '<button class="btn btn-primary wide" id="btnScan" type="button">Coba: pindai QR booth</button>' +
   '</div>' +
   '<p class="tiny center" style="margin-top:12px">Tanpa pasang aplikasi, tanpa buat akun. Muat di bawah 100 KB agar tetap lancar saat jaringan bazar padat.</p>';
   renderRealQR($('#qrScanBox', body), orderUrl(), 168);
@@ -1006,15 +1006,15 @@ function renderMenu(body){
       '<div class="field-err" id="phoneErr" hidden>Isi nomor WhatsApp yang valid, contoh 0812 3456 7890.</div>' +
     '</div>' +
     '<div class="field"><label>Metode pembayaran (verifikasi di kasir)</label>' +
-      '<label style="display:flex;gap:8px;align-items:center;font-weight:600"><input type="radio" name="pay" value="qris" checked> QRIS / E-Wallet (scan QR toko)</label>' +
+      '<label style="display:flex;gap:8px;align-items:center;font-weight:600"><input type="radio" name="pay" value="qris" checked> QRIS / dompet digital (pindai QR toko)</label>' +
       '<label style="display:flex;gap:8px;align-items:center;font-weight:600;margin-top:6px"><input type="radio" name="pay" value="cash"> Tunai di kasir</label>' +
-      (BOOTH().qrisImageUrl ? '<img src="' + esc(BOOTH().qrisImageUrl) + '" alt="QRIS toko" style="max-width:220px;border-radius:12px;margin-top:10px;border:1px solid #e2e8f0">' : '<p class="tiny">QRIS toko tampil di sini setelah merchant mengisi URL gambar QRIS di dashboard kasir.</p>') +
+      (BOOTH().qrisImageUrl ? '<img src="' + esc(BOOTH().qrisImageUrl) + '" alt="QRIS toko" style="max-width:220px;border-radius:12px;margin-top:10px;border:1px solid #e2e8f0">' : '<p class="tiny">QRIS toko tampil di sini setelah penjual menautkan gambar QRIS di dasbor kasir.</p>') +
     '</div>' +
     '<div class="order-bar">' +
       '<div class="total-row"><span>Total pesanan</span><span class="rp" data-total>' + rp(total) + '</span></div>' +
       '<button class="btn btn-primary wide menu-btn-gap" id="btnOrder" type="button">Kirim Pesanan &amp; Dapatkan Tiket</button>' +
     '</div>' +
-    '<p class="tiny center" style="margin-top:10px">Status awal: <b>Menunggu Pembayaran</b>. Kasir tekan Konfirmasi Lunas → pesanan diteruskan ke dapur.</p>' +
+    '<p class="tiny center" style="margin-top:10px">Status awal: <b>Menunggu Pembayaran</b>. Penjual menekan Konfirmasi Lunas → pesanan diteruskan ke dapur.</p>' +
   '</div>';
   body.addEventListener('click', e => {
     const more = e.target.closest('[data-more]');
@@ -1070,7 +1070,7 @@ function submitOrder(){
   const pm = document.querySelector('input[name="pay"]:checked');
   const payMethod = pm ? pm.value : 'cash';
   const o = createOrder(norm, payMethod);
-  if (!o){ toast('Menu kosong. Pilih minimal 1 item.'); return; }
+  if (!o){ toast('Belum ada menu terpilih. Pilih minimal 1 menu.'); return; }
   stage = 'ticket'; sel = {};
   renderAll();
   toast('Tiket ' + o.ticket + ' terbit (' + (payMethod === 'qris' ? 'QRIS' : 'Tunai') + '). Tunjukkan ke kasir untuk verifikasi.');
@@ -1129,7 +1129,7 @@ function renderTicket(body, o){
     '</div>' +
     '<div class="btn-row">' +
       '<button class="sound-btn ' + (BazarQAudio.enabled ? 'on' : '') + '" id="btnBuyerSound" type="button">' + soundLabel() + '</button>' +
-      '<button class="btn btn-ghost btn-sm" id="btnCopyTicket" type="button">Simpan link tiket</button>' +
+      '<button class="btn btn-ghost btn-sm" id="btnCopyTicket" type="button">Simpan tautan tiket</button>' +
       (done
         ? '<button class="btn btn-primary" id="btnAgain" type="button">Pesan lagi</button>' +
           '<a class="btn btn-ghost" href="#beranda">Beranda</a>'
@@ -1142,9 +1142,9 @@ function renderTicket(body, o){
   if (cp) cp.addEventListener('click', async () => {
     try {
       await navigator.clipboard.writeText(tUrl);
-      toast('Link tiket disalin. Buka lagi kapan pun bila tab tertutup.');
+      toast('Tautan tiket disalin. Buka lagi kapan pun bila tab tertutup.');
     } catch(e){
-      prompt('Salin link tiket ini:', tUrl);
+      prompt('Salin tautan tiket ini:', tUrl);
     }
   });
 
@@ -1175,13 +1175,13 @@ function renderDaftar(){
   appEl.innerHTML =
   '<section class="view buyer-wrap"><div class="panel">' +
     '<h2 class="menu-title">Buka booth-mu sendiri</h2>' +
-    '<p class="tiny" style="margin:0 0 16px">Gratis untuk demo. Isi nama booth + PIN, sistem buatkan halaman sendiri + <b>QR asli siap cetak</b> yang langsung membuka halaman order booth-mu.</p>' +
+    '<p class="tiny" style="margin:0 0 16px">Gratis untuk mencoba. Isi nama booth + PIN, sistem buatkan halaman sendiri + <b>QR asli siap cetak</b> yang langsung membuka halaman order booth-mu.</p>' +
     '<div id="daftarForm">' +
       '<div class="field"><label for="fName">Nama booth</label>' +
-      '<input class="input" id="fName" placeholder="cth: Kopi Rame" maxlength="40"></div>' +
+      '<input class="input" id="fName" placeholder="contoh: Kopi Rame" maxlength="40"></div>' +
       '<div class="field"><label for="fDesc">Deskripsi singkat</label>' +
-      '<input class="input" id="fDesc" placeholder="cth: Booth kopi · bazar akhir pekan" maxlength="80"></div>' +
-      '<div class="field"><label for="fPin">PIN merchant (4-6 digit)</label>' +
+      '<input class="input" id="fDesc" placeholder="contoh: Booth kopi · bazar akhir pekan" maxlength="80"></div>' +
+      '<div class="field"><label for="fPin">PIN penjual (4-6 digit)</label>' +
       '<input class="input pin" id="fPin" inputmode="numeric" maxlength="6" placeholder="1234" value="1234"></div>' +
       '<div class="field-err" id="daftarErr" hidden></div>' +
       '<button class="btn btn-primary wide" id="btnDaftar" type="button">Buat Booth &amp; Tampilkan QR</button>' +
@@ -1205,13 +1205,13 @@ function renderDaftar(){
         '<p class="tiny center">Scan QR ini → langsung membuka order booth <b>' + esc(name) + '</b></p>' +
         '<p class="qr-url mono" style="word-break:break-all">' + esc(ourl) + '</p></div>' +
         '<div class="btn-row" style="margin-top:12px">' +
-          '<a class="btn btn-primary" href="#merchant/' + esc(slug) + '">Buka Dashboard Merchant</a>' +
-          '<a class="btn btn-ghost" href="#pembeli/' + esc(slug) + '">Tes sebagai Pembeli</a>' +
+          '<a class="btn btn-primary" href="#merchant/' + esc(slug) + '">Buka Dasbor Penjual</a>' +
+          '<a class="btn btn-ghost" href="#pembeli/' + esc(slug) + '">Coba sebagai Pembeli</a>' +
         '</div>' +
-        '<p class="tiny" style="margin-top:10px">PIN merchant: <b class="mono">' + esc(pin) + '</b> · kode booth: <b class="mono">' + esc(slug) + '</b><br>' +
-        'Cetak QR: screenshot QR di atas, atau buka dashboard merchant → <b>QR Standee</b> → fullscreen. Link merchant (<span class="mono">' + esc(murl) + '</span>) jangan disebar ke pembeli.</p>';
+        '<p class="tiny" style="margin-top:10px">PIN penjual: <b class="mono">' + esc(pin) + '</b> · kode booth: <b class="mono">' + esc(slug) + '</b><br>' +
+        'Cetak QR: simpan gambar QR di atas, atau buka dasbor penjual → <b>QR Standee</b> → layar penuh. Tautan penjual (<span class="mono">' + esc(murl) + '</span>) hanya untuk penjual, jangan disebar ke pembeli.</p>';
       renderRealQR($('#qrNewBox'), ourl, 200);
-      toast('Booth ' + slug + ' jadi! QR sudah bisa di-scan.');
+      toast('Booth ' + slug + ' siap! QR sudah bisa dipindai.');
     } catch(e){
       console.error(e);
       err.hidden = false; err.textContent = 'Gagal membuat booth. Periksa koneksi, lalu coba lagi.';
@@ -1267,7 +1267,7 @@ function renderMerchantAll(){
   '<section class="view">' +
     '<div class="m-head">' +
       '<div>' +
-        '<h2>Dashboard ' + esc(BOOTH().name) + '</h2>' +
+        '<h2>Dasbor ' + esc(BOOTH().name) + '</h2>' +
         '<p class="sub2">Booth <b class="mono">' + esc(SLUG) + '</b> · Kasir + Dapur dalam satu dasbor.</p>' +
       '</div>' +
       '<div class="m-actions">' +
@@ -1296,24 +1296,24 @@ function renderMerchantAll(){
     (merchantTab === 'kasir'
     ? '<div class="board"><div class="col"><h3>Menunggu Pembayaran <span class="count">' + waitUnpaid.length + '</span></h3>' +
         (waitUnpaid.length ? waitUnpaid.map(ocCashier).join('') : '<div class="empty-illus">' + illusEmpty() + '<span>Tidak ada antrean menunggu. Tunjukkan QR standee.</span></div>') + '</div>' +
-      '<div class="col"><h3>Walk-in Manual <span class="count">kasir</span></h3><div class="panel">' +
+      '<div class="col"><h3>Pembeli Langsung <span class="count">langsung</span></h3><div class="panel">' +
         '<p class="tiny">Untuk pembeli yang datang langsung tanpa perangkat digital. Pesanan otomatis dianggap <b>lunas tunai</b> dan diteruskan ke dapur.</p>' +
-        '<p class="tiny">Contoh: pembeli minta 2 Ayam Geprek + 1 Es Teh → isi angka 2 dan 1 pada menu di bawah, lalu klik Catat Walk-in.</p>' +
+        '<p class="tiny">Contoh: pembeli minta 2 Ayam Geprek + 1 Es Teh → isi angka 2 dan 1 pada menu di bawah, lalu klik Catat (Lunas).</p>' +
         '<div class="field"><label>Pilih menu & jumlah</label><div style="display:flex;flex-direction:column;gap:8px">' +
           menuAll.filter(m => m.active !== false).map(m =>
             '<label style="display:flex;gap:8px;align-items:center"><span class="thumb sm">' + foodIcon(foodIconFor(m)) + '</span><span style="flex:1;min-width:0">' + esc(m.name) + ' <span class="mono tiny">' + rp(m.price) + '</span></span><input class="input mono" data-wiqty="' + m.id + '" type="number" inputmode="numeric" min="0" max="10" value="0" style="width:72px;text-align:center"></label>'
           ).join('') + '</div></div>' +
-        '<div class="field"><label for="wiPhone">Nomor WA (opsional, untuk notifikasi)</label><input class="input" id="wiPhone" inputmode="tel" placeholder="cth: 0812 3456 7890"></div>' +
-        '<button class="btn btn-primary btn-sm" id="btnWalkin" type="button">+ Catat Walk-in (Lunas)</button></div>' +
-      '<h3 class="mt">Menu Habis (1-tap)</h3><div class="panel">' +
+        '<div class="field"><label for="wiPhone">Nomor WA (opsional, untuk notifikasi)</label><input class="input" id="wiPhone" inputmode="tel" placeholder="contoh: 0812 3456 7890"></div>' +
+        '<button class="btn btn-primary btn-sm" id="btnWalkin" type="button">+ Catat (Lunas)</button></div>' +
+      '<h3 class="mt">Menu Habis</h3><div class="panel">' +
         menuAll.map(m => '<label style="display:flex;gap:8px;align-items:center;margin:6px 0"><input type="checkbox" data-menu="' + m.id + '"' + (m.active !== false ? ' checked' : '') + '><span class="thumb sm">' + foodIcon(foodIconFor(m)) + '</span> ' + esc(m.name) + ' <span class="mono tiny">' + rp(m.price) + '</span></label>').join('') + '</div>' +
       '<h3 class="mt">QRIS Toko</h3><div class="panel">' +
-        '<div class="field"><label>URL gambar QRIS</label><input class="input mono" id="qrisUrl" value="' + esc(BOOTH().qrisImageUrl || '') + '" placeholder="https://.../qris.png"></div>' +
+        '<div class="field"><label>Tautan gambar QRIS</label><input class="input mono" id="qrisUrl" value="' + esc(BOOTH().qrisImageUrl || '') + '" placeholder="https://.../qris.png"></div>' +
         '<button class="btn btn-ghost btn-sm" id="btnQris" type="button">Simpan QRIS</button></div>' +
       '</div></div>'
     : '<div class="board">' +
       '<div class="col"><h3>Diproses <span class="count">' + proc.length + '</span></h3>' +
-        (proc.length ? proc.map(ocKitchen).join('') : '<div class="empty-illus">' + illusEmpty() + '<span>Belum ada yang diproses. Kasir harus Konfirmasi Lunas dulu.</span></div>') + '</div>' +
+        (proc.length ? proc.map(ocKitchen).join('') : '<div class="empty-illus">' + illusEmpty() + '<span>Belum ada yang diproses. Penjual menekan Konfirmasi Lunas dulu.</span></div>') + '</div>' +
       '<div class="col"><h3>Siap Diambil <span class="count">' + ready.length + '</span></h3>' +
         (ready.length ? ready.map(ocKitchen).join('') : '<div class="empty-illus">' + illusEmpty() + '<span>Belum ada pesanan siap.</span></div>') + '</div>' +
       '<div class="col">' +
@@ -1344,7 +1344,7 @@ function renderMerchantAll(){
   $$('[data-paid]').forEach(b => b.addEventListener('click', () => {
     confirmPaid(Number(b.dataset.paid));
     merchantTab = 'kasir'; renderAll();
-    toast('Lunas dikonfirmasi → diteruskan ke dapur. Pantau di tab Dapur.');
+    toast('Lunas dikonfirmasi → diteruskan ke dapur. Pantau di bagian Dapur.');
   }));
   $$('[data-set]').forEach(b => b.addEventListener('click', () => {
     const p = b.dataset.set.split(':');
@@ -1358,15 +1358,15 @@ function renderMerchantAll(){
   const bq = $('#btnQris');
   if (bq) bq.addEventListener('click', () => {
     const v = $('#qrisUrl').value.trim().slice(0, 500);
-    if (v && !/^https:\/\//i.test(v)){ toast('URL QRIS harus https://'); return; }
+    if (v && !/^https:\/\//i.test(v)){ toast('Tautan QRIS harus diawali https://'); return; }
     S.profile.qrisImageUrl = v; save(); renderAll();
-    toast('QRIS toko disimpan, tampil di checkout pembeli.');
+    toast('QRIS toko disimpan, tampil di halaman bayar pembeli.');
   });
   const bw = $('#btnWalkin');
   if (bw) bw.addEventListener('click', () => {
     const phoneRaw = $('#wiPhone').value.trim();
     const phone = phoneRaw || 'walk-in';
-    if (phoneRaw && !/^(08\d{8,11}|628\d{8,11})$/.test(phoneRaw.replace(/\D/g,''))){ toast('Nomor WA tidak valid, kosongkan atau isi cth: 0812 3456 7890.'); return; }
+    if (phoneRaw && !/^(08\d{8,11}|628\d{8,11})$/.test(phoneRaw.replace(/\D/g,''))){ toast('Nomor WA tidak valid, kosongkan atau isi contoh: 0812 3456 7890.'); return; }
     const menu = MENU_ALL().filter(m => m.active !== false);
     const items = $$('[data-wiqty]').map(inp => {
       const m = menu.find(x => x.id === inp.dataset.wiqty);
@@ -1376,11 +1376,11 @@ function renderMerchantAll(){
     }).filter(Boolean);
     if (!items.length){ toast('Pilih minimal 1 menu dengan jumlah > 0.'); return; }
     const totalQty = items.reduce((a,i) => a + i.qty, 0);
-    if (totalQty > 20){ toast('Maksimal 20 pcs per pesanan walk-in.'); return; }
+    if (totalQty > 20){ toast('Maksimal 20 potong per pesanan langsung.'); return; }
     S.seq += 1;
     S.orders.push({ id:S.seq, ticket:tk(S.seq), phone, items, total:items.reduce((a,i) => a + i.price * i.qty, 0), status:'processing', paid:true, payMethod:'cash', createdAt:Date.now(), processingAt:Date.now(), wa2:true, waReady:true });
-    pushLog(S, 'proc', tk(S.seq) + ' walk-in dicatat kasir (lunas tunai) → dapur.');
-    save(); renderAll(); toast('Walk-in ' + tk(S.seq) + ' masuk dapur.');
+    pushLog(S, 'proc', tk(S.seq) + ' pesanan langsung dicatat kasir (lunas tunai), diteruskan ke dapur.');
+    save(); renderAll(); toast(tk(S.seq) + ' (langsung) masuk dapur.');
   });
 }
 
@@ -1408,8 +1408,8 @@ function mSubNav(active){
   return '<div class="btn-row m-subnav" style="margin:12px 0">' +
     '<a class="btn btn-sm ' + (active === 'kasir' ? 'btn-primary' : 'btn-ghost') + '" href="#merchant/' + esc(SLUG) + '/kasir">Kasir</a>' +
     '<a class="btn btn-sm ' + (active === 'dapur' ? 'btn-primary' : 'btn-ghost') + '" href="#merchant/' + esc(SLUG) + '/dapur">Dapur</a>' +
-    '<a class="btn btn-sm ' + (active === 'display' ? 'btn-primary' : 'btn-ghost') + '" href="#merchant/' + esc(SLUG) + '/display">Display</a>' +
-    '<a class="btn btn-sm btn-ghost" href="#merchant/' + esc(SLUG) + '">Gabungan</a>' +
+    '<a class="btn btn-sm ' + (active === 'display' ? 'btn-primary' : 'btn-ghost') + '" href="#merchant/' + esc(SLUG) + '/display">Layar</a>' +
+    '<a class="btn btn-sm btn-ghost" href="#merchant/' + esc(SLUG) + '">Semua</a>' +
   '</div>';
 }
 function mHeadRow(subLabel){
@@ -1441,7 +1441,7 @@ function renderMerchantKasir(){
       '<div class="tiny">Bayar via ' + (o.payMethod === 'qris' ? 'QRIS' : 'Tunai') + ' · WA ' + esc(maskPhone(o.phone)) + ' · ' + hhmm(o.createdAt) + '</div>' +
       '<div class="act"><button class="btn btn-primary wide" data-paid="' + o.id + '" type="button">✅ Konfirmasi Lunas</button></div></div>'
     ).join('') : '<div class="empty-illus">' + illusEmpty() + '<span>Tidak ada antrean menunggu.</span></div>') +
-    '</div><div class="btn-row"><a class="btn btn-ghost btn-sm" href="#merchant/' + esc(SLUG) + '">Walk-in · Menu habis · QRIS → mode gabungan</a></div></section>';
+    '</div><div class="btn-row"><a class="btn btn-ghost btn-sm" href="#merchant/' + esc(SLUG) + '">Pesanan langsung · Menu habis · QRIS → tampilan gabungan</a></div></section>';
   bindMHead();
   $$('[data-paid]').forEach(b => b.addEventListener('click', () => { confirmPaid(Number(b.dataset.paid)); renderAll(); toast('Lunas → diteruskan ke dapur.'); }));
 }
@@ -1464,7 +1464,7 @@ function renderMerchantDisplay(){
   const now = activeOrders().slice(-6).reverse();
   const ready = S.orders.filter(o => o.status === 'ready').slice(-4).reverse();
   appEl.innerHTML = '<section class="view mode-display"><div class="m-head"><div><h2>' + esc(BOOTH().name) + ' · Sedang disiapkan</h2>' +
-    '<p class="sub2">Layar publik booth <b class="mono">' + esc(SLUG) + '</b> · tampilkan di TV/proyektor · tanpa tombol.</p></div>' +
+    '<p class="sub2">Layar publik booth <b class="mono">' + esc(SLUG) + '</b> · Pasang di TV/proyektor · tanpa tombol aksi.</p></div>' +
     '<span class="chip ' + (S.kitchenFull ? 'off' : 'on') + '">' + (S.kitchenFull ? 'Dapur penuh' : 'Buka') + '</span></div>' +
     '<div class="board"><div class="col"><h3>Diproses</h3>' +
     (now.length ? now.map(o => '<div class="ocard"><div class="top-row"><span class="tk">' + esc(o.ticket) + '</span><span class="st processing">' + esc(o.status) + '</span></div></div>').join('') : '<div class="empty">Belum ada antrean.</div>') + '</div>' +
@@ -1477,7 +1477,7 @@ function renderPinLogin(){
   appEl.innerHTML =
   '<section class="view buyer-wrap">' +
     '<div class="panel">' +
-      '<h2 class="menu-title">Masuk dashboard ' + esc(BOOTH().name) + '</h2>' +
+      '<h2 class="menu-title">Masuk dasbor ' + esc(BOOTH().name) + '</h2>' +
       '<p class="tiny" style="margin:0 0 16px">Booth <b class="mono">' + esc(SLUG) + '</b> · login pakai PIN booth, tanpa email, tanpa kata sandi panjang.</p>' +
       '<div class="field" style="margin-top:0">' +
         '<label for="pin">PIN booth</label>' +
@@ -1485,7 +1485,7 @@ function renderPinLogin(){
         '<div class="field-err" id="pinErr" hidden>PIN salah. Coba lagi.</div>' +
       '</div>' +
       '<button class="btn btn-primary wide" id="btnPin" type="button">Masuk</button>' +
-      (SLUG === DEFAULT_SLUG ? '<p class="tiny center" style="margin-top:10px">PIN demo: <b>1234</b></p>' : '') +
+      (SLUG === DEFAULT_SLUG ? '<p class="tiny center" style="margin-top:10px">PIN contoh: <b>1234</b></p>' : '') +
     '</div>' +
   '</section>';
 
@@ -1517,7 +1517,7 @@ function renderEO(){
     { name:'Kopi Tiam Rame',       n:38 },
     { name:'Cireng Bu Yuli',       n:27 }
   ];
-  const tenants = [{ name:BOOTH().name + ' (booth ' + SLUG + ', live)', n:S.orders.length }].concat(contoh);
+  const tenants = [{ name:BOOTH().name + ' (booth ' + SLUG + ', langsung)', n:S.orders.length }].concat(contoh);
   const maxT = Math.max.apply(null, tenants.map(t => t.n).concat([1]));
   const hourBase = { 9:4, 10:9, 11:16, 12:28, 13:21, 14:8, 15:3 };
   S.orders.forEach(o => { const h = new Date(o.createdAt).getHours(); if (hourBase[h] != null) hourBase[h] += 1; });
@@ -1530,17 +1530,17 @@ function renderEO(){
   appEl.innerHTML =
   '<section class="view">' +
     '<div class="m-head"><div>' +
-      '<h2>Dasbor Event Organizer</h2>' +
-      '<p class="sub2">Agregat antrean lintas tenant. Data live dari booth <b class="mono">' + esc(SLUG) + '</b>, sisanya contoh.</p>' +
+      '<h2>Dasbor Penyelenggara</h2>' +
+      '<p class="sub2">Ringkasan antrean semua booth. Data langsung dari booth <b class="mono">' + esc(SLUG) + '</b>, sisanya contoh.</p>' +
     '</div></div>' +
     '<div class="stat-chips">' +
       '<div class="stat"><span class="v">' + total + '</span><span class="l">total antrean event</span></div>' +
       '<div class="stat"><span class="v">' + activeCount() + '</span><span class="l">antrean berjalan</span></div>' +
       '<div class="stat"><span class="v">' + pad2(busiest[0]) + ':00</span><span class="l">jam tersibuk</span></div>' +
-      '<div class="stat"><span class="v">' + kitchenEvents + '×</span><span class="l">dapur penuh menyala</span></div>' +
+      '<div class="stat"><span class="v">' + kitchenEvents + '×</span><span class="l">dapur penuh aktif</span></div>' +
     '</div>' +
     '<div class="grid2">' +
-      '<div class="panel"><h3>Volume antrean per tenant</h3>' +
+      '<div class="panel"><h3>Volume antrean per booth</h3>' +
         tenants.map(t =>
           '<div class="bar-row"><span class="tn">' + esc(t.name) + '</span>' +
           '<span class="bar-track"><span class="bar' + (t.n === S.orders.length ? '' : ' dim') + '" style="width:' + Math.max(4, Math.round(t.n / maxT * 100)) + '%"></span></span>' +
@@ -1556,9 +1556,9 @@ function renderEO(){
         '<ul class="tight">' +
           '<li>Jam tersibuk di sekitar <b>' + pad2(busiest[0]) + ':00</b>. Siapkan satu staf tambahan di jam tersebut.</li>' +
           '<li>' + (kitchenEvents > 0
-            ? 'Dapur Penuh pernah menyala pada booth ini.'
-            : 'Belum ada kejadian Dapur Penuh. Coba nyalakan dari dashboard merchant.') + '</li>' +
-          '<li>Setiap booth punya QR sendiri: <span class="mono">#pembeli/{slug}</span>. Daftarkan booth baru via <a href="#daftar">Buka Booth</a>.</li>' +
+            ? 'Dapur Penuh pernah aktif pada booth ini.'
+            : 'Belum ada kejadian Dapur Penuh. Coba nyalakan dari dasbor penjual.') + '</li>' +
+          '<li>Setiap booth punya QR sendiri: <span class="mono">#pembeli/kode-booth</span>. Daftarkan booth baru via <a href="#daftar">Buka Booth</a>.</li>' +
         '</ul>' +
       '</div>' +
     '</div>' +
