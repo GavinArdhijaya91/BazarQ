@@ -1432,7 +1432,38 @@ window.addEventListener('hashchange', () => {
   if (S && adoptTicketFromUrl()){ renderAll(); window.scrollTo(0,0); return; }
   renderAll(); window.scrollTo(0,0);
 });
+/* ---------- background ambient UMKM (flat 2D, opacity 12%, gerak pelan) ----------
+   Ikon garis tipis navy/azure: tenda booth, mangkuk, gelas, keranjang,
+   kantong belanja, payung bazar. Non-interaktif & diabaikan screen reader. */
+const AMBIENT_SHAPES = [
+  '<svg viewBox="0 0 64 40"><rect x="4" y="4" width="56" height="8" rx="4" fill="#2563EB"/><rect x="8" y="12" width="4" height="26" fill="#0F172A"/><rect x="52" y="12" width="4" height="26" fill="#0F172A"/><rect x="8" y="24" width="48" height="14" rx="3" fill="none" stroke="#0F172A" stroke-width="3"/></svg>',
+  '<svg viewBox="0 0 64 64"><path d="M8 28 h48 a24 22 0 0 1 -48 0z" fill="none" stroke="#0F172A" stroke-width="3"/><line x1="6" y1="28" x2="58" y2="28" stroke="#2563EB" stroke-width="3" stroke-linecap="round"/><path d="M26 18 q4 -6 8 0 M36 18 q4 -6 8 0" stroke="#60A5FA" stroke-width="3" fill="none" stroke-linecap="round"/></svg>',
+  '<svg viewBox="0 0 64 64"><path d="M22 10 h20 l-3 40 h-14z" fill="none" stroke="#0F172A" stroke-width="3"/><line x1="32" y1="10" x2="38" y2="2" stroke="#2563EB" stroke-width="3" stroke-linecap="round"/><rect x="25" y="22" width="14" height="16" fill="#60A5FA" opacity=".55"/></svg>',
+  '<svg viewBox="0 0 64 64"><path d="M12 24 h40 l-5 24 h-30z" fill="none" stroke="#0F172A" stroke-width="3"/><path d="M20 24 q12 -16 24 0" fill="none" stroke="#2563EB" stroke-width="3"/></svg>',
+  '<svg viewBox="0 0 64 64"><path d="M20 22 h24 l-2 30 h-20z" fill="none" stroke="#0F172A" stroke-width="3"/><path d="M24 22 q8 -12 16 0" fill="none" stroke="#2563EB" stroke-width="3"/><circle cx="32" cy="38" r="5" fill="#60A5FA" opacity=".6"/></svg>',
+  '<svg viewBox="0 0 64 64"><path d="M32 8 a20 12 0 0 1 0 24z" fill="none" stroke="#0F172A" stroke-width="3" transform="rotate(8 32 20)"/><line x1="32" y1="28" x2="32" y2="56" stroke="#2563EB" stroke-width="3" stroke-linecap="round"/></svg>',
+  '<svg viewBox="0 0 64 64"><ellipse cx="32" cy="34" rx="24" ry="10" fill="none" stroke="#0F172A" stroke-width="3"/><ellipse cx="32" cy="30" rx="14" ry="6" fill="none" stroke="#60A5FA" stroke-width="3"/></svg>',
+  '<svg viewBox="0 0 64 64"><rect x="14" y="26" width="36" height="8" rx="4" fill="#2563EB"/><circle cx="20" cy="44" r="5" fill="none" stroke="#0F172A" stroke-width="3"/><circle cx="44" cy="44" r="5" fill="none" stroke="#0F172A" stroke-width="3"/></svg>'
+];
+function mountAmbient(){
+  if (document.querySelector('.ambient')) return;
+  const spots = [
+    [4,12,64],[82,8,80],[12,64,72],[86,58,60],
+    [30,82,84],[62,86,68],[45,10,52],[72,34,46]
+  ];
+  const layer = document.createElement('div');
+  layer.className = 'ambient';
+  layer.setAttribute('aria-hidden', 'true');
+  layer.innerHTML = AMBIENT_SHAPES.map((s, i) => {
+    const p = spots[i % spots.length];
+    const dur = (7 + (i % 4) * 1.8).toFixed(1);
+    return '<i style="left:' + p[0] + '%;top:' + p[1] + '%;width:' + p[2] + 'px;animation-duration:' + dur + 's;animation-delay:-' + (i * 1.3).toFixed(1) + 's">' + s + '</i>';
+  }).join('');
+  document.body.prepend(layer);
+}
+
 const btnReset = document.getElementById('btnReset');
 if (btnReset) btnReset.addEventListener('click', resetDemo);
 setInterval(liveTick, 1000);
+mountAmbient();
 load();

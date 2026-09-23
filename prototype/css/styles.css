@@ -277,6 +277,15 @@ ul.tight li+li{margin-top:var(--s1)}
 .hb.max .b{background:var(--sambal)}
 .hb .h{font-family:var(--mono);font-size:.72rem;color:var(--ink-soft)}
 
+/* ---------- background ambient UMKM (subtil, <35% opacity) ---------- */
+.ambient{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:.12}
+.ambient i{position:absolute;display:block;animation:drift 9s ease-in-out infinite alternate}
+.ambient svg{display:block;width:100%;height:auto}
+@media (prefers-reduced-motion:no-preference){
+  @keyframes drift{from{transform:translateY(0) rotate(-5deg)}to{transform:translateY(-20px) rotate(5deg)}}
+}
+main#app,.foot{position:relative;z-index:1}
+
 /* ---------- toast ---------- */
 .toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,12px);opacity:0;background:var(--ink);color:var(--paper-2);padding:12px 18px;border-radius:12px;font-weight:600;font-size:.95rem;z-index:60;transition:transform .25s,opacity .25s;pointer-events:none;max-width:min(92vw,480px);box-shadow:var(--shadow)}
 .toast.show{transform:translate(-50%,0);opacity:1}
