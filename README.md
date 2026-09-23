@@ -1,4 +1,4 @@
-# BazarQ, Antrean Digital untuk Bazar UMKM
+# BazarQ: Antrean Digital untuk Bazar UMKM
 
 BazarQ memindahkan antrean bazar ke perangkat digital pengunjung. Pembeli memindai QR di booth, memilih menu, lalu menerima nomor antrean dan estimasi tunggu. Tanpa pasang aplikasi, tanpa buat akun. Pembeli bebas menjelajah, dagangan tetap terkendali.
 
@@ -25,12 +25,12 @@ Dibangun untuk Gelar Karya Technopreneurship Universitas Negeri Semarang.
 
 Masuk dasbor penjual cukup dengan PIN booth 4 sampai 6 digit.
 
-## Prinsip produk (dari PRD)
+## Kenapa ini menguntungkan Anda
 
-- **Ringan:** halaman pemesanan di bawah 100 KB, tetap lancar saat jaringan bazar padat.
-- **Nol aplikasi:** berjalan di browser perangkat digital biasa.
-- **Satu layar satu keputusan:** kasir cukup menandai lunas atau belum, dapur cukup memasak atau memanggil.
-- **Realtime:** semua perangkat di booth yang sama tersinkron otomatis lewat Firebase.
+- **Pelanggan tidak kabur karena loading:** halaman pemesanan di bawah 100 KB, tetap lancar saat jaringan bazar padat.
+- **Tidak ada yang perlu di-install:** berjalan di browser perangkat digital biasa, pembeli langsung pesan begitu scan.
+- **Karyawan baru langsung bisa pakai:** kasir cukup menandai lunas atau belum, dapur cukup memasak atau memanggil. Tanpa training.
+- **Tidak ada pesanan yang tertukar:** semua perangkat di booth yang sama tersinkron otomatis lewat Firebase.
 
 ## Teknologi prototipe
 
