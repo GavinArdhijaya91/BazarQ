@@ -157,9 +157,9 @@ ul.tight li+li{margin-top:8px}
 .input{width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:#fff;font:inherit;font-size:1rem;color:var(--ink)}
 .input::placeholder{color:#A79880}
 .input:focus{outline:3px solid var(--sambal-hi);outline-offset:1px;border-color:var(--sambal)}
-.input.err{border-color:var(--sambal-deep)}
+.input.err{border-color:#B91C1C;background:#FFF7F6}
 .input.pin{font-family:var(--mono);font-size:1.6rem;letter-spacing:.4em;text-align:center;padding:14px}
-.field-err{color:var(--sambal-deep);font-size:.85rem;margin-top:6px}
+.field-err{color:#B91C1C;background:#FDECEA;border:1px solid #F5C2BE;border-radius:10px;padding:8px 12px;font-size:.85rem;font-weight:700;margin-top:8px}
 .warn{background:var(--kunyit-bg);border:1px solid #E8D3A0;border-radius:12px;padding:12px 14px;color:var(--kunyit-ink);font-size:.95rem;margin:6px 0 12px}
 .warn b{font-weight:800}
 .total-row{display:flex;justify-content:space-between;align-items:baseline;padding:14px 2px;font-weight:800;border-top:2px solid var(--ink);margin-top:14px}

@@ -923,6 +923,11 @@ function renderMenu(body){
     if (less){ const id = less.dataset.less; sel[id] = Math.max(0, (sel[id] || 0) - 1); updateMenuBits(body); }
   });
   $('#btnOrder').addEventListener('click', submitOrder);
+  const waInput = $('#waPhone');
+  if (waInput) waInput.addEventListener('input', () => {
+    $('#phoneErr').hidden = true;
+    waInput.classList.remove('err');
+  });
 }
 
 function updateMenuBits(body){
@@ -953,9 +958,11 @@ function updateMenuBits(body){
 
 function submitOrder(){
   const input = $('#waPhone');
+  const errBox = $('#phoneErr');
+  errBox.hidden = true; input.classList.remove('err');
   const digits = input.value.replace(/\D/g,'');
   const ok = /^(08\d{8,11}|628\d{8,11})$/.test(digits);
-  if (!ok){ $('#phoneErr').hidden = false; input.classList.add('err'); input.focus(); return; }
+  if (!ok){ errBox.hidden = false; input.classList.add('err'); input.focus(); return; }
   lastPhone = input.value;
   const norm = digits.indexOf('628') === 0 ? '0' + digits.slice(2) : digits;
   const pm = document.querySelector('input[name="pay"]:checked');
