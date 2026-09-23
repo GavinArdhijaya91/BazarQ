@@ -16,5 +16,5 @@ window.FIREBASE_CONFIG = {
   measurementId:     "G-NDW0XT1NXY"
 };
 
-// URL demo yang ditampilkan di QR fullscreen — update setelah deploy Vercel.
-window.DEMO_URL = "bazarq-7adbe.vercel.app";
+// URL produksi yang dipakai sebagai isi QR (QR = URL penuh halaman order booth).
+window.DEMO_URL = "bazar-q.vercel.app";
