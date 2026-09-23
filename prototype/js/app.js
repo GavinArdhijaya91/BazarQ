@@ -82,10 +82,7 @@ const appBase = () => {
 const orderUrl   = (slug) => appBase() + '#pembeli/' + (slug || SLUG);
 const merchantUrl= (slug) => appBase() + '#merchant/' + (slug || SLUG);
 // Sub-peran merchant (fondasi lama tetap jalan: #merchant/{slug} = kasir).
-// #merchant/{slug}/kasir = View B Kasir · /dapur = View C Dapur · /display = layar publik read-only.
-const merchantKasirUrl = (slug) => appBase() + '#merchant/' + (slug || SLUG) + '/kasir';
-const merchantDapurUrl = (slug) => appBase() + '#merchant/' + (slug || SLUG) + '/dapur';
-const merchantDisplayUrl = (slug) => appBase() + '#merchant/' + (slug || SLUG) + '/display';
+// #merchant/{slug}/kasir = kasir · /dapur = dapur · /display = layar publik read-only.
 function merchantSub(){
   const h = location.hash.replace(/^#/, '').split('?')[0];
   const m = h.match(/^merchant\/[a-z0-9-]{2,50}\/(kasir|dapur|display)/i);
@@ -159,7 +156,6 @@ const BazarQAudio = {
   buzz(pattern){
     try { if (navigator.vibrate) navigator.vibrate(pattern); } catch(e){}
   },
-  playOrderReady(){ this._play([523.25, 659.25, 783.99], 0.45, 0.3); },
   playReadyAlert(){
     this._play([523.25, 659.25, 783.99, 1046.5], 0.5, 0.34);
     setTimeout(() => this._play([523.25, 659.25, 783.99, 1046.5], 0.5, 0.34), 950);
@@ -1620,7 +1616,7 @@ window.addEventListener('hashchange', () => {
   if (S && adoptTicketFromUrl()){ renderAll(); window.scrollTo(0,0); return; }
   renderAll(); window.scrollTo(0,0);
 });
-/* ---------- background ambient UMKM (flat 2D, opacity 12%, gerak pelan) ----------
+/* ---------- background ambient UMKM (flat 2D, subtil, gerak tiga fase) ----------
    Ikon garis tipis navy/azure: tenda booth, mangkuk, gelas, keranjang,
    kantong belanja, payung bazar. Non-interaktif & diabaikan screen reader. */
 const AMBIENT_SHAPES = [

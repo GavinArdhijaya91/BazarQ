@@ -43,7 +43,7 @@ a{color:inherit}
   *{animation:none!important;transition:none!important}
 }
 
-/* ---------- header (glass navy) ---------- */
+/* ---------- header (kaca terang) ---------- */
 .top{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,rgb(15 23 42 / .62),rgb(15 23 42 / .46));-webkit-backdrop-filter:blur(18px) saturate(1.6);backdrop-filter:blur(18px) saturate(1.6);border-bottom:1px solid rgb(255 255 255 / .22);box-shadow:0 10px 30px rgb(15 23 42 / .22),inset 0 1px 0 rgb(255 255 255 / .12)}
 .top-in{display:flex;align-items:center;gap:14px;min-height:64px;flex-wrap:wrap;padding-top:10px;padding-bottom:10px}
 .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.15rem;letter-spacing:-.01em;text-decoration:none;margin-right:16px;color:#fff;flex:none}
@@ -361,7 +361,7 @@ main#app,.foot{position:relative;z-index:1}
 .tour-dot.on{background:var(--sambal)}
 .tour-card .btn-row{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
 
-/* ---------- mode aplikasi penuh (dashboard terpisah tanpa routing baru) ----------
+/* ---------- mode aplikasi penuh (dasbor fokus, nav disembunyikan) ----------
    Aktif saat body.app-mode: landing/marketing hilang total, sisa UI fungsional. */
 body.app-mode .nav,
 body.app-mode #btnReset,
