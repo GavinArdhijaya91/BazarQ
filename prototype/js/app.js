@@ -69,7 +69,7 @@ const STORED_PIN_HASH = () => {
   return /^[0-9a-f]{64}$/i.test(String(h || '')) ? String(h).toLowerCase() : PIN_HASH_DEFAULT;
 };
 const appBase = () => {
-  // QR harus bisa di-scan HP → URL publik. Kalau dibuka via localhost/IP lokal,
+  // QR harus bisa di-scan perangkat digital → URL publik. Kalau dibuka via localhost/IP lokal,
   // paksa basis produksi agar QR tetap membuka menu penjual di web.
   try {
     const h = location.hostname;
@@ -353,7 +353,7 @@ function qrFallbackSVG(size){
     'aria-label="Pola QR simulasi" shape-rendering="crispEdges" fill="#0F172A">' +
     rects + finder(0,0) + finder(N-7,0) + finder(0,N-7) + '</svg>';
 }
-/** Render QR ASLI yang bisa di-scan kamera HP menuju URL order booth. */
+/** Render QR ASLI yang bisa di-scan kamera digital menuju URL order booth. */
 function renderRealQR(el, text, size){
   if (!el) return;
   el.innerHTML = '';
@@ -377,7 +377,7 @@ function showQRFullscreen(){
     '<p class="qr-big-sub">' + esc(BOOTH().name) + ' &middot; BazarQ</p>' +
     '<div class="qr-big-svg" id="qrFullBox"></div>' +
     '<p class="qr-url">' + esc(url) + '</p>' +
-    '<p class="qr-hint">Scan pakai kamera HP biasa, tanpa aplikasi. Tekan Tutup atau <kbd>Esc</kbd> untuk kembali.</p>';
+    '<p class="qr-hint">Scan pakai kamera digital, tanpa aplikasi. Tekan Tutup atau <kbd>Esc</kbd> untuk kembali.</p>';
   document.body.appendChild(overlay);
   renderRealQR($('#qrFullBox', overlay), url, 220);
   const close = () => { overlay.remove(); document.removeEventListener('keydown', escH); };
@@ -443,7 +443,7 @@ function illusEmpty(){
   '</svg>';
 }
 function illusScan(){
-  return '<svg viewBox="0 0 220 112" role="img" aria-label="Ilustrasi scan QR booth dengan HP">' +
+  return '<svg viewBox="0 0 220 112" role="img" aria-label="Ilustrasi scan QR booth dengan perangkat digital">' +
     '<line x1="10" y1="100" x2="210" y2="100" stroke="#E4D8C2" stroke-width="3" stroke-linecap="round"/>' +
     '<rect x="14" y="34" width="56" height="7" rx="3.5" fill="#1A56C4"/>' +
     '<rect x="16" y="41" width="4" height="59" fill="#241B12"/><rect x="64" y="41" width="4" height="59" fill="#241B12"/>' +
@@ -482,7 +482,7 @@ function illusHandoff(){
 
 /* ---------- tur interaktif 1 menit (pengunjung baru) ---------- */
 const TOUR_STEPS = [
-  { t:'Pindai QR di booth', d:'Arahkan kamera HP ke QR standee. Halaman order langsung terbuka, tanpa pasang aplikasi, tanpa buat akun.', img:'scan', cta:['Buka halaman pembeli', 'pembeli'] },
+  { t:'Pindai QR di booth', d:'Arahkan kamera digital ke QR standee. Halaman order langsung terbuka, tanpa pasang aplikasi, tanpa buat akun.', img:'scan', cta:['Buka halaman pembeli', 'pembeli'] },
   { t:'Pilih menu, tiket terbit', d:'Tandai menu, isi nomor WhatsApp, kirim. Nomor antrean (mis. A-007) dan estimasi tunggu langsung tampil.', img:'hero', cta:['Coba pesan sekarang', 'pembeli'] },
   { t:'Bayar di kasir, bebas jelajah', d:'Pilih QRIS atau tunai. Kasir menekan Konfirmasi Lunas, pesanan diteruskan ke dapur. Notifikasi masuk saat tinggal 2 antrean.', img:'scan', cta:['Lihat dashboard merchant', 'merchant'] },
   { t:'Tunjukkan tiket, bawa pulang', d:'Status berubah Siap Diambil. Tunjukkan tiket ke booth, pesanan diserahkan, selesai.', img:'handoff', cta:['Mulai sebagai pembeli', 'pembeli'] }
@@ -819,7 +819,7 @@ function refreshMenuGate(){
 function renderLanding(){
   const live = activeOrders().find(o => o.status === 'processing') || activeOrders().slice(-1)[0] || null;
   const flow = [
-    ['Scan QR', 'Standee QR di booth, buka lewat browser HP. Tanpa install aplikasi.'],
+    ['Scan QR', 'Standee QR di booth, buka lewat browser di perangkat digital. Tanpa install aplikasi.'],
     ['Pilih menu', 'Tandai pesanan dan masukkan nomor WhatsApp.'],
     ['Terima tiket', 'Nomor antrean dan estimasi tunggu langsung tampil.'],
     ['Bebas jelajah', 'Notifikasi WA masuk saat tinggal 2 nomor.'],
@@ -829,7 +829,7 @@ function renderLanding(){
   '<section class="hero">' +
     '<div class="hero-grid">' +
       '<div>' +
-        '<h1>Antrean bazar pindah ke <em>HP</em>.</h1>' +
+        '<h1>Antrean bazar pindah ke <em>Digital</em>.</h1>' +
         '<p class="lede">Scan QR di booth, pilih menu, dapat nomor antrean dan estimasi waktu. Pembeli bebas jelajah, dagangan tetap terkendali.</p>' +
         '<div class="cta-row">' +
           '<a class="btn btn-primary" href="#pembeli/' + esc(SLUG) + '">Coba sebagai Pembeli</a>' +
@@ -855,7 +855,7 @@ function renderLanding(){
   '</section>' +
   '<section class="sec">' +
     '<h2>Kendala lama, jawaban sederhana</h2>' +
-    '<p class="sub">Di bazar dan pasar kaget, antrean fisik membuat pembeli pergi dan UMKM kehilangan penjualan. BazarQ menggantinya dengan nomor antrean digital yang berjalan di HP standar, tanpa aplikasi, tanpa akun.</p>' +
+    '<p class="sub">Di bazar dan pasar kaget, antrean fisik membuat pembeli pergi dan UMKM kehilangan penjualan. BazarQ menggantinya dengan nomor antrean digital yang berjalan di perangkat digital standar, tanpa aplikasi, tanpa akun.</p>' +
     '<div class="vs">' +
       '<div class="card"><h3>Tanpa BazarQ</h3><ul class="tight">' +
         '<li>Antrean fisik tidak tertata di depan booth.</li>' +
@@ -863,7 +863,7 @@ function renderLanding(){
         '<li>Dapur kewalahan saat lonjakan pengunjung.</li>' +
       '</ul></div>' +
       '<div class="card good"><h3>Dengan BazarQ</h3><ul class="tight">' +
-        '<li>Nomor antrean dan estimasi langsung di HP pembeli.</li>' +
+        '<li>Nomor antrean dan estimasi langsung di perangkat digital pembeli.</li>' +
         '<li>Pembeli bebas menjelajah, dipanggil lewat notifikasi.</li>' +
         '<li>Tombol Dapur Penuh menjaga kualitas saat ramai.</li>' +
       '</ul></div>' +
@@ -878,7 +878,7 @@ function renderLanding(){
   '</section>' +
   '<section class="sec">' +
     '<h2>Pilih peran untuk demo</h2>' +
-    '<p class="sub">Buka peran berbeda di HP berbeda, semua tersinkron real-time lewat Firebase booth <b class="mono">' + esc(SLUG) + '</b>.</p>' +
+    '<p class="sub">Buka peran berbeda di perangkat digital berbeda, semua tersinkron real-time lewat Firebase booth <b class="mono">' + esc(SLUG) + '</b>.</p>' +
     '<div class="roles">' +
       '<a class="role" href="#pembeli/' + esc(SLUG) + '"><span class="t">Pembeli</span><span class="d">Pesan tanpa aplikasi, pantau nomor antrean dan notifikasinya secara live.</span><span class="go">Buka tab pembeli &rarr;</span></a>' +
       '<a class="role" href="#merchant/' + esc(SLUG) + '"><span class="t">Merchant UMKM</span><span class="d">Panggil antrean, ubah status pesanan, tampilkan QR standee, atur Dapur Penuh.</span><span class="go">Buka dashboard merchant &rarr;</span></a>' +
@@ -917,7 +917,7 @@ function renderScan(body){
   '<div class="panel">' +
     '<div class="illus-scan">' + illusScan() + '</div>' +
     '<div class="qr-card"><div id="qrScanBox" style="display:flex;justify-content:center"></div>' +
-      '<div class="qr-note">QR asli booth <b class="mono">' + esc(SLUG) + '</b>. Scan pakai kamera HP → membuka halaman ini. Di demo, pakai tombol simulasi di bawah.</div>' +
+      '<div class="qr-note">QR asli booth <b class="mono">' + esc(SLUG) + '</b>. Scan pakai kamera digital → membuka halaman ini. Di demo, pakai tombol simulasi di bawah.</div>' +
       '<p class="qr-url mono" style="word-break:break-all">' + esc(orderUrl()) + '</p>' +
     '</div>' +
     '<button class="btn btn-primary wide" id="btnScan" type="button">Simulasi: scan QR standee</button>' +
@@ -1250,7 +1250,7 @@ function renderMerchantAll(){
     ? '<div class="board"><div class="col"><h3>Menunggu Pembayaran <span class="count">' + waitUnpaid.length + '</span></h3>' +
         (waitUnpaid.length ? waitUnpaid.map(ocCashier).join('') : '<div class="empty-illus">' + illusEmpty() + '<span>Tidak ada antrean menunggu. Tunjukkan QR standee.</span></div>') + '</div>' +
       '<div class="col"><h3>Walk-in Manual <span class="count">kasir</span></h3><div class="panel">' +
-        '<p class="tiny">Untuk pembeli yang datang langsung tanpa HP. Pesanan otomatis dianggap <b>lunas tunai</b> dan diteruskan ke dapur.</p>' +
+        '<p class="tiny">Untuk pembeli yang datang langsung tanpa perangkat digital. Pesanan otomatis dianggap <b>lunas tunai</b> dan diteruskan ke dapur.</p>' +
         '<p class="tiny">Contoh: pembeli minta 2 Ayam Geprek + 1 Es Teh → isi angka 2 dan 1 pada menu di bawah, lalu klik Catat Walk-in.</p>' +
         '<div class="field"><label>Pilih menu & jumlah</label><div style="display:flex;flex-direction:column;gap:8px">' +
           menuAll.filter(m => m.active !== false).map(m =>

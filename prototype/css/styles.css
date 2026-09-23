@@ -395,7 +395,7 @@ body{background:
   .brand{margin-right:8px}
 }
 
-/* ---------- hardening responsif: satu basis, rapi di HP & desktop ----------
+/* ---------- hardening responsif: satu basis, rapi di mobile & desktop ----------
    Prinsip: kontainer fluida · tipografi clamp · sentuh ≥44px · tanpa scroll-x. */
 html{-webkit-text-size-adjust:100%}
 body{overflow-x:clip}

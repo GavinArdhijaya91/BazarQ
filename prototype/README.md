@@ -7,23 +7,23 @@ Fondasi web prototipe untuk demo di stand: antrean digital UMKM sesuai **PRD Baz
 Aplikasi telah terhubung ke **Firebase Realtime Database** sehingga sinkron secara nyata antar perangkat secara instan tanpa perlu berada di satu browser yang sama!
 
 ### Skenario Demo 4 Device:
-1. **Device 1 (Laptop/Tablet / HP Penjual)**:
+1. **Device 1 (Laptop/Tablet / Perangkat Digital Penjual)**:
    - Buka `https://<domain-vercel-kamu>.vercel.app/#merchant`
    - Masukkan PIN: `1234`
-   - Buka QR Code Standee via tombol **"Lihat QR Standee"** agar bisa langsung di-scan kamera HP pengunjung/pembeli.
-2. **Device 2 (HP Pembeli 1)**:
+   - Buka QR Code Standee via tombol **"Lihat QR Standee"** agar bisa langsung di-scan kamera digital pengunjung/pembeli.
+2. **Device 2 (Perangkat Digital Pembeli 1)**:
    - Scan QR Code atau buka `https://<domain-vercel-kamu>.vercel.app/#pembeli`
    - Pilih menu, isi no WA (misal `081234567891`), klik **Ambil Nomor Antrean** -> Mendapat nomor `A-001`.
-3. **Device 3 (HP Pembeli 2)**:
+3. **Device 3 (Perangkat Digital Pembeli 2)**:
    - Buka `#pembeli` -> Ambil nomor antrean -> Mendapat nomor `A-002`.
-4. **Device 4 (HP Pembeli 3)**:
+4. **Device 4 (Perangkat Digital Pembeli 3)**:
    - Buka `#pembeli` -> Ambil nomor antrean -> Mendapat nomor `A-003`.
 
 ### Aksi Real-time yang Terjadi Sesuai PRD:
 - **Di Device Penjual**: Muncul suara chime notifikasi pesanan masuk! Ketiga antrean langsung muncul di kolom **"Menunggu"**.
 - **Di Device Pembeli 2 & 3**: Tampil estimasi waktu dan sisa antrean di depan mereka secara live.
-- **Penjual klik "Mulai Proses" pada A-001**: Di HP Pembeli 1, status tiket langsung berubah real-time jadi biru ("Sedang Disiapkan").
-- **Penjual klik "Selesai (Siap)" pada A-001**: Di HP Pembeli 1, berbunyi notifikasi siap + tampil banner hijau besar "Silakan Ambil Pesanan di Booth!". Di HP Pembeli 2, muncul simulasi notifikasi WhatsApp: *"Pesanan Anda segera diproses (sisa 1 antrean lagi)"*.
+- **Penjual klik "Mulai Proses" pada A-001**: Di perangkat digital Pembeli 1, status tiket langsung berubah real-time jadi biru ("Sedang Disiapkan").
+- **Penjual klik "Selesai (Siap)" pada A-001**: Di perangkat digital Pembeli 1, berbunyi notifikasi siap + tampil banner hijau besar "Silakan Ambil Pesanan di Booth!". Di perangkat digital Pembeli 2, muncul simulasi notifikasi WhatsApp: *"Pesanan Anda segera diproses (sisa 1 antrean lagi)"*.
 - **Penjual aktifkan toggle "Dapur Penuh"**: Jika pembeli baru mencoba order, sistem menahan/memperingatkan dan estimasi waktu otomatis dikalikan 2.
 - **Monitoring Event Organizer**: Buka `#eo` di layar proyektor stand untuk menampilkan metrik volume UMKM, peak hour, dan status Dapur Penuh secara live.
 
