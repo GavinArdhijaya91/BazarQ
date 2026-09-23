@@ -804,7 +804,7 @@ function renderAll(){
   const isApp = r === 'pembeli' || r === 'order' || r === 'merchant';
   document.body.classList.toggle('app-mode', isApp);
   const btnExit = document.getElementById('btnExit');
-  if (btnExit) btnExit.hidden = !isApp;
+  if (btnExit) btnExit.hidden = (r === 'beranda');
   $$('.nav a').forEach(a => a.classList.toggle('on', a.dataset.nav === r));
   if (myPresenceRef) try { myPresenceRef.update({ role: r }); } catch(e){}
   VIEWS[r]();
