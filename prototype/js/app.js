@@ -81,6 +81,22 @@ const appBase = () => {
 };
 const orderUrl   = (slug) => appBase() + '#pembeli/' + (slug || SLUG);
 const merchantUrl= (slug) => appBase() + '#merchant/' + (slug || SLUG);
+const ticketUrl  = (slug, id) => appBase() + '#tiket/' + (slug || SLUG) + '/' + id;
+// Link tiket tersimpan: #tiket/{slug}/{id} → pulihkan tiket bila tab tertutup
+function ticketIdFromUrl(){
+  const h = location.hash.replace(/^#/, '').split('?')[0];
+  const m = h.match(/^(tiket|ticket)\/[a-z0-9-]{2,50}\/(\d{1,4})/i);
+  return m ? Number(m[2]) : 0;
+}
+function adoptTicketFromUrl(){
+  const id = ticketIdFromUrl();
+  if (id > 0 && S && S.orders.some(o => o.id === id)){
+    try { sessionStorage.setItem(K_MY(), String(id)); } catch(e){}
+    stage = 'ticket';
+    return true;
+  }
+  return false;
+}
 
 /* ---------- state ---------- */
 let S = null;
@@ -257,6 +273,7 @@ function load(){
       if (!S || next.v !== S.v){ S = next; onSync(); }
     });
 
+    adoptTicketFromUrl();
     if (myOrder() && myOrder().status !== 'completed') stage = 'ticket';
     checkNotifs();
     renderAll();
@@ -638,7 +655,7 @@ function createOrder(phone, payMethod){
 
 function confirmPaid(id){
   const o = S.orders.find(x => x.id === id);
-  if (!o || o.paid) return;
+  if (!o || o.paid || o.status !== 'waiting') return;
   o.paid = true;
   o.status = 'processing';
   o.processingAt = Date.now();
@@ -646,9 +663,13 @@ function confirmPaid(id){
   save();
 }
 
+const FLOW_ORDER = { waiting:0, processing:1, ready:2, completed:3 };
 function setStatus(id, status){
   const o = S.orders.find(x => x.id === id);
   if (!o || o.status === status) return;
+  // Guard alur maju satu langkah (kasir tidak bisa loncat/mundur status)
+  if (!(status in FLOW_ORDER) || FLOW_ORDER[status] !== FLOW_ORDER[o.status] + 1) return;
+  if (o.status === 'waiting' && !o.paid) return; // waiting→processing hanya via Konfirmasi Lunas
   o.status = status;
   if (status === 'processing'){ o.processingAt = Date.now(); pushLog(S, 'proc', o.ticket + ' sedang diproses dapur.'); }
   if (status === 'ready'){      o.readyAt = Date.now();      pushLog(S, 'wa',   'Pesanan ' + o.ticket + ' sudah siap. Tunjukkan tiket ke booth, ya!', { phone:o.phone, ticket:o.ticket }); }
@@ -665,6 +686,7 @@ function toggleKitchen(){
 }
 
 function resetDemo(){
+  if (!window.confirm('Reset booth ' + SLUG + '? Semua antrean di semua device ikut terhapus.')) return;
   try {
     sessionStorage.removeItem(K_MY());
     sessionStorage.removeItem(K_AUTH());
@@ -866,7 +888,7 @@ function renderMenu(body){
     '<div id="kitchenGate">' + (S.kitchenFull
       ? '<div class="warn"><b>Dapur sedang penuh.</b> Estimasi +15 menit. Pesanan tetap diterima.</div>'
       : '') + '</div>' +
-    '<div class="menu-list">' + menu.map(m =>
+    '<div class="menu-list">' + (menu.length ? menu.map(m =>
       '<div class="menu-row' + ((sel[m.id] || 0) > 0 ? ' picked' : '') + '" data-row="' + m.id + '">' +
         '<div class="thumb">' + foodIcon(foodIconFor(m)) + '</div>' +
         '<div class="nm"><b>' + esc(m.name) + '</b><span class="ds">' + esc(m.desc || '') + '</span><span class="pr">' + rp(m.price) + '</span></div>' +
@@ -875,7 +897,8 @@ function renderMenu(body){
           '<span class="q" data-q="' + m.id + '">' + (sel[m.id] || 0) + '</span>' +
           '<button type="button" data-more="' + m.id + '" aria-label="Tambah ' + esc(m.name) + '">+</button>' +
         '</div>' +
-      '</div>').join('') +
+      '</div>').join('')
+      : '<div class="empty-illus">' + illusEmpty() + '<span>Semua menu sedang habis atau booth belum buka. Coba lagi beberapa menit atau tanya langsung ke penjual.</span></div>') +
     '</div>' +
     '<div class="field">' +
       '<label for="waPhone">Nomor WhatsApp</label>' +
@@ -953,7 +976,17 @@ function renderTicket(body, o){
   const payCls = o.paid ? 'on' : 'off';
   const waMsgs = S.log.filter(l => l.type === 'wa' && l.phone === o.phone).slice(0, 4);
   const soundLabel = () => 'Suara panggilan: ' + (BazarQAudio.enabled ? 'ON' : 'OFF');
+  // Banner aksi berikutnya — pembeli selalu tahu harus apa setelah ini
+  const nextAction =
+    done ? ''
+    : o.status === 'waiting'
+      ? '<div class="warn big"><b>Langkah selanjutnya: bayar ke kasir.</b> Sebutkan tiket <b class="mono">' + esc(o.ticket) + '</b> (' + rp(o.total) + ', ' + (o.payMethod === 'qris' ? 'QRIS' : 'tunai') + '). Biarkan halaman ini terbuka untuk pantau status.</div>'
+    : o.status === 'processing'
+      ? '<div class="panel" style="margin-bottom:12px"><b>Dapur sedang memasak pesananmu.</b> Tunggu notifikasi atau pantau estimasi ' + estLabel(o) + ' di atas. Tidak perlu antre di depan booth.</div>'
+      : '<div class="warn big"><b>Pesanan siap! Segera ke booth</b> dan tunjukkan tiket <b class="mono">' + esc(o.ticket) + '</b>.</div>';
+  const tUrl = ticketUrl(SLUG, o.id);
   body.innerHTML =
+  nextAction +
   '<div class="stub big print">' +
     '<div class="stub-glow"></div>' +
     '<div class="row"><span class="cap">Nomor antrean Anda</span><span class="chip">' + esc(BOOTH().name) + '</span></div>' +
@@ -983,12 +1016,23 @@ function renderTicket(body, o){
     '</div>' +
     '<div class="btn-row">' +
       '<button class="sound-btn ' + (BazarQAudio.enabled ? 'on' : '') + '" id="btnBuyerSound" type="button">' + soundLabel() + '</button>' +
+      '<button class="btn btn-ghost btn-sm" id="btnCopyTicket" type="button">Simpan link tiket</button>' +
       (done
         ? '<button class="btn btn-primary" id="btnAgain" type="button">Pesan lagi</button>' +
           '<a class="btn btn-ghost" href="#beranda">Beranda</a>'
         : '<a class="btn btn-ghost" href="#beranda">Kembali ke beranda</a>') +
     '</div>' +
   '</div>';
+
+  const cp = $('#btnCopyTicket');
+  if (cp) cp.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(tUrl);
+      toast('Link tiket disalin. Buka lagi kapan pun bila tab tertutup.');
+    } catch(e){
+      prompt('Salin link tiket ini:', tUrl);
+    }
+  });
 
   const sbtn = $('#btnBuyerSound');
   if (sbtn) sbtn.addEventListener('click', () => {
@@ -1165,7 +1209,7 @@ function renderMerchant(){
   $$('[data-paid]').forEach(b => b.addEventListener('click', () => {
     confirmPaid(Number(b.dataset.paid));
     merchantTab = 'kasir'; renderAll();
-    toast('Lunas dikonfirmasi → diteruskan ke dapur.');
+    toast('Lunas dikonfirmasi → diteruskan ke dapur. Pantau di tab Dapur.');
   }));
   $$('[data-set]').forEach(b => b.addEventListener('click', () => {
     const p = b.dataset.set.split(':');
@@ -1318,6 +1362,7 @@ document.addEventListener('visibilitychange', () => { if (!document.hidden) Baza
 window.addEventListener('hashchange', () => {
   const next = boothFromUrl();
   if (next !== SLUG){ switchBooth(next); window.scrollTo(0,0); return; }
+  if (S && adoptTicketFromUrl()){ renderAll(); window.scrollTo(0,0); return; }
   renderAll(); window.scrollTo(0,0);
 });
 const btnReset = document.getElementById('btnReset');
