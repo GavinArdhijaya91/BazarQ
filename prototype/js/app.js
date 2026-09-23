@@ -1083,7 +1083,7 @@ function renderTicket(body, o){
   const st = o.status === 'waiting' ? 1 : o.status === 'processing' ? 2 : 3;
   const payBadge = o.paid ? 'Lunas ✓' : 'Menunggu Pembayaran';
   const payCls = o.paid ? 'on' : 'off';
-  const waMsgs = S.log.filter(l => l.type === 'wa' && l.phone === o.phone).slice(0, 4);
+  const waMsgs = S.log.filter(l => l.type === 'wa' && l.phone === o.phone).slice(0, 10);
   const soundLabel = () => 'Suara panggilan: ' + (BazarQAudio.enabled ? 'ON' : 'OFF');
   // Banner aksi berikutnya: pembeli selalu tahu harus apa setelah ini
   const nextAction =
@@ -1272,6 +1272,7 @@ function renderMerchantAll(){
       '</div>' +
       '<div class="m-actions">' +
         '<button class="btn btn-ghost btn-sm" id="btnQRFull" type="button">QR Standee</button>' +
+        bellBtn() +
         '<button class="sound-btn ' + (BazarQAudio.enabled ? 'on' : '') + '" id="btnMSound" type="button">Suara: ' + (BazarQAudio.enabled ? 'ON' : 'OFF') + '</button>' +
         '<button class="switch ' + (S.kitchenFull ? 'on' : '') + '" id="btnKitchen" type="button" aria-pressed="' + S.kitchenFull + '">' +
           '<span class="track" aria-hidden="true"></span><span>Dapur Penuh (+15 mnt)</span>' +
@@ -1333,6 +1334,7 @@ function renderMerchantAll(){
     toast(S.kitchenFull ? 'Dapur Penuh aktif: estimasi +15 mnt.' : 'Dapur Penuh dimatikan.');
   });
   $('#btnQRFull').addEventListener('click', showQRFullscreen);
+  bindBell();
   $('#btnMSound').addEventListener('click', () => {
     BazarQAudio.toggle();
     const btn = $('#btnMSound');
@@ -1382,6 +1384,25 @@ function renderMerchantAll(){
   });
 }
 
+/* ----- bel pesan merchant: ringkasan realtime yang bisa diklik -----
+   Badge = antrean menunggu pembayaran (butuh aksi kasir). Klik = lompat ke kasir + baca ringkasan. */
+function bellBtn(){
+  const n = S.orders.filter(o => o.status === 'waiting' && !o.paid).length;
+  return '<button class="sound-btn" id="btnBell" type="button">🔔 Pesan' + (n ? ' <span class="chip off" style="margin-left:2px">' + n + '</span>' : '') + '</button>';
+}
+function bindBell(){
+  const b = $('#btnBell'); if (!b) return;
+  b.addEventListener('click', () => {
+    BazarQAudio.unlock();
+    const w = S.orders.filter(o => o.status === 'waiting' && !o.paid).slice(-5).reverse();
+    if (!w.length){ toast('Tidak ada pesan baru. Semua antrean sudah ditangani.'); return; }
+    merchantTab = 'kasir';
+    if (merchantSub() && merchantSub() !== 'kasir'){ location.hash = '#merchant/' + SLUG + '/kasir'; }
+    else { renderAll(); }
+    toast(w.length + ' menunggu: ' + w.map(o => o.ticket + ' (' + (o.payMethod === 'qris' ? 'QRIS' : 'tunai') + ')').join(', '));
+    try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch(e){ window.scrollTo(0, 0); }
+  });
+}
 /* ----- split-view: kasir / dapur / display (pakai ulang class+token lama) ----- */
 function mSubNav(active){
   return '<div class="btn-row m-subnav" style="margin:12px 0">' +
@@ -1396,6 +1417,7 @@ function mHeadRow(subLabel){
     '<p class="sub2">Booth <b class="mono">' + esc(SLUG) + '</b> · ' + subLabel + ' · 1 layar = 1 keputusan.</p></div>' +
     '<div class="m-actions">' +
       '<button class="btn btn-ghost btn-sm" id="btnQRFull" type="button">QR Standee</button>' +
+      bellBtn() +
       '<button class="sound-btn ' + (BazarQAudio.enabled ? 'on' : '') + '" id="btnMSound" type="button">Suara: ' + (BazarQAudio.enabled ? 'ON' : 'OFF') + '</button>' +
       '<button class="switch ' + (S.kitchenFull ? 'on' : '') + '" id="btnKitchen" type="button" aria-pressed="' + S.kitchenFull + '">' +
         '<span class="track" aria-hidden="true"></span><span>Dapur Penuh (+15 mnt)</span></button>' +
@@ -1406,6 +1428,7 @@ function bindMHead(){
   const k = $('#btnKitchen'); if (k) k.addEventListener('click', () => { toggleKitchen(); renderAll(); });
   const q = $('#btnQRFull'); if (q) q.addEventListener('click', showQRFullscreen);
   const s = $('#btnMSound'); if (s) s.addEventListener('click', () => { BazarQAudio.toggle(); renderAll(); });
+  bindBell();
 }
 function renderMerchantKasir(){
   if (sessionStorage.getItem(K_AUTH()) !== '1'){ renderPinLogin(); return; }
