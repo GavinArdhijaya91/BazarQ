@@ -17,7 +17,16 @@ Desktop.ini
 .windsurf/
 .agents/
 
+# Deploy / Cloud CLI (berisi ID project & org — privat)
+.vercel/
+.firebase/
+
 # Confidential / Internal Specs & Documentation
 bazarq_frontend_skill_rules.md
 PRD BazarQ.pdf
 *.pdf
+
+# Ide & Dokumen Bisnis — rahasia dapur, jangan ikut ke publik.
+# (File yang telanjur ke-commit harus di-untrack via `git rm --cached`.)
+docs/
+media/Poster BazarQ - 1.jpeg
