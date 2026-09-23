@@ -867,7 +867,7 @@ function renderMenu(body){
       ? '<div class="warn"><b>Dapur sedang penuh.</b> Estimasi +15 menit. Pesanan tetap diterima.</div>'
       : '') + '</div>' +
     '<div class="menu-list">' + menu.map(m =>
-      '<div class="menu-row">' +
+      '<div class="menu-row' + ((sel[m.id] || 0) > 0 ? ' picked' : '') + '" data-row="' + m.id + '">' +
         '<div class="thumb">' + foodIcon(foodIconFor(m)) + '</div>' +
         '<div class="nm"><b>' + esc(m.name) + '</b><span class="ds">' + esc(m.desc || '') + '</span><span class="pr">' + rp(m.price) + '</span></div>' +
         '<div class="qty">' +
@@ -882,13 +882,15 @@ function renderMenu(body){
       '<input class="input" id="waPhone" inputmode="tel" placeholder="0812 3456 7890" value="' + esc(lastPhone) + '">' +
       '<div class="field-err" id="phoneErr" hidden>Isi nomor WhatsApp yang valid, contoh 0812 3456 7890.</div>' +
     '</div>' +
-    '<div class="total-row"><span>Total pesanan</span><span class="rp" data-total>' + rp(total) + '</span></div>' +
     '<div class="field"><label>Metode pembayaran (verifikasi di kasir)</label>' +
       '<label style="display:flex;gap:8px;align-items:center;font-weight:600"><input type="radio" name="pay" value="qris" checked> QRIS / E-Wallet (scan QR toko)</label>' +
       '<label style="display:flex;gap:8px;align-items:center;font-weight:600;margin-top:6px"><input type="radio" name="pay" value="cash"> Tunai di kasir</label>' +
       (BOOTH().qrisImageUrl ? '<img src="' + esc(BOOTH().qrisImageUrl) + '" alt="QRIS toko" style="max-width:220px;border-radius:12px;margin-top:10px;border:1px solid #e2e8f0">' : '<p class="tiny">QRIS toko tampil di sini setelah merchant mengisi URL gambar QRIS di dashboard kasir.</p>') +
     '</div>' +
-    '<button class="btn btn-primary wide menu-btn-gap" id="btnOrder" type="button">Kirim Pesanan &amp; Dapatkan Tiket</button>' +
+    '<div class="order-bar">' +
+      '<div class="total-row"><span>Total pesanan</span><span class="rp" data-total>' + rp(total) + '</span></div>' +
+      '<button class="btn btn-primary wide menu-btn-gap" id="btnOrder" type="button">Kirim Pesanan &amp; Dapatkan Tiket</button>' +
+    '</div>' +
     '<p class="tiny center" style="margin-top:10px">Status awal: <b>Menunggu Pembayaran</b>. Kasir tekan Konfirmasi Lunas → pesanan diteruskan ke dapur.</p>' +
   '</div>';
   body.addEventListener('click', e => {
@@ -908,6 +910,8 @@ function updateMenuBits(body){
     total += m.price * q; count += q;
     const qEl = $('[data-q="' + m.id + '"]', body);
     if (qEl) qEl.textContent = q;
+    const row = $('[data-row="' + m.id + '"]', body);
+    if (row) row.classList.toggle('picked', q > 0);
   });
   const t = $('[data-total]', body);
   if (t) t.textContent = rp(total);
