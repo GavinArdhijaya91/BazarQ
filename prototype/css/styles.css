@@ -216,6 +216,7 @@ ul.tight li+li{margin-top:var(--s1)}
 .qr-note{font-size:.85rem;color:var(--ink-soft);text-align:center;max-width:34ch}
 .menu-btn-gap{margin-top:14px}
 #btnDaftar{margin-top:var(--s2)}
+#btnPin{margin-top:var(--s2)}
 #daftarForm .field + .field{margin-top:var(--s2)}
 
 /* ---------- tiket pembeli, timeline, WA ---------- */
