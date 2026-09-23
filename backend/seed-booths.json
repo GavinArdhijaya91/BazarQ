@@ -1,0 +1,29 @@
+{
+  "v2": {
+    "registry": {
+      "demo-geprek": { "name": "Geprek Bintang", "createdAt": 0, "pin": false }
+    },
+    "booths": {
+      "demo-geprek": {
+        "profile": {
+          "name": "Geprek Bintang",
+          "desc": "Booth UMKM demo · Gelar Karya UNNES",
+          "pinHash": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
+          "qrisImageUrl": "",
+          "createdAt": 0
+        },
+        "menu": [
+          { "id": "m1", "name": "Ayam Geprek Level 5", "desc": "Nasi, lalapan, sambal bawang", "price": 15000, "active": true },
+          { "id": "m2", "name": "Paket Geprek + Es Teh", "desc": "Nasi, ayam geprek, es teh jumbo", "price": 20000, "active": true },
+          { "id": "m3", "name": "Tahu Krispi (5 pcs)", "desc": "Saus sambal kering", "price": 8000, "active": true },
+          { "id": "m4", "name": "Es Teh Jumbo", "desc": "Teh tubruk manis dingin", "price": 5000, "active": true },
+          { "id": "m5", "name": "Es Jeruk Peras", "desc": "Jeruk peras asli", "price": 6000, "active": true }
+        ],
+        "seq": 0,
+        "kitchenFull": false,
+        "orders": [],
+        "log": []
+      }
+    }
+  }
+}

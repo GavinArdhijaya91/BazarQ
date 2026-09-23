@@ -1,0 +1,56 @@
+{
+  "rules": {
+    "bazarq": {
+      ".read": true,
+      "state": {
+        ".write": true
+      },
+      "presence": {
+        ".write": true
+      },
+      "v2": {
+        "registry": {
+          ".read": true,
+          "$slug": {
+            ".write": "!data.exists() && newData.exists()",
+            ".validate": "newData.hasChildren(['name', 'createdAt']) && newData.child('name').isString() && newData.child('name').val().length > 2 && newData.child('name').val().length <= 60 && newData.child('createdAt').isNumber()"
+          }
+        },
+        "booths": {
+          ".read": true,
+          "$slug": {
+            ".write": "newData.exists()",
+            ".validate": "newData.hasChildren(['profile', 'menu', 'seq', 'kitchenFull', 'orders']) && newData.child('seq').isNumber() && newData.child('seq').val() >= 0 && newData.child('seq').val() <= 9999 && newData.child('kitchenFull').isBoolean()",
+            "profile": {
+              ".validate": "newData.hasChildren(['name', 'pinHash']) && !newData.hasChild('pin') && newData.child('name').isString() && newData.child('name').val().length > 2 && newData.child('name').val().length <= 60 && newData.child('pinHash').isString() && newData.child('pinHash').val().matches(/^[0-9a-f]{64}$/) && (!newData.hasChild('qrisImageUrl') || (newData.child('qrisImageUrl').isString() && newData.child('qrisImageUrl').val().length <= 500)) && (!newData.hasChild('desc') || (newData.child('desc').isString() && newData.child('desc').val().length <= 120))"
+            },
+            "menu": {
+              "$i": {
+                ".validate": "newData.hasChildren(['id', 'name', 'price']) && newData.child('id').isString() && newData.child('id').val().length <= 12 && newData.child('name').isString() && newData.child('name').val().length > 0 && newData.child('name').val().length <= 60 && newData.child('price').isNumber() && newData.child('price').val() >= 0 && newData.child('price').val() <= 1000000"
+              }
+            },
+            "seq": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 9999"
+            },
+            "kitchenFull": {
+              ".validate": "newData.isBoolean()"
+            },
+            "orders": {
+              "$i": {
+                ".validate": "newData.hasChildren(['id', 'ticket', 'status', 'total', 'items', 'createdAt']) && newData.child('id').isNumber() && newData.child('total').isNumber() && newData.child('total').val() >= 0 && newData.child('total').val() <= 10000000 && newData.child('status').val().matches(/^(waiting|processing|ready|completed)$/)"
+              }
+            }
+          }
+        },
+        "presence": {
+          "$slug": {
+            ".write": "newData.exists() || !newData.exists()",
+            "$pushId": {
+              ".validate": "newData.hasChildren(['role', 'at']) && newData.child('at').isNumber()"
+            }
+          }
+        }
+      }
+    }
+  }
+}
