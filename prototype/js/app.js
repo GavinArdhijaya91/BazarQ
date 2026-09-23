@@ -221,7 +221,7 @@ function save(){
   S.v = (S.v || 0) + 1;
   clearTimeout(saveTimer);
   saveTimer = setTimeout(() => {
-    stateRef.set(S).catch(e => { console.error('BazarQ save error:', e); toast('Gagal simpan (rules/jaringan). Coba lagi.'); });
+    stateRef.set(S).catch(e => { console.error('BazarQ save error:', e); toast('Gagal menyimpan. Periksa koneksi, lalu coba lagi.'); });
   }, 250);
 }
 
@@ -298,7 +298,7 @@ function load(){
     console.error('BazarQ Firebase error:', err);
     appEl.innerHTML =
       '<div class="loading-screen"><p style="color:#DC2626;text-align:center;padding:24px">' +
-      'Gagal terhubung ke Firebase.<br>Periksa koneksi internet, lalu refresh halaman.</p></div>';
+      'Gagal terhubung.<br>Periksa koneksi internet, lalu refresh halaman.</p></div>';
   });
 }
 
@@ -793,7 +793,7 @@ function renderNotFound(){
   appEl.innerHTML =
   '<section class="view buyer-wrap"><div class="panel">' +
     '<h2 class="menu-title">Booth <span class="mono">' + esc(SLUG) + '</span> tidak ditemukan</h2>' +
-    '<p class="tiny" style="margin:0 0 16px">Mungkin QR kedaluwarsa atau slug salah ketik. Buat booth baru gratis, atau kembali ke demo.</p>' +
+    '<p class="tiny" style="margin:0 0 16px">Mungkin QR kedaluwarsa atau kode booth salah ketik. Buat booth baru gratis, atau kembali ke demo.</p>' +
     '<div class="btn-row"><a class="btn btn-primary" href="#daftar">Buat Booth Baru</a>' +
     '<a class="btn btn-ghost" href="#pembeli/' + DEFAULT_SLUG + '">Buka Demo</a></div>' +
   '</div></section>';
@@ -889,7 +889,7 @@ function renderLanding(){
   '</section>' +
   '<section class="sec">' +
     '<h2>Pilih peran untuk demo</h2>' +
-    '<p class="sub">Buka peran berbeda di perangkat digital berbeda, semua tersinkron real-time lewat Firebase booth <b class="mono">' + esc(SLUG) + '</b>.</p>' +
+    '<p class="sub">Buka peran berbeda di perangkat digital berbeda, semua tersinkron otomatis di booth <b class="mono">' + esc(SLUG) + '</b>.</p>' +
     '<div class="roles">' +
       '<a class="role" href="#pembeli/' + esc(SLUG) + '"><span class="t">Pembeli</span><span class="d">Pesan tanpa aplikasi, pantau nomor antrean dan notifikasinya secara live.</span><span class="go">Buka tab pembeli &rarr;</span></a>' +
       '<a class="role" href="#merchant/' + esc(SLUG) + '"><span class="t">Merchant UMKM</span><span class="d">Panggil antrean, ubah status pesanan, tampilkan QR standee, atur Dapur Penuh.</span><span class="go">Buka dashboard merchant &rarr;</span></a>' +
@@ -1087,7 +1087,7 @@ function renderTicket(body, o){
     '</div>' +
     (done ? '' : '<div class="wait-line">Menunggu <b class="mono" data-el="' + o.id + '">' + elapsedLabel(o) + '</b></div>') +
     '<div class="wa">' +
-      '<div class="wa-cap">Simulasi notifikasi WhatsApp ke ' + maskPhone(o.phone) + ' · di produksi lewat gateway WA (Fonnte) sesuai PRD.</div>' +
+      '<div class="wa-cap">Simulasi notifikasi WhatsApp ke ' + maskPhone(o.phone) + '.</div>' +
       (waMsgs.length
         ? waMsgs.map(m => '<div class="bubble">' + esc(m.text) + '<span class="t">' + hhmm(m.at) + ' &middot; BazarQ</span></div>').join('')
         : '<div class="empty">Belum ada notifikasi. Muncul saat antrean tinggal 2 nomor dan saat pesanan siap.</div>') +
@@ -1140,7 +1140,7 @@ function renderDaftar(){
   appEl.innerHTML =
   '<section class="view buyer-wrap"><div class="panel">' +
     '<h2 class="menu-title">Buka booth-mu sendiri</h2>' +
-    '<p class="tiny" style="margin:0 0 16px">Gratis untuk demo. Isi nama booth + PIN, sistem buatkan namespace data sendiri + <b>QR asli siap cetak</b> yang langsung membuka halaman order booth-mu.</p>' +
+    '<p class="tiny" style="margin:0 0 16px">Gratis untuk demo. Isi nama booth + PIN, sistem buatkan halaman sendiri + <b>QR asli siap cetak</b> yang langsung membuka halaman order booth-mu.</p>' +
     '<div id="daftarForm">' +
       '<div class="field"><label for="fName">Nama booth</label>' +
       '<input class="input" id="fName" placeholder="cth: Kopi Rame" maxlength="40"></div>' +
@@ -1173,13 +1173,13 @@ function renderDaftar(){
           '<a class="btn btn-primary" href="#merchant/' + esc(slug) + '">Buka Dashboard Merchant</a>' +
           '<a class="btn btn-ghost" href="#pembeli/' + esc(slug) + '">Tes sebagai Pembeli</a>' +
         '</div>' +
-        '<p class="tiny" style="margin-top:10px">PIN merchant: <b class="mono">' + esc(pin) + '</b> · slug: <b class="mono">' + esc(slug) + '</b><br>' +
+        '<p class="tiny" style="margin-top:10px">PIN merchant: <b class="mono">' + esc(pin) + '</b> · kode booth: <b class="mono">' + esc(slug) + '</b><br>' +
         'Cetak QR: screenshot QR di atas, atau buka dashboard merchant → <b>QR Standee</b> → fullscreen. Link merchant (<span class="mono">' + esc(murl) + '</span>) jangan disebar ke pembeli.</p>';
       renderRealQR($('#qrNewBox'), ourl, 200);
       toast('Booth ' + slug + ' jadi! QR sudah bisa di-scan.');
     } catch(e){
       console.error(e);
-      err.hidden = false; err.textContent = 'Gagal membuat booth. Periksa rules Firebase (backend/database.rules.json), lalu coba lagi.';
+      err.hidden = false; err.textContent = 'Gagal membuat booth. Periksa koneksi, lalu coba lagi.';
       btn.disabled = false; btn.textContent = 'Buat Booth & Tampilkan QR';
     }
   });
@@ -1233,7 +1233,7 @@ function renderMerchantAll(){
     '<div class="m-head">' +
       '<div>' +
         '<h2>Dashboard ' + esc(BOOTH().name) + '</h2>' +
-        '<p class="sub2">Booth <b class="mono">' + esc(SLUG) + '</b> · View B (Kasir) + View C (Dapur) sesuai PRD.</p>' +
+        '<p class="sub2">Booth <b class="mono">' + esc(SLUG) + '</b> · Kasir + Dapur dalam satu dasbor.</p>' +
       '</div>' +
       '<div class="m-actions">' +
         '<button class="btn btn-ghost btn-sm" id="btnQRFull" type="button">QR Standee</button>' +
@@ -1244,7 +1244,7 @@ function renderMerchantAll(){
       '</div>' +
     '</div>' +
     (S.kitchenFull
-      ? '<div class="warn big"><b>Dapur Penuh aktif.</b> Estimasi tiket baru +15 menit (smart throttling PRD).</div>'
+      ? '<div class="warn big"><b>Dapur Penuh aktif.</b> Estimasi tiket baru +15 menit.</div>'
       : '') +
     '<div class="btn-row" style="margin:12px 0">' +
       '<button class="btn btn-sm ' + (merchantTab === 'kasir' ? 'btn-primary' : 'btn-ghost') + '" id="tabKasir" type="button">Kasir (' + waitUnpaid.length + ' menunggu)</button>' +
@@ -1271,7 +1271,7 @@ function renderMerchantAll(){
         '<button class="btn btn-primary btn-sm" id="btnWalkin" type="button">+ Catat Walk-in (Lunas)</button></div>' +
       '<h3 class="mt">Menu Habis (1-tap)</h3><div class="panel">' +
         menuAll.map(m => '<label style="display:flex;gap:8px;align-items:center;margin:6px 0"><input type="checkbox" data-menu="' + m.id + '"' + (m.active !== false ? ' checked' : '') + '><span class="thumb sm">' + foodIcon(foodIconFor(m)) + '</span> ' + esc(m.name) + ' <span class="mono tiny">' + rp(m.price) + '</span></label>').join('') + '</div>' +
-      '<h3 class="mt">QRIS Toko (Static QRIS Opsi 1)</h3><div class="panel">' +
+      '<h3 class="mt">QRIS Toko</h3><div class="panel">' +
         '<div class="field"><label>URL gambar QRIS</label><input class="input mono" id="qrisUrl" value="' + esc(BOOTH().qrisImageUrl || '') + '" placeholder="https://.../qris.png"></div>' +
         '<button class="btn btn-ghost btn-sm" id="btnQris" type="button">Simpan QRIS</button></div>' +
       '</div></div>'
@@ -1375,7 +1375,7 @@ function bindMHead(){
 function renderMerchantKasir(){
   if (sessionStorage.getItem(K_AUTH()) !== '1'){ renderPinLogin(); return; }
   const waitUnpaid = S.orders.filter(o => o.status === 'waiting' && !o.paid);
-  appEl.innerHTML = '<section class="view buyer-wrap mode-kasir">' + mHeadRow('View B · Kasir') + mSubNav('kasir') +
+  appEl.innerHTML = '<section class="view buyer-wrap mode-kasir">' + mHeadRow('Kasir') + mSubNav('kasir') +
     '<div class="col"><h3>Menunggu Pembayaran <span class="count">' + waitUnpaid.length + '</span></h3>' +
     (waitUnpaid.length ? waitUnpaid.map(o =>
       '<div class="ocard"><div class="top-row"><span class="tk">' + esc(o.ticket) + '</span><span class="el mono" data-el="' + o.id + '">' + elapsedLabel(o) + '</span></div>' +
@@ -1393,7 +1393,7 @@ function renderMerchantDapur(){
   const ready = S.orders.filter(o => o.status === 'ready');
   const card = (o, btn) => '<div class="ocard"><div class="top-row"><span class="tk">' + esc(o.ticket) + '</span><span class="el mono" data-el="' + o.id + '">' + elapsedLabel(o) + '</span></div>' +
     '<div class="items">' + o.items.map(i => i.qty + '× ' + esc(i.name)).join(' &middot; ') + '</div><div class="act">' + btn + '</div></div>';
-  appEl.innerHTML = '<section class="view mode-dapur">' + mHeadRow('View C · Dapur') + mSubNav('dapur') +
+  appEl.innerHTML = '<section class="view mode-dapur">' + mHeadRow('Dapur') + mSubNav('dapur') +
     '<div class="board"><div class="col"><h3>Diproses <span class="count">' + proc.length + '</span></h3>' +
     (proc.length ? proc.map(o => card(o, '<button class="btn btn-primary wide" data-set="' + o.id + ':ready" type="button">🔔 Pesanan Siap / Panggil</button>')).join('') : '<div class="empty">Belum ada yang diproses.</div>') + '</div>' +
     '<div class="col"><h3>Siap Diambil <span class="count">' + ready.length + '</span></h3>' +
