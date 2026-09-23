@@ -1069,9 +1069,10 @@ function renderMerchant(){
 
   const ocCashier = o =>
     '<div class="ocard">' +
-      '<div class="top-row"><span class="tk">' + esc(o.ticket) + '</span><span class="el mono">' + rp(o.total) + ' · ' + (o.payMethod === 'qris' ? 'QRIS' : 'Tunai') + '</span></div>' +
+      '<div class="top-row"><span class="tk">' + esc(o.ticket) + '</span><span class="el mono" data-el="' + o.id + '">' + elapsedLabel(o) + '</span></div>' +
       '<div class="items">' + o.items.map(i => i.qty + '× ' + esc(i.name)).join(' &middot; ') +
-        '<br><span class="tiny">WA: ' + esc(maskPhone(o.phone)) + ' · ' + hhmm(o.createdAt) + '</span></div>' +
+        '<span class="mono tot">' + rp(o.total) + '</span></div>' +
+      '<div class="tiny" style="margin:2px 0 10px">Bayar via ' + (o.payMethod === 'qris' ? 'QRIS' : 'Tunai') + ' · WA ' + esc(maskPhone(o.phone)) + ' · masuk ' + hhmm(o.createdAt) + '</div>' +
       '<div class="act">' +
         '<button class="btn btn-primary btn-sm" data-paid="' + o.id + '" type="button">Konfirmasi Lunas</button>' +
         '<span class="st waiting">Belum Bayar</span>' +
