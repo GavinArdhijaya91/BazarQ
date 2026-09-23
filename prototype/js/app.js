@@ -547,6 +547,7 @@ function startTour(){
   BazarQAudio.unlock();
   tourIdx = 0;
   closeTour(false);
+  appEl.classList.remove('page-enter');
   const ov = document.createElement('div');
   ov.className = 'tour-overlay'; ov.id = 'tourOverlay';
   ov.innerHTML =

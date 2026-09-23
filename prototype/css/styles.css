@@ -519,7 +519,7 @@ h1{font-size:clamp(2rem,4.6vw + 1rem,3.5rem)}
 
 /* ---------- coachmark onboarding: sorot tombol asli + kartu bottom-sheet ----------
    Cincin di atas overlay redup (z 95 > 90) agar tombol target tetap terlihat. */
-.tour-overlay{align-items:flex-end;padding:16px}
+.tour-overlay{align-items:center;justify-content:center;padding:20px}
 .tour-card{max-width:560px}
 .coach-ring{position:relative!important;z-index:95!important;border-radius:12px;box-shadow:0 0 0 3px var(--sky),0 0 0 8px rgb(96 165 250 / .35)!important}
 @media (prefers-reduced-motion:no-preference){
