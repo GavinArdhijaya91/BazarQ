@@ -354,6 +354,80 @@ function showQRFullscreen(){
   document.addEventListener('keydown', escH);
 }
 
+/* ---------- ilustrasi 2D flat inline (tanpa network, <2KB per scene) ----------
+   Palet ikut tema kertas hangat: biru sambal, kunyit, daun, tinta.
+   Karakter tanpa wajah detail — gaya flat ala unDraw/Storyset. */
+function illusHero(){
+  return '<svg viewBox="0 0 320 210" role="img" aria-label="Ilustrasi booth bazar dengan antrean pembeli">' +
+    '<circle cx="282" cy="32" r="13" fill="#FBEFD4" stroke="#6E5106" stroke-width="3"/>' +
+    '<line x1="14" y1="180" x2="306" y2="180" stroke="#E4D8C2" stroke-width="3" stroke-linecap="round"/>' +
+    '<line x1="160" y1="172" x2="302" y2="172" stroke="#1A56C4" stroke-width="2" stroke-dasharray="5 5" opacity=".55"/>' +
+    '<rect x="36" y="58" width="5" height="122" rx="2" fill="#241B12"/>' +
+    '<rect x="149" y="58" width="5" height="122" rx="2" fill="#241B12"/>' +
+    '<rect x="28" y="44" width="136" height="12" rx="6" fill="#1A56C4"/>' +
+    '<circle cx="39" cy="60" r="7" fill="#1A56C4"/><circle cx="61" cy="60" r="7" fill="#FDF8EE" stroke="#E4D8C2" stroke-width="2"/>' +
+    '<circle cx="83" cy="60" r="7" fill="#1A56C4"/><circle cx="105" cy="60" r="7" fill="#FDF8EE" stroke="#E4D8C2" stroke-width="2"/>' +
+    '<circle cx="127" cy="60" r="7" fill="#1A56C4"/><circle cx="149" cy="60" r="7" fill="#FDF8EE" stroke="#E4D8C2" stroke-width="2"/>' +
+    '<rect x="42" y="106" width="26" height="15" rx="4" fill="#241B12"/>' +
+    '<path d="M50 100 q3 -6 0 -12 M60 100 q-3 -6 0 -12" stroke="#6B5D4C" stroke-width="2.5" fill="none" stroke-linecap="round"/>' +
+    '<circle cx="100" cy="102" r="11" fill="#FBEFD4" stroke="#241B12" stroke-width="3"/>' +
+    '<rect x="89" y="86" width="22" height="8" rx="4" fill="#1A56C4"/>' +
+    '<rect x="88" y="112" width="24" height="16" rx="6" fill="#1A56C4"/>' +
+    '<rect x="34" y="122" width="120" height="58" rx="8" fill="#FDF8EE" stroke="#241B12" stroke-width="3"/>' +
+    '<rect x="66" y="132" width="52" height="22" rx="6" fill="#1A56C4"/>' +
+    '<text x="92" y="147" text-anchor="middle" font-family="monospace" font-size="12" font-weight="bold" fill="#FFF6EC">BQ</text>' +
+    '<rect x="136" y="96" width="17" height="21" rx="2" fill="#fff" stroke="#241B12" stroke-width="2"/>' +
+    '<rect x="139" y="99" width="5" height="5" fill="#1A56C4"/><rect x="145" y="99" width="5" height="5" fill="#1A56C4"/>' +
+    '<rect x="139" y="105" width="5" height="5" fill="#1A56C4"/><rect x="145" y="105" width="11" height="3" fill="#E4D8C2"/>' +
+    '<line x1="144" y1="117" x2="144" y2="122" stroke="#241B12" stroke-width="2"/>' +
+    '<circle cx="196" cy="148" r="9" fill="#FBEFD4" stroke="#241B12" stroke-width="3"/>' +
+    '<rect x="187" y="156" width="18" height="24" rx="8" fill="#1A56C4"/>' +
+    '<rect x="205" y="150" width="15" height="19" rx="2" fill="#fff" stroke="#241B12" stroke-width="2"/>' +
+    '<text x="212" y="163" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#1A56C4">A</text>' +
+    '<circle cx="240" cy="148" r="9" fill="#FBEFD4" stroke="#241B12" stroke-width="3"/>' +
+    '<rect x="231" y="156" width="18" height="24" rx="8" fill="#FBEFD4" stroke="#241B12" stroke-width="3"/>' +
+    '<rect x="249" y="150" width="15" height="19" rx="2" fill="#fff" stroke="#241B12" stroke-width="2"/>' +
+    '<text x="256" y="163" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#6E5106">A</text>' +
+    '<circle cx="284" cy="148" r="9" fill="#FBEFD4" stroke="#241B12" stroke-width="3"/>' +
+    '<rect x="275" y="156" width="18" height="24" rx="8" fill="#24512F"/>' +
+    '<rect x="293" y="150" width="15" height="19" rx="2" fill="#fff" stroke="#241B12" stroke-width="2"/>' +
+    '<text x="300" y="163" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#24512F">A</text>' +
+  '</svg>';
+}
+function illusEmpty(){
+  return '<svg viewBox="0 0 200 120" role="img" aria-label="Ilustrasi booth sepi, belum ada antrean">' +
+    '<line x1="10" y1="104" x2="190" y2="104" stroke="#E4D8C2" stroke-width="3" stroke-linecap="round"/>' +
+    '<rect x="18" y="30" width="64" height="8" rx="4" fill="#1A56C4"/>' +
+    '<rect x="20" y="38" width="4" height="66" fill="#241B12"/><rect x="76" y="38" width="4" height="66" fill="#241B12"/>' +
+    '<rect x="18" y="66" width="64" height="38" rx="6" fill="#FDF8EE" stroke="#241B12" stroke-width="3"/>' +
+    '<rect x="36" y="74" width="28" height="13" rx="4" fill="#1A56C4"/>' +
+    '<text x="50" y="84" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#FFF6EC">BQ</text>' +
+    '<circle cx="112" cy="60" r="8" fill="none" stroke="#E4D8C2" stroke-width="3" stroke-dasharray="4 4"/>' +
+    '<circle cx="142" cy="60" r="8" fill="none" stroke="#E4D8C2" stroke-width="3" stroke-dasharray="4 4"/>' +
+    '<circle cx="170" cy="52" r="9" fill="#FBEFD4" stroke="#241B12" stroke-width="3"/>' +
+    '<rect x="161" y="60" width="18" height="24" rx="8" fill="#FBEFD4" stroke="#241B12" stroke-width="3"/>' +
+    '<rect x="179" y="54" width="14" height="17" rx="2" fill="#fff" stroke="#241B12" stroke-width="2"/>' +
+    '<text x="186" y="66" text-anchor="middle" font-family="monospace" font-size="8" font-weight="bold" fill="#6E5106">A</text>' +
+  '</svg>';
+}
+function illusScan(){
+  return '<svg viewBox="0 0 220 112" role="img" aria-label="Ilustrasi scan QR booth dengan HP">' +
+    '<line x1="10" y1="100" x2="210" y2="100" stroke="#E4D8C2" stroke-width="3" stroke-linecap="round"/>' +
+    '<rect x="14" y="34" width="56" height="7" rx="3.5" fill="#1A56C4"/>' +
+    '<rect x="16" y="41" width="4" height="59" fill="#241B12"/><rect x="64" y="41" width="4" height="59" fill="#241B12"/>' +
+    '<rect x="14" y="64" width="56" height="36" rx="6" fill="#FDF8EE" stroke="#241B12" stroke-width="3"/>' +
+    '<rect x="28" y="71" width="28" height="13" rx="4" fill="#1A56C4"/>' +
+    '<text x="42" y="81" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#FFF6EC">BQ</text>' +
+    '<rect x="140" y="12" width="52" height="84" rx="10" fill="#241B12"/>' +
+    '<rect x="146" y="20" width="40" height="60" rx="4" fill="#fff"/>' +
+    '<rect x="151" y="25" width="12" height="12" fill="#241B12"/><rect x="165" y="25" width="12" height="12" fill="#241B12"/>' +
+    '<rect x="151" y="39" width="12" height="12" fill="#241B12"/><rect x="165" y="39" width="8" height="4" fill="#1A56C4"/><rect x="165" y="45" width="12" height="6" fill="#E4D8C2"/>' +
+    '<rect x="151" y="53" width="26" height="5" fill="#1A56C4"/><rect x="151" y="60" width="18" height="5" fill="#E4D8C2"/>' +
+    '<line x1="96" y1="52" x2="140" y2="52" stroke="#E8A33D" stroke-width="3" stroke-dasharray="6 4" stroke-linecap="round"/>' +
+    '<circle cx="158" cy="88" r="3" fill="#1A56C4"/>' +
+  '</svg>';
+}
+
 /* ---------- toast ---------- */
 function toast(msg){
   const t = $('#toast');
@@ -561,6 +635,9 @@ function renderLanding(){
         '<p class="tiny" style="margin-top:10px">Booth aktif: <b class="mono">' + esc(SLUG) + '</b> · <b>' + esc(BOOTH().name) + '</b></p>' +
       '</div>' +
       '<div>' +
+        '<div class="illus-card">' + illusHero() +
+          '<p class="illus-cap">Booth UMKM, penjual, dan pembeli mengantre dengan tiket digital.</p>' +
+        '</div>' +
         '<div class="stub print">' +
           '<div class="stub-glow"></div>' +
           '<div class="row"><span class="cap">Sedang dipanggil</span><span class="chip">' + esc(BOOTH().name) + '</span></div>' +
@@ -629,6 +706,7 @@ function renderPembeli(){
 function renderScan(body){
   body.innerHTML =
   '<div class="panel">' +
+    '<div class="illus-scan">' + illusScan() + '</div>' +
     '<div class="qr-card"><div id="qrScanBox" style="display:flex;justify-content:center"></div>' +
       '<div class="qr-note">QR asli booth <b class="mono">' + esc(SLUG) + '</b>. Scan pakai kamera HP → membuka halaman ini. Di demo, pakai tombol simulasi di bawah.</div>' +
       '<p class="qr-url mono" style="word-break:break-all">' + esc(orderUrl()) + '</p>' +
@@ -899,7 +977,7 @@ function renderMerchant(){
     '</div>' +
     (merchantTab === 'kasir'
     ? '<div class="board"><div class="col"><h3>Menunggu Pembayaran <span class="count">' + waitUnpaid.length + '</span></h3>' +
-        (waitUnpaid.length ? waitUnpaid.map(ocCashier).join('') : '<div class="empty">Tidak ada antrean menunggu. Tunjukkan QR standee.</div>') + '</div>' +
+        (waitUnpaid.length ? waitUnpaid.map(ocCashier).join('') : '<div class="empty-illus">' + illusEmpty() + '<span>Tidak ada antrean menunggu. Tunjukkan QR standee.</span></div>') + '</div>' +
       '<div class="col"><h3>Walk-in Manual <span class="count">kasir</span></h3><div class="panel">' +
         '<p class="tiny">Catat pembeli tanpa HP → langsung lunas → diteruskan ke dapur.</p>' +
         '<div class="field"><label>Item (cth: m1:2,m4:1)</label><input class="input mono" id="wiItems" placeholder="m1:1"></div>' +
@@ -914,9 +992,9 @@ function renderMerchant(){
       '</div></div>'
     : '<div class="board">' +
       '<div class="col"><h3>Diproses <span class="count">' + proc.length + '</span></h3>' +
-        (proc.length ? proc.map(ocKitchen).join('') : '<div class="empty">Belum ada yang diproses. Kasir harus Konfirmasi Lunas dulu.</div>') + '</div>' +
+        (proc.length ? proc.map(ocKitchen).join('') : '<div class="empty-illus">' + illusEmpty() + '<span>Belum ada yang diproses. Kasir harus Konfirmasi Lunas dulu.</span></div>') + '</div>' +
       '<div class="col"><h3>Siap Diambil <span class="count">' + ready.length + '</span></h3>' +
-        (ready.length ? ready.map(ocKitchen).join('') : '<div class="empty">Belum ada pesanan siap.</div>') + '</div>' +
+        (ready.length ? ready.map(ocKitchen).join('') : '<div class="empty-illus">' + illusEmpty() + '<span>Belum ada pesanan siap.</span></div>') + '</div>' +
       '<div class="col">' +
         '<h3>Aktivitas <span class="count">' + S.log.length + '</span></h3>' +
         '<div class="panel feed">' + (S.log.slice(0,7).map(l =>
