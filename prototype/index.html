@@ -19,7 +19,7 @@
 <header class="top">
   <div class="wrap top-in">
     <a class="brand" href="#beranda"><span class="mark" aria-hidden="true"><img src="assets/favicon-32.png" width="30" height="30" alt="Logo BazarQ"></span> BazarQ</a>
-    <nav class="nav" aria-label="Peran demo">
+    <nav class="nav" id="mainNav" aria-label="Peran demo">
       <a href="#beranda" data-nav="beranda">Beranda</a>
       <a href="#pembeli" data-nav="pembeli">Pembeli</a>
       <a href="#merchant" data-nav="merchant">Merchant</a>
@@ -31,6 +31,7 @@
       <span id="presenceCount">terhubung…</span>
     </span>
     <a class="btn btn-ghost btn-sm" id="btnExit" href="#beranda" hidden>← Kembali ke Beranda</a>
+    <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="mainNav" aria-label="Buka menu navigasi"><span></span><span></span><span></span></button>
   </div>
 </header>
 <main id="app" class="wrap"></main>

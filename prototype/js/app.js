@@ -1566,6 +1566,24 @@ function mountAmbient(){
 
 const btnReset = document.getElementById('btnReset');
 if (btnReset) btnReset.addEventListener('click', resetDemo);
+/* ---------- hamburger mobile: buka/tutup + tutup otomatis ---------- */
+const navToggle = document.getElementById('navToggle');
+const mainNav = document.getElementById('mainNav');
+function setNav(open){
+  if (!navToggle || !mainNav) return;
+  navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  navToggle.setAttribute('aria-label', open ? 'Tutup menu navigasi' : 'Buka menu navigasi');
+  mainNav.classList.toggle('open', open);
+}
+if (navToggle && mainNav){
+  navToggle.addEventListener('click', () => setNav(!mainNav.classList.contains('open')));
+  mainNav.addEventListener('click', e => { if (e.target.closest('a')) setNav(false); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') setNav(false); });
+  document.addEventListener('click', e => {
+    if (mainNav.classList.contains('open') && !e.target.closest('.top')) setNav(false);
+  });
+  window.addEventListener('hashchange', () => setNav(false));
+}
 setInterval(liveTick, 1000);
 mountAmbient();
 load();
