@@ -394,7 +394,7 @@ function illusHero(){
     '<rect x="88" y="112" width="24" height="16" rx="6" fill="#1A56C4"/>' +
     '<rect x="34" y="122" width="120" height="58" rx="8" fill="#FDF8EE" stroke="#241B12" stroke-width="3"/>' +
     '<rect x="66" y="132" width="52" height="22" rx="6" fill="#1A56C4"/>' +
-    '<text x="92" y="147" text-anchor="middle" font-family="monospace" font-size="12" font-weight="bold" fill="#FFF6EC">BQ</text>' +
+    '<text x="92" y="147" text-anchor="middle" font-family="monospace" font-size="12" font-weight="bold" fill="#FFF6EC">B</text>' +
     '<rect x="136" y="96" width="17" height="21" rx="2" fill="#fff" stroke="#241B12" stroke-width="2"/>' +
     '<rect x="139" y="99" width="5" height="5" fill="#1A56C4"/><rect x="145" y="99" width="5" height="5" fill="#1A56C4"/>' +
     '<rect x="139" y="105" width="5" height="5" fill="#1A56C4"/><rect x="145" y="105" width="11" height="3" fill="#E4D8C2"/>' +
@@ -420,7 +420,7 @@ function illusEmpty(){
     '<rect x="20" y="38" width="4" height="66" fill="#241B12"/><rect x="76" y="38" width="4" height="66" fill="#241B12"/>' +
     '<rect x="18" y="66" width="64" height="38" rx="6" fill="#FDF8EE" stroke="#241B12" stroke-width="3"/>' +
     '<rect x="36" y="74" width="28" height="13" rx="4" fill="#1A56C4"/>' +
-    '<text x="50" y="84" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#FFF6EC">BQ</text>' +
+    '<text x="50" y="84" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#FFF6EC">B</text>' +
     '<circle cx="112" cy="60" r="8" fill="none" stroke="#E4D8C2" stroke-width="3" stroke-dasharray="4 4"/>' +
     '<circle cx="142" cy="60" r="8" fill="none" stroke="#E4D8C2" stroke-width="3" stroke-dasharray="4 4"/>' +
     '<circle cx="170" cy="52" r="9" fill="#FBEFD4" stroke="#241B12" stroke-width="3"/>' +
@@ -436,7 +436,7 @@ function illusScan(){
     '<rect x="16" y="41" width="4" height="59" fill="#241B12"/><rect x="64" y="41" width="4" height="59" fill="#241B12"/>' +
     '<rect x="14" y="64" width="56" height="36" rx="6" fill="#FDF8EE" stroke="#241B12" stroke-width="3"/>' +
     '<rect x="28" y="71" width="28" height="13" rx="4" fill="#1A56C4"/>' +
-    '<text x="42" y="81" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#FFF6EC">BQ</text>' +
+    '<text x="42" y="81" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold" fill="#FFF6EC">B</text>' +
     '<rect x="140" y="12" width="52" height="84" rx="10" fill="#241B12"/>' +
     '<rect x="146" y="20" width="40" height="60" rx="4" fill="#fff"/>' +
     '<rect x="151" y="25" width="12" height="12" fill="#241B12"/><rect x="165" y="25" width="12" height="12" fill="#241B12"/>' +
@@ -888,7 +888,7 @@ function renderPembeli(){
   appEl.innerHTML =
   '<section class="view buyer-wrap">' +
     '<div class="booth-head">' +
-      '<span class="booth-ic" aria-hidden="true">BQ</span>' +
+      '<span class="booth-ic" aria-hidden="true"><svg viewBox="0 0 32 32" width="46" height="46" role="img" aria-label="BazarQ"><defs><linearGradient id="bqg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3B9AE4"/><stop offset="1" stop-color="#0B3FA0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#bqg2)"/><path d="M10 7h8.5a5.5 5.5 0 0 1 2.2 10.5A6.5 6.5 0 0 1 18.5 25H10V7zm3.5 3v5h4.5a2.8 2.8 0 0 0 0-5.6h-4.5zm0 8v6h5.5a3 3 0 0 0 0-6h-5.5z" fill="#fff"/></svg></span>' +
       '<div><b>' + esc(BOOTH().name) + '</b><div class="booth-sub">' + esc(BOOTH().desc || '') + ' · <span class="mono">' + esc(SLUG) + '</span></div></div>' +
       '<span class="chip ' + (S.kitchenFull ? 'off' : 'on') + '" id="boothChip">' + (S.kitchenFull ? 'Dapur penuh' : 'Buka') + '</span>' +
     '</div>' +
