@@ -81,6 +81,16 @@ const appBase = () => {
 };
 const orderUrl   = (slug) => appBase() + '#pembeli/' + (slug || SLUG);
 const merchantUrl= (slug) => appBase() + '#merchant/' + (slug || SLUG);
+// Sub-peran merchant (fondasi lama tetap jalan: #merchant/{slug} = kasir).
+// #merchant/{slug}/kasir = View B Kasir · /dapur = View C Dapur · /display = layar publik read-only.
+const merchantKasirUrl = (slug) => appBase() + '#merchant/' + (slug || SLUG) + '/kasir';
+const merchantDapurUrl = (slug) => appBase() + '#merchant/' + (slug || SLUG) + '/dapur';
+const merchantDisplayUrl = (slug) => appBase() + '#merchant/' + (slug || SLUG) + '/display';
+function merchantSub(){
+  const h = location.hash.replace(/^#/, '').split('?')[0];
+  const m = h.match(/^merchant\/[a-z0-9-]{2,50}\/(kasir|dapur|display)/i);
+  return m ? m[1].toLowerCase() : '';
+}
 const ticketUrl  = (slug, id) => appBase() + '#tiket/' + (slug || SLUG) + '/' + id;
 // Link tiket tersimpan: #tiket/{slug}/{id} → pulihkan tiket bila tab tertutup
 function ticketIdFromUrl(){
@@ -1161,9 +1171,19 @@ function renderDaftar(){
   });
 }
 
-/* ---------- merchant: View B Kasir + View C Dapur (sesuai PRD) ---------- */
+/* ---------- merchant: View B Kasir + View C Dapur + Display (sesuai PRD + skill rules) ----------
+   Fondasi lama dipertahankan: #merchant/{slug} = dashboard gabungan.
+   Sub-route baru (tanpa framework, palette & class lama dipakai ulang):
+   /kasir = 1 layar 1 keputusan (lunas/belum) · /dapur = fokus masak · /display = read-only TV. */
 let merchantTab = 'kasir';
 function renderMerchant(){
+  const sub = merchantSub();
+  if (sub === 'dapur'){ merchantTab = 'dapur'; return renderMerchantDapur(); }
+  if (sub === 'display'){ return renderMerchantDisplay(); }
+  if (sub === 'kasir'){ merchantTab = 'kasir'; return renderMerchantKasir(); }
+  return renderMerchantAll();
+}
+function renderMerchantAll(){
   if (sessionStorage.getItem(K_AUTH()) !== '1'){ renderPinLogin(); return; }
   const waitUnpaid = S.orders.filter(o => o.status === 'waiting' && !o.paid);
   const proc  = S.orders.filter(o => o.status === 'processing');
@@ -1311,6 +1331,74 @@ function renderMerchant(){
     pushLog(S, 'proc', tk(S.seq) + ' walk-in dicatat kasir (lunas tunai) → dapur.');
     save(); renderAll(); toast('Walk-in ' + tk(S.seq) + ' masuk dapur.');
   });
+}
+
+/* ----- split-view: kasir / dapur / display (pakai ulang class+token lama) ----- */
+function mSubNav(active){
+  return '<div class="btn-row m-subnav" style="margin:12px 0">' +
+    '<a class="btn btn-sm ' + (active === 'kasir' ? 'btn-primary' : 'btn-ghost') + '" href="#merchant/' + esc(SLUG) + '/kasir">Kasir</a>' +
+    '<a class="btn btn-sm ' + (active === 'dapur' ? 'btn-primary' : 'btn-ghost') + '" href="#merchant/' + esc(SLUG) + '/dapur">Dapur</a>' +
+    '<a class="btn btn-sm ' + (active === 'display' ? 'btn-primary' : 'btn-ghost') + '" href="#merchant/' + esc(SLUG) + '/display">Display</a>' +
+    '<a class="btn btn-sm btn-ghost" href="#merchant/' + esc(SLUG) + '">Gabungan</a>' +
+  '</div>';
+}
+function mHeadRow(subLabel){
+  return '<div class="m-head"><div><h2>' + esc(BOOTH().name) + '</h2>' +
+    '<p class="sub2">Booth <b class="mono">' + esc(SLUG) + '</b> · ' + subLabel + ' · 1 layar = 1 keputusan.</p></div>' +
+    '<div class="m-actions">' +
+      '<button class="btn btn-ghost btn-sm" id="btnQRFull" type="button">QR Standee</button>' +
+      '<button class="sound-btn ' + (BazarQAudio.enabled ? 'on' : '') + '" id="btnMSound" type="button">Suara: ' + (BazarQAudio.enabled ? 'ON' : 'OFF') + '</button>' +
+      '<button class="switch ' + (S.kitchenFull ? 'on' : '') + '" id="btnKitchen" type="button" aria-pressed="' + S.kitchenFull + '">' +
+        '<span class="track" aria-hidden="true"></span><span>Dapur Penuh (+15 mnt)</span></button>' +
+    '</div></div>' +
+    (S.kitchenFull ? '<div class="warn big"><b>Dapur Penuh aktif.</b> Estimasi tiket baru +15 menit.</div>' : '');
+}
+function bindMHead(){
+  const k = $('#btnKitchen'); if (k) k.addEventListener('click', () => { toggleKitchen(); renderAll(); });
+  const q = $('#btnQRFull'); if (q) q.addEventListener('click', showQRFullscreen);
+  const s = $('#btnMSound'); if (s) s.addEventListener('click', () => { BazarQAudio.toggle(); renderAll(); });
+}
+function renderMerchantKasir(){
+  if (sessionStorage.getItem(K_AUTH()) !== '1'){ renderPinLogin(); return; }
+  const waitUnpaid = S.orders.filter(o => o.status === 'waiting' && !o.paid);
+  appEl.innerHTML = '<section class="view buyer-wrap mode-kasir">' + mHeadRow('View B · Kasir') + mSubNav('kasir') +
+    '<div class="col"><h3>Menunggu Pembayaran <span class="count">' + waitUnpaid.length + '</span></h3>' +
+    (waitUnpaid.length ? waitUnpaid.map(o =>
+      '<div class="ocard"><div class="top-row"><span class="tk">' + esc(o.ticket) + '</span><span class="el mono" data-el="' + o.id + '">' + elapsedLabel(o) + '</span></div>' +
+      '<div class="items">' + o.items.map(i => i.qty + '× ' + esc(i.name)).join(' &middot; ') + '<span class="mono tot">' + rp(o.total) + '</span></div>' +
+      '<div class="tiny">Bayar via ' + (o.payMethod === 'qris' ? 'QRIS' : 'Tunai') + ' · WA ' + esc(maskPhone(o.phone)) + ' · ' + hhmm(o.createdAt) + '</div>' +
+      '<div class="act"><button class="btn btn-primary wide" data-paid="' + o.id + '" type="button">✅ Konfirmasi Lunas</button></div></div>'
+    ).join('') : '<div class="empty-illus">' + illusEmpty() + '<span>Tidak ada antrean menunggu.</span></div>') +
+    '</div><div class="btn-row"><a class="btn btn-ghost btn-sm" href="#merchant/' + esc(SLUG) + '">Walk-in · Menu habis · QRIS → mode gabungan</a></div></section>';
+  bindMHead();
+  $$('[data-paid]').forEach(b => b.addEventListener('click', () => { confirmPaid(Number(b.dataset.paid)); renderAll(); toast('Lunas → diteruskan ke dapur.'); }));
+}
+function renderMerchantDapur(){
+  if (sessionStorage.getItem(K_AUTH()) !== '1'){ renderPinLogin(); return; }
+  const proc = S.orders.filter(o => o.status === 'processing');
+  const ready = S.orders.filter(o => o.status === 'ready');
+  const card = (o, btn) => '<div class="ocard"><div class="top-row"><span class="tk">' + esc(o.ticket) + '</span><span class="el mono" data-el="' + o.id + '">' + elapsedLabel(o) + '</span></div>' +
+    '<div class="items">' + o.items.map(i => i.qty + '× ' + esc(i.name)).join(' &middot; ') + '</div><div class="act">' + btn + '</div></div>';
+  appEl.innerHTML = '<section class="view mode-dapur">' + mHeadRow('View C · Dapur') + mSubNav('dapur') +
+    '<div class="board"><div class="col"><h3>Diproses <span class="count">' + proc.length + '</span></h3>' +
+    (proc.length ? proc.map(o => card(o, '<button class="btn btn-primary wide" data-set="' + o.id + ':ready" type="button">🔔 Pesanan Siap / Panggil</button>')).join('') : '<div class="empty">Belum ada yang diproses.</div>') + '</div>' +
+    '<div class="col"><h3>Siap Diambil <span class="count">' + ready.length + '</span></h3>' +
+    (ready.length ? ready.map(o => card(o, '<button class="btn btn-primary wide" data-set="' + o.id + ':completed" type="button">✅ Diserahkan / Selesai</button>')).join('') : '<div class="empty">Belum ada pesanan siap.</div>') + '</div></div></section>';
+  bindMHead();
+  $$('[data-set]').forEach(b => b.addEventListener('click', () => { const p = b.dataset.set.split(':'); setStatus(Number(p[0]), p[1]); renderAll(); }));
+}
+function renderMerchantDisplay(){
+  // Layar publik: tanpa PIN, tanpa tombol aksi, read-only + auto-refresh via liveTick.
+  const now = activeOrders().slice(-6).reverse();
+  const ready = S.orders.filter(o => o.status === 'ready').slice(-4).reverse();
+  appEl.innerHTML = '<section class="view mode-display"><div class="m-head"><div><h2>' + esc(BOOTH().name) + ' · Sedang disiapkan</h2>' +
+    '<p class="sub2">Layar publik booth <b class="mono">' + esc(SLUG) + '</b> · tampilkan di TV/proyektor · tanpa tombol.</p></div>' +
+    '<span class="chip ' + (S.kitchenFull ? 'off' : 'on') + '">' + (S.kitchenFull ? 'Dapur penuh' : 'Buka') + '</span></div>' +
+    '<div class="board"><div class="col"><h3>Diproses</h3>' +
+    (now.length ? now.map(o => '<div class="ocard"><div class="top-row"><span class="tk">' + esc(o.ticket) + '</span><span class="st processing">' + esc(o.status) + '</span></div></div>').join('') : '<div class="empty">Belum ada antrean.</div>') + '</div>' +
+    '<div class="col"><h3>Siap diambil</h3>' +
+    (ready.length ? ready.map(o => '<div class="ocard ready"><div class="top-row"><span class="tk">' + esc(o.ticket) + '</span><span class="st ready">siap</span></div><div class="tiny">Tunjukkan tiket di booth</div></div>').join('') : '<div class="empty">Belum ada yang siap.</div>') + '</div></div>' +
+    '<p class="tiny center" style="margin-top:12px">Pesan via <span class="mono">' + esc(orderUrl()) + '</span></p></section>';
 }
 
 function renderPinLogin(){

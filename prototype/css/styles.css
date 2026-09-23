@@ -359,6 +359,15 @@ body.app-mode .view{padding-top:24px}
   .btn{padding:12px 18px}
 }
 
+/* ---------- split-view kasir/dapur/display (tambahan, token lama dipakai ulang) ----------
+   Tidak mengubah palette/typography di atas. Hanya layout 1-kolom + tombol jempol. */
+.mode-kasir .ocard .btn.wide,.mode-dapur .ocard .btn.wide{width:100%;justify-content:center;min-height:56px;font-size:1.05rem}
+.mode-dapur .board{grid-template-columns:1fr 1fr}
+.mode-display .ocard.ready{border-left-color:var(--emerald);background:var(--daun-bg)}
+.mode-display .tk{font-size:clamp(1.6rem,5vw,2.2rem)}
+.m-subnav{position:sticky;top:60px;z-index:5;background:var(--canvas);padding:8px 0}
+@media (max-width:920px){.mode-dapur .board{grid-template-columns:1fr}}
+
 
 
 
