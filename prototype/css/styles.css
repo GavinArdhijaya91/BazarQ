@@ -395,6 +395,59 @@ body{background:
   .brand{margin-right:8px}
 }
 
+/* ---------- hardening responsif: satu basis, rapi di HP & desktop ----------
+   Prinsip: kontainer fluida · tipografi clamp · sentuh ≥44px · tanpa scroll-x. */
+html{-webkit-text-size-adjust:100%}
+body{overflow-x:clip}
+img,svg,canvas,video{max-width:100%}
+.wrap{padding-left:clamp(16px,4vw,32px);padding-right:clamp(16px,4vw,32px)}
+h1{font-size:clamp(2rem,4.6vw + 1rem,3.5rem)}
+.m-head h2{font-size:clamp(1.2rem,3.6vw + .6rem,1.5rem)}
+.sec h2{font-size:clamp(1.3rem,3vw + .7rem,1.6rem)}
+.m-subnav{top:84px}
+.cta-row .btn{flex:1 1 160px}
+#qrScanBox img,#qrNewBox img{width:min(58vw,200px)!important;height:auto!important}
+#qrFullBox img,.qr-big-svg img{width:min(70vw,220px)!important;height:auto!important}
+.qr-overlay{padding:20px;overflow:auto}
+.tour-card{padding:18px}
+@media (min-width:1280px){
+  .wrap{max-width:1140px}
+  .hero-grid{gap:var(--s6)}
+}
+@media (max-width:640px){
+  .hero{padding:var(--s4) 0}
+  .cta-row{gap:10px}
+  .stub{padding:20px 18px 16px}
+  .tear{margin:12px -18px}
+  .timeline{font-size:.72rem}
+  .menu-row{padding:var(--s2) 2px}
+  .thumb{width:52px;height:52px}
+  .thumb svg{width:42px;height:42px}
+  .ocard .tk{font-size:1.15rem}
+  .m-actions{width:100%}
+  .m-actions .btn,.m-actions .sound-btn,.m-actions .switch{flex:1 1 auto;justify-content:center}
+  .qr-card{padding:var(--s2)}
+  .toast{bottom:14px;font-size:.88rem}
+  .hours{height:120px;gap:6px}
+}
+@media (max-width:400px){
+  .steps{grid-template-columns:1fr}
+  .input.pin{letter-spacing:.25em;font-size:1.35rem}
+  .stat-chips{grid-template-columns:1fr 1fr;gap:var(--s1)}
+  .bar-row{grid-template-columns:84px 1fr 38px}
+}
+@media (pointer:coarse){
+  .qty{gap:10px}
+  .qty button{width:44px;height:44px}
+  .nav a{padding:11px 16px}
+  .btn-row .btn{flex:1 1 140px;justify-content:center}
+}
+@media (max-height:500px) and (orientation:landscape){
+  .qr-overlay{gap:6px;padding:12px}
+  .tour-card{max-height:94vh;padding:14px}
+  .hero{padding:var(--s3) 0}
+}
+
 
 
 
