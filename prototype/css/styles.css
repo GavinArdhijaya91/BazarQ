@@ -54,6 +54,8 @@ a{color:inherit}
 .nav a:hover{color:#fff;background:rgb(255 255 255 / .12)}
 .nav a.on{background:var(--azure);color:#fff}
 .presence-badge,.top-in #btnExit{flex:none}
+.top-in .presence-badge{display:none}
+body.app-mode #btnExit{margin-left:auto}
 
 /* ---------- tombol ---------- */
 .btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;min-height:48px;border-radius:12px;font-weight:700;font-size:1rem;border:1.5px solid transparent;cursor:pointer;text-decoration:none;font-family:inherit;transition:transform .15s,background .15s,border-color .15s}

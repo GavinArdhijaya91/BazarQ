@@ -312,6 +312,8 @@ function setupPresence(){
       const n = snap.numChildren();
       const el = document.getElementById('presenceCount');
       if (el) el.textContent = n + ' device · ' + SLUG;
+      const f = document.getElementById('presenceFoot');
+      if (f) f.textContent = '· ' + n + ' device live';
     });
   } catch(e){}
 }
