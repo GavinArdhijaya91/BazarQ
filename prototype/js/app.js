@@ -377,7 +377,7 @@ function showQRFullscreen(){
     '<p class="qr-big-sub">' + esc(BOOTH().name) + ' &middot; BazarQ</p>' +
     '<div class="qr-big-svg" id="qrFullBox"></div>' +
     '<p class="qr-url">' + esc(url) + '</p>' +
-    '<p class="qr-hint">Scan pakai kamera HP biasa — tanpa aplikasi. Tekan Tutup atau <kbd>Esc</kbd> untuk kembali.</p>';
+    '<p class="qr-hint">Scan pakai kamera HP biasa, tanpa aplikasi. Tekan Tutup atau <kbd>Esc</kbd> untuk kembali.</p>';
   document.body.appendChild(overlay);
   renderRealQR($('#qrFullBox', overlay), url, 220);
   const close = () => { overlay.remove(); document.removeEventListener('keydown', escH); };
@@ -388,7 +388,7 @@ function showQRFullscreen(){
 
 /* ---------- ilustrasi 2D flat inline (tanpa network, <2KB per scene) ----------
    Palet ikut tema kertas hangat: biru sambal, kunyit, daun, tinta.
-   Karakter tanpa wajah detail — gaya flat ala unDraw/Storyset. */
+   Karakter tanpa wajah detail, gaya flat ala unDraw/Storyset. */
 function illusHero(){
   return '<svg viewBox="0 0 320 210" role="img" aria-label="Ilustrasi booth bazar dengan antrean pembeli">' +
     '<circle cx="282" cy="32" r="13" fill="#FBEFD4" stroke="#6E5106" stroke-width="3"/>' +
@@ -482,7 +482,7 @@ function illusHandoff(){
 
 /* ---------- tur interaktif 1 menit (pengunjung baru) ---------- */
 const TOUR_STEPS = [
-  { t:'Pindai QR di booth', d:'Arahkan kamera HP ke QR standee. Halaman order langsung terbuka — tanpa pasang aplikasi, tanpa buat akun.', img:'scan', cta:['Buka halaman pembeli', 'pembeli'] },
+  { t:'Pindai QR di booth', d:'Arahkan kamera HP ke QR standee. Halaman order langsung terbuka, tanpa pasang aplikasi, tanpa buat akun.', img:'scan', cta:['Buka halaman pembeli', 'pembeli'] },
   { t:'Pilih menu, tiket terbit', d:'Tandai menu, isi nomor WhatsApp, kirim. Nomor antrean (mis. A-007) dan estimasi tunggu langsung tampil.', img:'hero', cta:['Coba pesan sekarang', 'pembeli'] },
   { t:'Bayar di kasir, bebas jelajah', d:'Pilih QRIS atau tunai. Kasir menekan Konfirmasi Lunas, pesanan diteruskan ke dapur. Notifikasi masuk saat tinggal 2 antrean.', img:'scan', cta:['Lihat dashboard merchant', 'merchant'] },
   { t:'Tunjukkan tiket, bawa pulang', d:'Status berubah Siap Diambil. Tunjukkan tiket ke booth, pesanan diserahkan, selesai.', img:'handoff', cta:['Mulai sebagai pembeli', 'pembeli'] }
@@ -830,7 +830,7 @@ function renderLanding(){
     '<div class="hero-grid">' +
       '<div>' +
         '<h1>Antrean bazar pindah ke <em>HP</em>.</h1>' +
-        '<p class="lede">Scan QR di booth, pilih menu, dapat nomor antrean dan estimasi waktu. Pembeli bebas jelajah — dagangan tetap terkendali.</p>' +
+        '<p class="lede">Scan QR di booth, pilih menu, dapat nomor antrean dan estimasi waktu. Pembeli bebas jelajah, dagangan tetap terkendali.</p>' +
         '<div class="cta-row">' +
           '<a class="btn btn-primary" href="#pembeli/' + esc(SLUG) + '">Coba sebagai Pembeli</a>' +
           '<button class="btn btn-ghost" id="btnTour" type="button">Ikuti Tur 1 Menit</button>' +
@@ -855,7 +855,7 @@ function renderLanding(){
   '</section>' +
   '<section class="sec">' +
     '<h2>Kendala lama, jawaban sederhana</h2>' +
-    '<p class="sub">Di bazar dan pasar kaget, antrean fisik membuat pembeli pergi dan UMKM kehilangan penjualan. BazarQ menggantinya dengan nomor antrean digital yang berjalan di HP standar — tanpa aplikasi, tanpa akun.</p>' +
+    '<p class="sub">Di bazar dan pasar kaget, antrean fisik membuat pembeli pergi dan UMKM kehilangan penjualan. BazarQ menggantinya dengan nomor antrean digital yang berjalan di HP standar, tanpa aplikasi, tanpa akun.</p>' +
     '<div class="vs">' +
       '<div class="card"><h3>Tanpa BazarQ</h3><ul class="tight">' +
         '<li>Antrean fisik tidak tertata di depan booth.</li>' +
@@ -878,7 +878,7 @@ function renderLanding(){
   '</section>' +
   '<section class="sec">' +
     '<h2>Pilih peran untuk demo</h2>' +
-    '<p class="sub">Buka peran berbeda di HP berbeda — semua tersinkron real-time lewat Firebase booth <b class="mono">' + esc(SLUG) + '</b>.</p>' +
+    '<p class="sub">Buka peran berbeda di HP berbeda, semua tersinkron real-time lewat Firebase booth <b class="mono">' + esc(SLUG) + '</b>.</p>' +
     '<div class="roles">' +
       '<a class="role" href="#pembeli/' + esc(SLUG) + '"><span class="t">Pembeli</span><span class="d">Pesan tanpa aplikasi, pantau nomor antrean dan notifikasinya secara live.</span><span class="go">Buka tab pembeli &rarr;</span></a>' +
       '<a class="role" href="#merchant/' + esc(SLUG) + '"><span class="t">Merchant UMKM</span><span class="d">Panggil antrean, ubah status pesanan, tampilkan QR standee, atur Dapur Penuh.</span><span class="go">Buka dashboard merchant &rarr;</span></a>' +
@@ -1039,7 +1039,7 @@ function renderTicket(body, o){
   const payCls = o.paid ? 'on' : 'off';
   const waMsgs = S.log.filter(l => l.type === 'wa' && l.phone === o.phone).slice(0, 4);
   const soundLabel = () => 'Suara panggilan: ' + (BazarQAudio.enabled ? 'ON' : 'OFF');
-  // Banner aksi berikutnya — pembeli selalu tahu harus apa setelah ini
+  // Banner aksi berikutnya: pembeli selalu tahu harus apa setelah ini
   const nextAction =
     done ? ''
     : o.status === 'waiting'
@@ -1135,7 +1135,7 @@ function renderDaftar(){
       '<input class="input" id="fName" placeholder="cth: Kopi Rame" maxlength="40"></div>' +
       '<div class="field"><label for="fDesc">Deskripsi singkat</label>' +
       '<input class="input" id="fDesc" placeholder="cth: Booth kopi · bazar akhir pekan" maxlength="80"></div>' +
-      '<div class="field"><label for="fPin">PIN merchant (4–6 digit)</label>' +
+      '<div class="field"><label for="fPin">PIN merchant (4-6 digit)</label>' +
       '<input class="input pin" id="fPin" inputmode="numeric" maxlength="6" placeholder="1234" value="1234"></div>' +
       '<div class="field-err" id="daftarErr" hidden></div>' +
       '<button class="btn btn-primary wide" id="btnDaftar" type="button">Buat Booth &amp; Tampilkan QR</button>' +
@@ -1148,7 +1148,7 @@ function renderDaftar(){
     const desc = $('#fDesc').value.trim();
     const pin = $('#fPin').value.trim();
     if (name.length < 3){ err.hidden = false; err.textContent = 'Nama booth minimal 3 huruf.'; return; }
-    if (!/^\d{4,6}$/.test(pin)){ err.hidden = false; err.textContent = 'PIN harus 4–6 digit angka.'; return; }
+    if (!/^\d{4,6}$/.test(pin)){ err.hidden = false; err.textContent = 'PIN harus 4-6 digit angka.'; return; }
     err.hidden = true;
     const btn = $('#btnDaftar'); btn.disabled = true; btn.textContent = 'Membuat booth…';
     try {
@@ -1409,7 +1409,7 @@ function renderPinLogin(){
   '<section class="view buyer-wrap">' +
     '<div class="panel">' +
       '<h2 class="menu-title">Masuk dashboard ' + esc(BOOTH().name) + '</h2>' +
-      '<p class="tiny" style="margin:0 0 16px">Booth <b class="mono">' + esc(SLUG) + '</b> · login pakai PIN booth — tanpa email, tanpa kata sandi panjang.</p>' +
+      '<p class="tiny" style="margin:0 0 16px">Booth <b class="mono">' + esc(SLUG) + '</b> · login pakai PIN booth, tanpa email, tanpa kata sandi panjang.</p>' +
       '<div class="field" style="margin-top:0">' +
         '<label for="pin">PIN booth</label>' +
         '<input class="input pin" id="pin" inputmode="numeric" maxlength="6" placeholder="••••" autocomplete="off">' +

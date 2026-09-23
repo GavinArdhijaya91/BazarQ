@@ -1,6 +1,6 @@
 /* ============================================================
    BazarQ · Firebase Configuration
-   Client-side config — aman di-commit untuk demo publik.
+   Client-side config, aman di-commit untuk demo publik.
    Firebase Security Rules yang melindungi data, bukan API key.
    ============================================================ */
 
