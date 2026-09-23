@@ -517,6 +517,16 @@ h1{font-size:clamp(2rem,4.6vw + 1rem,3.5rem)}
   body::before{filter:blur(20px)}
 }
 
+/* ---------- coachmark onboarding: sorot tombol asli + kartu bottom-sheet ----------
+   Cincin di atas overlay redup (z 95 > 90) agar tombol target tetap terlihat. */
+.tour-overlay{align-items:flex-end;padding:16px}
+.tour-card{max-width:560px}
+.coach-ring{position:relative!important;z-index:95!important;border-radius:12px;box-shadow:0 0 0 3px var(--sky),0 0 0 8px rgb(96 165 250 / .35)!important}
+@media (prefers-reduced-motion:no-preference){
+  .coach-ring{animation:ringPulse 1.4s ease-in-out infinite}
+  @keyframes ringPulse{50%{box-shadow:0 0 0 3px var(--sky),0 0 0 13px rgb(96 165 250 / .12)!important}}
+}
+
 /* ---------- Tailwind recipe → CSS murni (tanpa dependensi baru) ----------
    Navbar: bg-white/70 + backdrop-blur-md + border-b slate-200/50, px-6 py-4.
    Tombol: rounded-xl, primary blue-600→700 + shadow, hover lift, active scale-95. */

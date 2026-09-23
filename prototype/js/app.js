@@ -534,12 +534,12 @@ function illusGarland(){
     '<path d="' + d + '" fill="none" stroke="#0F172A" stroke-width="4" stroke-linecap="round"/>' + flags + '</svg>';
 }
 
-/* ---------- tur interaktif 1 menit (pengunjung baru) ---------- */
+/* ---------- tur interaktif 1 menit: coachmark per tombol asli ---------- */
 const TOUR_STEPS = [
-  { t:'Pindai QR di booth', d:'Arahkan kamera digital ke QR standee. Halaman pemesanan langsung terbuka, tanpa pasang aplikasi, tanpa buat akun.', img:'scan', cta:['Buka halaman pembeli', 'pembeli'] },
-  { t:'Pilih menu, tiket terbit', d:'Tandai menu, isi nomor WhatsApp, kirim. Nomor antrean (mis. A-007) dan estimasi tunggu langsung tampil.', img:'hero', cta:['Coba pesan sekarang', 'pembeli'] },
-  { t:'Bayar di kasir, bebas jelajah', d:'Pilih QRIS atau tunai. Penjual menekan Konfirmasi Lunas, pesanan diteruskan ke dapur. Notifikasi masuk saat tinggal 2 antrean.', img:'scan', cta:['Lihat dasbor penjual', 'merchant'] },
-  { t:'Tunjukkan tiket, bawa pulang', d:'Status berubah Siap Diambil. Tunjukkan tiket ke booth, pesanan diserahkan, selesai.', img:'handoff', cta:['Mulai sebagai pembeli', 'pembeli'] }
+  { t:'Mulai sebagai pembeli', d:'Tombol biru ini membuka halaman pemesanan. Di sinilah pengunjung memilih menu, mengisi WhatsApp, dan menerima nomor antrean.', img:'scan', sel:'.cta-row .btn-primary', cta:['Coba sebagai pembeli', 'pembeli'] },
+  { t:'Kelola sebagai penjual', d:'Tombol ini membuka dasbor kasir dan dapur. Penjual masuk cukup dengan PIN booth, tanpa email dan tanpa kata sandi.', img:'hero', sel:'.cta-row a[href^="#merchant"]', cta:['Buka dasbor penjual', 'merchant'] },
+  { t:'Buat booth sendiri', d:'Tombol ini mendaftarkan booth baru dalam semenit. Sistem langsung membuatkan QR order siap cetak untuk booth tersebut.', img:'scan', sel:'.cta-row a[href="#daftar"]', cta:['Daftarkan booth', 'daftar'] },
+  { t:'Jelajahi semua peran', d:'Kartu peran di bawah membuka tiap sudut aplikasi. Pembeli, penjual, dan penyelenggara tersinkron otomatis di booth yang sama.', img:'handoff', sel:'.roles .role:first-child', cta:['Lihat peran pembeli', 'pembeli'] }
 ];
 const tourImg = k => k === 'hero' ? illusHero() : k === 'handoff' ? illusHandoff() : illusScan();
 let tourIdx = 0;
@@ -566,6 +566,12 @@ function startTour(){
   document.body.appendChild(ov);
   const paint = () => {
     const s = TOUR_STEPS[tourIdx];
+    document.querySelectorAll('.coach-ring').forEach(e => e.classList.remove('coach-ring'));
+    const tgt = s.sel ? document.querySelector(s.sel) : null;
+    if (tgt){
+      tgt.classList.add('coach-ring');
+      try { tgt.scrollIntoView({ block:'center', behavior:'smooth' }); } catch(e){}
+    }
     $('#tourImg').innerHTML = tourImg(s.img);
     $('#tourStep').textContent = 'Langkah ' + (tourIdx + 1) + ' dari ' + TOUR_STEPS.length;
     $('#tourTitle').textContent = s.t;
@@ -588,6 +594,7 @@ function startTour(){
   paint();
 }
 function closeTour(done){
+  document.querySelectorAll('.coach-ring').forEach(e => e.classList.remove('coach-ring'));
   const ov = document.getElementById('tourOverlay');
   if (ov) ov.remove();
   if (done){ try { localStorage.setItem('bazarq.tourDone', '1'); } catch(e){} }
