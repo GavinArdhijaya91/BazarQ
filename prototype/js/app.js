@@ -1228,11 +1228,14 @@ function renderMerchant(){
     ? '<div class="board"><div class="col"><h3>Menunggu Pembayaran <span class="count">' + waitUnpaid.length + '</span></h3>' +
         (waitUnpaid.length ? waitUnpaid.map(ocCashier).join('') : '<div class="empty-illus">' + illusEmpty() + '<span>Tidak ada antrean menunggu. Tunjukkan QR standee.</span></div>') + '</div>' +
       '<div class="col"><h3>Walk-in Manual <span class="count">kasir</span></h3><div class="panel">' +
-        '<p class="tiny">Catat pembeli tanpa HP → langsung lunas → diteruskan ke dapur.</p>' +
-        '<div class="field"><label>Item (cth: m1:2,m4:1)</label><input class="input mono" id="wiItems" placeholder="m1:1"></div>' +
-        '<div class="field"><label>Nomor WA (opsional)</label><input class="input" id="wiPhone" placeholder="08xx"></div>' +
-        '<button class="btn btn-primary btn-sm" id="btnWalkin" type="button">+ Catat Walk-in (Lunas)</button>' +
-        '<p class="tiny">ID menu: ' + menuAll.map(m => m.id + '=' + esc(m.name)).join(', ') + '</p></div>' +
+        '<p class="tiny">Untuk pembeli yang datang langsung tanpa HP. Pesanan otomatis dianggap <b>lunas tunai</b> dan diteruskan ke dapur.</p>' +
+        '<p class="tiny">Contoh: pembeli minta 2 Ayam Geprek + 1 Es Teh → isi angka 2 dan 1 pada menu di bawah, lalu klik Catat Walk-in.</p>' +
+        '<div class="field"><label>Pilih menu & jumlah</label><div style="display:flex;flex-direction:column;gap:8px">' +
+          menuAll.filter(m => m.active !== false).map(m =>
+            '<label style="display:flex;gap:8px;align-items:center"><span class="thumb sm">' + foodIcon(foodIconFor(m)) + '</span><span style="flex:1;min-width:0">' + esc(m.name) + ' <span class="mono tiny">' + rp(m.price) + '</span></span><input class="input mono" data-wiqty="' + m.id + '" type="number" inputmode="numeric" min="0" max="10" value="0" style="width:72px;text-align:center"></label>'
+          ).join('') + '</div></div>' +
+        '<div class="field"><label for="wiPhone">Nomor WA (opsional, untuk notifikasi)</label><input class="input" id="wiPhone" inputmode="tel" placeholder="cth: 0812 3456 7890"></div>' +
+        '<button class="btn btn-primary btn-sm" id="btnWalkin" type="button">+ Catat Walk-in (Lunas)</button></div>' +
       '<h3 class="mt">Menu Habis (1-tap)</h3><div class="panel">' +
         menuAll.map(m => '<label style="display:flex;gap:8px;align-items:center;margin:6px 0"><input type="checkbox" data-menu="' + m.id + '"' + (m.active !== false ? ' checked' : '') + '><span class="thumb sm">' + foodIcon(foodIconFor(m)) + '</span> ' + esc(m.name) + ' <span class="mono tiny">' + rp(m.price) + '</span></label>').join('') + '</div>' +
       '<h3 class="mt">QRIS Toko (Static QRIS Opsi 1)</h3><div class="panel">' +
@@ -1291,16 +1294,19 @@ function renderMerchant(){
   });
   const bw = $('#btnWalkin');
   if (bw) bw.addEventListener('click', () => {
-    const raw = $('#wiItems').value.trim();
-    const phone = $('#wiPhone').value.trim() || 'walk-in';
-    const pairs = raw.split(',').map(s => s.trim().split(':')).filter(p => p[0]);
-    const menu = MENU_ALL();
-    const items = pairs.map(([id, q]) => {
-      const m = menu.find(x => x.id === id.trim());
-      if (!m) return null;
-      return { id:m.id, qty:Math.max(1, Number(q) || 1), name:m.name, price:m.price };
+    const phoneRaw = $('#wiPhone').value.trim();
+    const phone = phoneRaw || 'walk-in';
+    if (phoneRaw && !/^(08\d{8,11}|628\d{8,11})$/.test(phoneRaw.replace(/\D/g,''))){ toast('Nomor WA tidak valid, kosongkan atau isi cth: 0812 3456 7890.'); return; }
+    const menu = MENU_ALL().filter(m => m.active !== false);
+    const items = $$('[data-wiqty]').map(inp => {
+      const m = menu.find(x => x.id === inp.dataset.wiqty);
+      const qty = Math.max(0, Math.min(10, Math.floor(Number(inp.value) || 0)));
+      if (!m || qty <= 0) return null;
+      return { id:m.id, qty, name:m.name, price:m.price };
     }).filter(Boolean);
-    if (!items.length){ toast('Format walk-in: m1:2,m4:1'); return; }
+    if (!items.length){ toast('Pilih minimal 1 menu dengan jumlah > 0.'); return; }
+    const totalQty = items.reduce((a,i) => a + i.qty, 0);
+    if (totalQty > 20){ toast('Maksimal 20 pcs per pesanan walk-in.'); return; }
     S.seq += 1;
     S.orders.push({ id:S.seq, ticket:tk(S.seq), phone, items, total:items.reduce((a,i) => a + i.price * i.qty, 0), status:'processing', paid:true, payMethod:'cash', createdAt:Date.now(), processingAt:Date.now(), wa2:true, waReady:true });
     pushLog(S, 'proc', tk(S.seq) + ' walk-in dicatat kasir (lunas tunai) → dapur.');
