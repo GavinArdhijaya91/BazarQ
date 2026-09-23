@@ -121,18 +121,26 @@ let myPresenceRef = null;
 let boothMissing = false;
 let lastRoute = '';
 
-/* ---------- sound engine ---------- */
+/* ---------- sound engine (hardened buat bazar berisik) ----------
+   - ctx suspended saat event realtime datang → chime antre, dibunyikan di gestur pertama.
+   - Pesanan siap = double-burst keras + getar + judul tab kedip (cadangan kalau kalah berisik). */
 const BazarQAudio = {
-  ctx: null, enabled: true,
+  ctx: null, enabled: true, pending: null,
   init(){
     if (!this.ctx){ try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){} }
     if (this.ctx && this.ctx.state === 'suspended'){ this.ctx.resume().catch(() => {}); }
   },
-  unlock(){ this.init(); },
+  unlock(){ this.init(); this.flush(); },
+  flush(){
+    if (!this.pending || !this.ctx || this.ctx.state !== 'running') return;
+    const p = this.pending; this.pending = null;
+    try { p(); } catch(e){}
+  },
   _play(freqs, dur, vol = 0.22){
     if (!this.enabled) return;
     try {
       this.init();
+      if (!this.ctx || this.ctx.state !== 'running'){ this.pending = () => this._play(freqs, dur, vol); return; }
       const now = this.ctx.currentTime;
       freqs.forEach((f, i) => {
         const osc  = this.ctx.createOscillator();
@@ -148,10 +156,35 @@ const BazarQAudio = {
       });
     } catch(e){}
   },
-  playOrderReady(){ this._play([523.25, 659.25, 783.99], 0.45); },
+  buzz(pattern){
+    try { if (navigator.vibrate) navigator.vibrate(pattern); } catch(e){}
+  },
+  playOrderReady(){ this._play([523.25, 659.25, 783.99], 0.45, 0.3); },
+  playReadyAlert(){
+    this._play([523.25, 659.25, 783.99, 1046.5], 0.5, 0.34);
+    setTimeout(() => this._play([523.25, 659.25, 783.99, 1046.5], 0.5, 0.34), 950);
+    this.buzz([180, 120, 220]);
+  },
+  playPing(){ this._play([880], 0.25, 0.2); },
   playNewOrder(){   this._play([880, 1108.73],           0.30); },
   toggle(){         this.enabled = !this.enabled; }
 };
+/* Judul tab ikut kedip saat pesanan siap (terlihat di laptop/proyektor walau suara kalah) */
+let flashTimer = null;
+const BASE_TITLE = document.title;
+function flashTitle(msg){
+  stopFlash();
+  let on = false;
+  flashTimer = setInterval(() => { on = !on; document.title = on ? msg : BASE_TITLE; }, 900);
+  setTimeout(stopFlash, 60000);
+}
+function stopFlash(){
+  if (flashTimer){ clearInterval(flashTimer); flashTimer = null; }
+  if (document.title !== BASE_TITLE) document.title = BASE_TITLE;
+}
+document.addEventListener('pointerdown', stopFlash, { passive: true });
+document.addEventListener('keydown', stopFlash);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) stopFlash(); });
 
 /* ---------- state bersama & seed ---------- */
 function freshState(profile, menu){ return { v:1, seq:0, kitchenFull:false, orders:[], log:[], profile: profile || DEFAULT_PROFILE, menu: menu || DEFAULT_MENU }; }
@@ -771,11 +804,13 @@ function checkNotifs(){
       pushLog(S, 'wa', 'Antrean ' + o.ticket + ' tinggal ' + p + ' nomor lagi. Persiapan ke booth, ya!', { phone:o.phone, ticket:o.ticket });
       save();
       toast('Simulasi WhatsApp: antrean tinggal ' + p + ' nomor lagi.');
+      BazarQAudio.playPing();
     }
   }
   if (!o.waReady && o.status === 'ready'){
     o.waReady = true; save();
-    BazarQAudio.playOrderReady();
+    BazarQAudio.playReadyAlert();
+    flashTitle('Pesanan ' + o.ticket + ' siap diambil!');
     toast('Simulasi WhatsApp: pesanan ' + o.ticket + ' siap diambil!');
   }
 }
