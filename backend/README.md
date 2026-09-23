@@ -8,7 +8,7 @@ berdasarkan **slug di URL/QR**. Siapa pun bisa daftar booth sendiri lalu cetak Q
 
 ```
 bazarq/v2/registry/{slug}          → { name, createdAt }          (daftar booth publik)
-bazarq/v2/booths/{slug}/profile    → { name, desc, pin, qrisImageUrl, createdAt }
+bazarq/v2/booths/{slug}/profile    → { name, desc, pinHash, qrisImageUrl, createdAt }
 bazarq/v2/booths/{slug}/menu       → [ { id, name, desc, price, active } ]
 bazarq/v2/booths/{slug}            → { seq, kitchenFull, orders[], log[] }
 bazarq/v2/presence/{slug}/{pushId} → { role, at }                 (hitung device per booth)
@@ -23,9 +23,9 @@ bazarq/state                       → (legacy booth demo tunggal, tetap didukun
 ## Cara orang lain menjalankan (tanpa install)
 
 1. Buka `https://bazar-q.vercel.app/#daftar`
-2. Isi nama booth + PIN + menu → klik **Buat Booth & Tampilkan QR**
+2. Isi nama booth + PIN → klik **Buat Booth & Tampilkan QR**
 3. QR yang muncul **sudah QR asli** menuju `https://bazar-q.vercel.app/#pembeli/{slug}`
-   — cetak / tampilkan fullscreen di tablet, pembeli scan pakai kamera HP biasa.
+   — cetak / tampilkan fullscreen di tablet, pembeli scan pakai kamera digital.
 4. Buka `#merchant/{slug}` di HP penjual (login PIN), `#eo` untuk pantau event.
 
 ## Cara via terminal (opsional)

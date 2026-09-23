@@ -27,7 +27,8 @@ function slugify(s) {
     .slice(0, 40) || 'booth';
 }
 
-const name = args.name || 'Booth Demo';
+const name = String(args.name || 'Booth Demo').slice(0, 60);
+if (name.length < 3) throw new Error('Nama booth minimal 3 huruf');
 const pin = String(args.pin || '1234').slice(0, 6);
 if (!/^\d{4,6}$/.test(pin)) throw new Error('PIN harus 4-6 digit angka');
 const { createHash } = await import('node:crypto');
