@@ -337,6 +337,7 @@ body.app-mode .nav,
 body.app-mode #btnReset,
 body.app-mode footer.foot{display:none!important}
 body.app-mode #btnExit{display:inline-flex}
+#btnExit[hidden]{display:none!important}
 body.app-mode .top-in{flex-wrap:nowrap;gap:10px}
 body.app-mode .presence-badge{margin-left:auto;font-size:.78rem}
 body.app-mode #app{min-height:70vh}
