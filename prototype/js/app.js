@@ -900,7 +900,7 @@ function renderPembeli(){
   appEl.innerHTML =
   '<section class="view buyer-wrap">' +
     '<div class="booth-head">' +
-      '<span class="booth-ic" aria-hidden="true"><svg viewBox="0 0 32 32" width="46" height="46" role="img" aria-label="BazarQ"><defs><linearGradient id="bqg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3B9AE4"/><stop offset="1" stop-color="#0B3FA0"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#bqg2)"/><path d="M10 7h8.5a5.5 5.5 0 0 1 2.2 10.5A6.5 6.5 0 0 1 18.5 25H10V7zm3.5 3v5h4.5a2.8 2.8 0 0 0 0-5.6h-4.5zm0 8v6h5.5a3 3 0 0 0 0-6h-5.5z" fill="#fff"/></svg></span>' +
+      '<span class="booth-ic" aria-hidden="true"><img src="assets/favicon-32.png" width="46" height="46" alt="BazarQ"></span>' +
       '<div><b>' + esc(BOOTH().name) + '</b><div class="booth-sub">' + esc(BOOTH().desc || '') + ' · <span class="mono">' + esc(SLUG) + '</span></div></div>' +
       '<span class="chip ' + (S.kitchenFull ? 'off' : 'on') + '" id="boothChip">' + (S.kitchenFull ? 'Dapur penuh' : 'Buka') + '</span>' +
     '</div>' +
