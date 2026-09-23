@@ -38,9 +38,9 @@ const slug = `${base}-${Date.now().toString(36)}`;
 const booth = {
   profile: { name, desc: String(args.desc || 'Booth UMKM BazarQ').slice(0, 80), pinHash, qrisImageUrl: '', createdAt: Date.now() },
   menu: [
-    { id: 'm1', name: 'Menu Andalan 1', desc: 'Deskripsi singkat', price: 15000, active: true },
-    { id: 'm2', name: 'Menu Andalan 2', desc: 'Deskripsi singkat', price: 10000, active: true },
-    { id: 'm3', name: 'Minuman Segar', desc: 'Deskripsi singkat', price: 5000, active: true }
+    { id: 'm1', name: 'Menu Andalan 1', desc: 'Deskripsi singkat', price: 15000, active: true, icon: 'geprek' },
+    { id: 'm2', name: 'Menu Andalan 2', desc: 'Deskripsi singkat', price: 10000, active: true, icon: 'paket' },
+    { id: 'm3', name: 'Minuman Segar', desc: 'Deskripsi singkat', price: 5000, active: true, icon: 'esteh' }
   ],
   seq: 0, kitchenFull: false, orders: [], log: [{ at: Date.now(), type: 'ok', text: `Booth ${name} dibuat via tool.` }]
 };

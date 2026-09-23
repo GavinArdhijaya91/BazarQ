@@ -16,11 +16,11 @@ const K_BOOTH = 'bazarq.booth';
 const PREP_MIN = 4;
 
 const DEFAULT_MENU = [
-  { id:'m1', name:'Ayam Geprek Level 5',   desc:'Nasi, lalapan, sambal bawang',   price:15000, active:true },
-  { id:'m2', name:'Paket Geprek + Es Teh', desc:'Nasi, ayam geprek, es teh jumbo', price:20000, active:true },
-  { id:'m3', name:'Tahu Krispi (5 pcs)',   desc:'Saus sambal kering',              price:8000,  active:true },
-  { id:'m4', name:'Es Teh Jumbo',          desc:'Teh tubruk manis dingin',         price:5000,  active:true },
-  { id:'m5', name:'Es Jeruk Peras',        desc:'Jeruk peras asli',                price:6000,  active:true },
+  { id:'m1', name:'Ayam Geprek Level 5',   desc:'Nasi, lalapan, sambal bawang',   price:15000, active:true, icon:'geprek' },
+  { id:'m2', name:'Paket Geprek + Es Teh', desc:'Nasi, ayam geprek, es teh jumbo', price:20000, active:true, icon:'paket' },
+  { id:'m3', name:'Tahu Krispi (5 pcs)',   desc:'Saus sambal kering',              price:8000,  active:true, icon:'tahu' },
+  { id:'m4', name:'Es Teh Jumbo',          desc:'Teh tubruk manis dingin',         price:5000,  active:true, icon:'esteh' },
+  { id:'m5', name:'Es Jeruk Peras',        desc:'Jeruk peras asli',                price:6000,  active:true, icon:'jeruk' },
 ];
 const PIN_HASH_DEFAULT = '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4'; // sha256('1234')
 const DEFAULT_PROFILE = { name:'Geprek Bintang', desc:'Booth UMKM demo · Gelar Karya UNNES', pinHash:PIN_HASH_DEFAULT, qrisImageUrl:'' };
@@ -515,6 +515,52 @@ function maybeAutoTour(){
   } catch(e){}
 }
 
+/* ---------- ikon makanan SVG per menu (ringan, ala katalog production) ---------- */
+function foodIconFor(m){
+  const key = String((m && (m.icon || m.id || '')) + ' ' + (m && m.name || '')).toLowerCase();
+  if (key.includes('teh')) return 'esteh';
+  if (key.includes('jeruk')) return 'jeruk';
+  if (key.includes('tahu')) return 'tahu';
+  if (key.includes('paket')) return 'paket';
+  if (key.includes('geprek') || key.includes('ayam')) return 'geprek';
+  return 'default';
+}
+function foodIcon(k){
+  const P = {
+    geprek: '<ellipse cx="32" cy="46" rx="24" ry="8" fill="#FDF8EE" stroke="#241B12" stroke-width="3"/>' +
+      '<ellipse cx="32" cy="38" rx="12" ry="8" fill="#fff" stroke="#E4D8C2" stroke-width="2"/>' +
+      '<path d="M24 34 q6 -10 16 -6 q6 3 2 10 q-8 6 -16 2 q-4 -3 -2 -6z" fill="#E8A33D" stroke="#241B12" stroke-width="2.5"/>' +
+      '<circle cx="42" cy="32" r="5" fill="#C0392B" stroke="#241B12" stroke-width="2"/>' +
+      '<ellipse cx="20" cy="42" rx="6" ry="3.5" fill="#24512F"/>',
+    paket: '<ellipse cx="24" cy="46" rx="17" ry="7" fill="#FDF8EE" stroke="#241B12" stroke-width="3"/>' +
+      '<ellipse cx="24" cy="39" rx="8" ry="5.5" fill="#fff" stroke="#E4D8C2" stroke-width="2"/>' +
+      '<path d="M18 36 q4 -7 11 -4 q4 2 1 7 q-6 4 -11 1 q-2 -2 -1 -4z" fill="#E8A33D" stroke="#241B12" stroke-width="2"/>' +
+      '<path d="M44 28 h12 l-2 22 h-8z" fill="#FBEFD4" stroke="#241B12" stroke-width="2.5"/>' +
+      '<rect x="45" y="31" width="10" height="12" fill="#E8A33D"/>' +
+      '<line x1="52" y1="28" x2="56" y2="18" stroke="#1A56C4" stroke-width="2.5" stroke-linecap="round"/>',
+    tahu: '<rect x="12" y="34" width="16" height="14" rx="4" fill="#E8A33D" stroke="#241B12" stroke-width="2.5"/>' +
+      '<rect x="30" y="30" width="16" height="14" rx="4" fill="#F2C063" stroke="#241B12" stroke-width="2.5"/>' +
+      '<rect x="21" y="20" width="16" height="14" rx="4" fill="#E8A33D" stroke="#241B12" stroke-width="2.5"/>' +
+      '<ellipse cx="50" cy="44" rx="9" ry="6" fill="#fff" stroke="#241B12" stroke-width="2.5"/>' +
+      '<ellipse cx="50" cy="42" rx="5" ry="3" fill="#C0392B"/>',
+    esteh: '<path d="M22 16 h20 l-3 34 h-14z" fill="#FDF8EE" stroke="#241B12" stroke-width="3"/>' +
+      '<path d="M24 24 h16 l-2 24 h-12z" fill="#E8A33D"/>' +
+      '<rect x="27" y="28" width="6" height="6" rx="1" fill="#fff" opacity=".85" transform="rotate(15 30 31)"/>' +
+      '<rect x="34" y="34" width="6" height="6" rx="1" fill="#fff" opacity=".85" transform="rotate(-12 37 37)"/>' +
+      '<line x1="36" y1="16" x2="42" y2="6" stroke="#1A56C4" stroke-width="3" stroke-linecap="round"/>',
+    jeruk: '<circle cx="22" cy="24" r="11" fill="#E8862D" stroke="#241B12" stroke-width="3"/>' +
+      '<path d="M22 24 m-5 0 a5 5 0 0 0 10 0" stroke="#B95A12" stroke-width="2" fill="none"/>' +
+      '<ellipse cx="30" cy="13" rx="5" ry="2.5" fill="#24512F" transform="rotate(-20 30 13)"/>' +
+      '<path d="M42 22 h12 l-2 26 h-8z" fill="#FDF8EE" stroke="#241B12" stroke-width="3"/>' +
+      '<path d="M44 28 h8 l-1 18 h-6z" fill="#E8862D"/>' +
+      '<line x1="50" y1="22" x2="54" y2="12" stroke="#1A56C4" stroke-width="2.5" stroke-linecap="round"/>',
+    def: '<path d="M10 44 a22 22 0 0 1 44 0" fill="#FDF8EE" stroke="#241B12" stroke-width="3"/>' +
+      '<circle cx="32" cy="18" r="3" fill="#1A56C4"/>' +
+      '<line x1="6" y1="46" x2="58" y2="46" stroke="#241B12" stroke-width="3" stroke-linecap="round"/>'
+  };
+  return '<svg viewBox="0 0 64 64" role="img" aria-hidden="true">' + (P[k] || P.def) + '</svg>';
+}
+
 /* ---------- toast ---------- */
 function toast(msg){
   const t = $('#toast');
@@ -822,6 +868,7 @@ function renderMenu(body){
       : '') + '</div>' +
     '<div class="menu-list">' + menu.map(m =>
       '<div class="menu-row">' +
+        '<div class="thumb">' + foodIcon(foodIconFor(m)) + '</div>' +
         '<div class="nm"><b>' + esc(m.name) + '</b><span class="ds">' + esc(m.desc || '') + '</span><span class="pr">' + rp(m.price) + '</span></div>' +
         '<div class="qty">' +
           '<button type="button" data-less="' + m.id + '" aria-label="Kurangi ' + esc(m.name) + '">−</button>' +
@@ -1076,7 +1123,7 @@ function renderMerchant(){
         '<button class="btn btn-primary btn-sm" id="btnWalkin" type="button">+ Catat Walk-in (Lunas)</button>' +
         '<p class="tiny">ID menu: ' + menuAll.map(m => m.id + '=' + esc(m.name)).join(', ') + '</p></div>' +
       '<h3 class="mt">Menu Habis (1-tap)</h3><div class="panel">' +
-        menuAll.map(m => '<label style="display:flex;gap:8px;align-items:center;margin:6px 0"><input type="checkbox" data-menu="' + m.id + '"' + (m.active !== false ? ' checked' : '') + '> ' + esc(m.name) + ' <span class="mono tiny">' + rp(m.price) + '</span></label>').join('') + '</div>' +
+        menuAll.map(m => '<label style="display:flex;gap:8px;align-items:center;margin:6px 0"><input type="checkbox" data-menu="' + m.id + '"' + (m.active !== false ? ' checked' : '') + '><span class="thumb sm">' + foodIcon(foodIconFor(m)) + '</span> ' + esc(m.name) + ' <span class="mono tiny">' + rp(m.price) + '</span></label>').join('') + '</div>' +
       '<h3 class="mt">QRIS Toko (Static QRIS Opsi 1)</h3><div class="panel">' +
         '<div class="field"><label>URL gambar QRIS</label><input class="input mono" id="qrisUrl" value="' + esc(BOOTH().qrisImageUrl || '') + '" placeholder="https://.../qris.png"></div>' +
         '<button class="btn btn-ghost btn-sm" id="btnQris" type="button">Simpan QRIS</button></div>' +
