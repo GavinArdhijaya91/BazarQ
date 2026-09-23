@@ -6,6 +6,17 @@ Dibangun untuk Gelar Karya Technopreneurship Universitas Negeri Semarang.
 
 **Demo langsung:** https://bazar-q.vercel.app
 
+## Buat siapa BazarQ
+
+BazarQ lahir khusus untuk pelaku UMKM yang berjualan di bazar, pasar kaget, dan festival kuliner. Masalahnya selalu sama setiap pengunjung membludak:
+
+- Antrean fisik menumpuk di depan booth, pembeli tidak tahu harus menunggu berapa lama.
+- Pembeli yang lelah menunggu pergi begitu saja, omzet hilang tanpa sempat tercatat.
+- Dapur kewalahan menerima pesanan yang datang bersamaan, urutan jadi kacau.
+- Solusi antrean yang ada butuh perangkat mahal atau memaksa pembeli memasang aplikasi.
+
+BazarQ menjawab keempatnya dari browser biasa: nomor antrean digital menggantikan barisan fisik, estimasi waktu menenangkan pembeli, kasir dan dapur berbagi satu layar yang sama, dan semuanya berjalan di perangkat pengunjung tanpa memasang apa pun.
+
 ## Cara kerja
 
 1. **Pembeli** memindai QR standee di booth → memilih menu → mengisi WhatsApp → menerima tiket (contoh: A-007) beserta estimasi tunggu.
