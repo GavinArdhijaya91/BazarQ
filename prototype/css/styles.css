@@ -124,7 +124,7 @@ h1{font-size:clamp(2.3rem,4.6vw,3.5rem);line-height:1.04;letter-spacing:-.02em;m
 .stub::after{right:-12px}
 .stub .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
 .stub .cap{font-size:1.05rem;font-weight:600;letter-spacing:.02em;color:rgb(247 239 221/.9)}
-.stub .chip{font-weight:700;font-size:.92rem;letter-spacing:.03em;background:rgb(247 239 221/.18);border:1.5px dashed rgb(247 239 221/.4);border-radius:999px;padding:5px 14px}
+.stub .chip{font-weight:700;font-size:.92rem;letter-spacing:.03em;color:#FFF8EF;background:rgb(247 239 221/.18);border:1.5px dashed rgb(247 239 221/.4);border-radius:999px;padding:5px 14px}
 .stub .num{font-size:clamp(3.1rem,6.5vw,4.4rem);font-weight:700;letter-spacing:.06em;line-height:1.05;margin:8px 0;color:#FFF8EF;display:inline-block;transform:rotate(-1deg);text-shadow:2px 3px 0 rgba(0,0,0,0.3)}
 .stub .row.sub{font-size:1.08rem;font-weight:600;color:rgb(247 239 221/.92)}
 .stub .row.sub .mono{font-weight:700;font-size:1.15rem;letter-spacing:.03em;color:var(--sky)}
