@@ -91,8 +91,9 @@ function ticketIdFromUrl(){
 function adoptTicketFromUrl(){
   const id = ticketIdFromUrl();
   if (id > 0 && S && S.orders.some(o => o.id === id)){
-    try { sessionStorage.setItem(K_MY(), String(id)); } catch(e){}
+    addMyId(id);
     stage = 'ticket';
+    reorderMode = false;
     return true;
   }
   return false;
@@ -102,6 +103,7 @@ function adoptTicketFromUrl(){
 let S = null;
 let sel = {};
 let stage = 'scan';
+let reorderMode = false;
 let lastPhone = '';
 let toastTimer = null;
 let prevSeq = 0;
@@ -222,7 +224,7 @@ function switchBooth(slug){
   SLUG = slug;
   try { sessionStorage.setItem(K_BOOTH, SLUG); } catch(e){}
   stateRef = db.ref('bazarq/v2/booths/' + SLUG);
-  S = null; sel = {}; stage = 'scan'; boothMissing = false;
+  S = null; sel = {}; stage = 'scan'; reorderMode = false; boothMissing = false;
   load();
 }
 
@@ -608,9 +610,37 @@ function avgMins(){
   if (!c.length) return null;
   return Math.round(c.reduce((a,o) => a + ((o.completedAt || Date.now()) - o.createdAt), 0) / c.length / 60000);
 }
+function getMyIds(){
+  try {
+    const raw = sessionStorage.getItem(K_MY()) || '';
+    if (raw.trim().startsWith('[')){
+      const arr = JSON.parse(raw);
+      if (Array.isArray(arr)) return arr.map(Number).filter(n => n > 0);
+    }
+    const single = Number(raw || 0);
+    return single > 0 ? [single] : [];
+  } catch(e){ return []; }
+}
+function addMyId(id){
+  try {
+    const ids = getMyIds();
+    if (!ids.includes(id)) ids.push(id);
+    sessionStorage.setItem(K_MY(), JSON.stringify(ids.slice(-10)));
+  } catch(e){}
+}
+function myOrders(){
+  const ids = getMyIds();
+  if (!ids.length) return [];
+  return ids.map(id => S.orders.find(o => o.id === id)).filter(Boolean);
+}
 function myOrder(){
-  const id = Number(sessionStorage.getItem(K_MY()) || 0);
-  return S.orders.find(o => o.id === id) || null;
+  // Kompatibel data lama (string "7") + data baru (JSON "[7,8]"): tiket terbaru yg masih ada.
+  const list = myOrders();
+  if (list.length) return list[list.length - 1];
+  try {
+    const id = Number(sessionStorage.getItem(K_MY()) || 0);
+    return S.orders.find(o => o.id === id) || null;
+  } catch(e){ return null; }
 }
 function elapsedLabel(o){
   if (o.status === 'completed') return hhmm(o.completedAt) + ' selesai';
@@ -649,7 +679,8 @@ function createOrder(phone, payMethod){
   S.orders.push(o);
   pushLog(S, 'new', o.ticket + ' masuk dari ' + maskPhone(phone) + ' (' + (o.payMethod === 'qris' ? 'QRIS' : 'Tunai') + ')');
   save();
-  try { sessionStorage.setItem(K_MY(), String(o.id)); } catch(e){}
+  addMyId(o.id);
+  reorderMode = false;
   return o;
 }
 
@@ -851,7 +882,8 @@ function renderLanding(){
 /* ---------- pembeli ---------- */
 function renderPembeli(){
   const mine = myOrder();
-  if (mine && mine.status !== 'completed') stage = 'ticket';
+  const actives = myOrders().filter(o => o.status !== 'completed');
+  if (!reorderMode && mine && mine.status !== 'completed') stage = 'ticket';
   if (!mine && stage === 'ticket') stage = 'scan';
   appEl.innerHTML =
   '<section class="view buyer-wrap">' +
@@ -888,8 +920,12 @@ function renderMenu(body){
   if (!Object.keys(sel).length && menu.length) sel = { [menu[1] ? menu[1].id : menu[0].id]:1 };
   let total = 0;
   menu.forEach(m => { total += m.price * (sel[m.id] || 0); });
+  const actives = myOrders().filter(o => o.status !== 'completed');
   body.innerHTML =
   '<div class="panel">' +
+    (actives.length
+      ? '<div class="warn"><b>Kamu punya ' + actives.length + ' pesanan aktif (' + actives.map(o => esc(o.ticket)).join(', ') + ').</b> Pesanan baru akan jadi tiket terpisah, tiket lama tetap tersimpan. <button class="btn btn-ghost btn-sm" id="btnBackTicket" type="button" style="margin-top:8px">Lihat tiket aktif</button></div>'
+      : '') +
     '<h2 class="menu-title">Pesan dulu, nomor langsung terbit</h2>' +
     '<div id="kitchenGate">' + (S.kitchenFull
       ? '<div class="warn"><b>Dapur sedang penuh.</b> Estimasi +15 menit. Pesanan tetap diterima.</div>'
@@ -929,6 +965,8 @@ function renderMenu(body){
     if (less){ const id = less.dataset.less; sel[id] = Math.max(0, (sel[id] || 0) - 1); updateMenuBits(body); }
   });
   $('#btnOrder').addEventListener('click', submitOrder);
+  const backT = $('#btnBackTicket');
+  if (backT) backT.addEventListener('click', () => { reorderMode = false; stage = 'ticket'; renderAll(); });
   const waInput = $('#waPhone');
   if (waInput) waInput.addEventListener('input', () => {
     $('#phoneErr').hidden = true;
@@ -998,7 +1036,11 @@ function renderTicket(body, o){
       ? '<div class="panel" style="margin-bottom:12px"><b>Dapur sedang memasak pesananmu.</b> Tunggu notifikasi atau pantau estimasi ' + estLabel(o) + ' di atas.</div>'
       : '<div class="warn big"><b>Pesanan siap! Segera ke booth</b> dan tunjukkan tiket <b class="mono">' + esc(o.ticket) + '</b>.</div>';
   const tUrl = ticketUrl(SLUG, o.id);
+  const others = myOrders().filter(x => x.id !== o.id && x.status !== 'completed');
   body.innerHTML =
+  (others.length
+    ? '<div class="panel" style="margin-bottom:12px"><b class="tiny">Pesanan lainmu: ' + others.map(x => esc(x.ticket) + ' (' + estLabel(x) + ')').join(' · ') + '</b></div>'
+    : '') +
   nextAction +
   '<div class="stub big print">' +
     '<div class="stub-glow"></div>' +
@@ -1033,7 +1075,8 @@ function renderTicket(body, o){
       (done
         ? '<button class="btn btn-primary" id="btnAgain" type="button">Pesan lagi</button>' +
           '<a class="btn btn-ghost" href="#beranda">Beranda</a>'
-        : '<a class="btn btn-ghost" href="#beranda">Kembali ke beranda</a>') +
+        : '<button class="btn btn-primary btn-sm" id="btnReorder" type="button">+ Pesan menu lagi</button>' +
+          '<a class="btn btn-ghost btn-sm" href="#beranda">Beranda</a>') +
     '</div>' +
   '</div>';
 
@@ -1056,9 +1099,15 @@ function renderTicket(body, o){
   });
   if (done){
     $('#btnAgain').addEventListener('click', () => {
-      stage = 'menu'; sel = {};
-      try { sessionStorage.removeItem(K_MY()); } catch(e){}
+      stage = 'menu'; sel = {}; reorderMode = false;
       renderAll();
+    });
+  } else {
+    const ro = $('#btnReorder');
+    if (ro) ro.addEventListener('click', () => {
+      sel = {}; reorderMode = true; stage = 'menu';
+      renderAll();
+      toast('Tiket ' + o.ticket + ' tetap tersimpan. Pesanan baru jadi tiket terpisah.');
     });
   }
 }
