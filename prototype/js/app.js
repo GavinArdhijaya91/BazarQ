@@ -869,6 +869,8 @@ function renderAll(){
   document.body.classList.toggle('app-mode', isApp);
   const btnExit = document.getElementById('btnExit');
   if (btnExit) btnExit.hidden = (r === 'beranda');
+  const gt = document.getElementById('garlandTop');
+  if (gt) gt.hidden = (r !== 'beranda');
   $$('.nav a').forEach(a => a.classList.toggle('on', a.dataset.nav === r));
   if (myPresenceRef) try { myPresenceRef.update({ role: r }); } catch(e){}
   VIEWS[r]();
@@ -917,7 +919,6 @@ function renderLanding(){
       '</div>' +
     '</div>' +
   '</section>' +
-  '<div class="garland" aria-hidden="true">' + illusGarland() + '</div>' +
   '<section class="sec">' +
     '<h2>Kendala lama, jawaban sederhana</h2>' +
     '<p class="sub">Di bazar dan pasar kaget, antrean fisik membuat pembeli pergi dan UMKM kehilangan penjualan. BazarQ menggantinya dengan nomor antrean digital yang berjalan di perangkat digital standar, tanpa aplikasi, tanpa akun.</p>' +
@@ -1624,6 +1625,10 @@ const AMBIENT_SHAPES = [
   '<svg viewBox="0 0 64 64"><ellipse cx="32" cy="34" rx="24" ry="10" fill="none" stroke="#0F172A" stroke-width="3"/><ellipse cx="32" cy="30" rx="14" ry="6" fill="none" stroke="#60A5FA" stroke-width="3"/></svg>',
   '<svg viewBox="0 0 64 64"><rect x="14" y="26" width="36" height="8" rx="4" fill="#2563EB"/><circle cx="20" cy="44" r="5" fill="none" stroke="#0F172A" stroke-width="3"/><circle cx="44" cy="44" r="5" fill="none" stroke="#0F172A" stroke-width="3"/></svg>'
 ];
+function mountGarland(){
+  const g = document.getElementById('garlandTop');
+  if (g && !g.innerHTML) g.innerHTML = illusGarland();
+}
 function mountAmbient(){
   if (document.querySelector('.ambient')) return;
   const spots = [
@@ -1663,4 +1668,5 @@ if (navToggle && mainNav){
 }
 setInterval(liveTick, 1000);
 mountAmbient();
+mountGarland();
 load();
