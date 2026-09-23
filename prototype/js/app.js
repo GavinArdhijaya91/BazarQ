@@ -995,7 +995,7 @@ function renderTicket(body, o){
     : o.status === 'waiting'
       ? '<div class="warn big"><b>Langkah selanjutnya: bayar ke kasir.</b> Sebutkan tiket <b class="mono">' + esc(o.ticket) + '</b> (' + rp(o.total) + ', ' + (o.payMethod === 'qris' ? 'QRIS' : 'tunai') + '). Biarkan halaman ini terbuka untuk pantau status.</div>'
     : o.status === 'processing'
-      ? '<div class="panel" style="margin-bottom:12px"><b>Dapur sedang memasak pesananmu.</b> Tunggu notifikasi atau pantau estimasi ' + estLabel(o) + ' di atas. Tidak perlu antre di depan booth.</div>'
+      ? '<div class="panel" style="margin-bottom:12px"><b>Dapur sedang memasak pesananmu.</b> Tunggu notifikasi atau pantau estimasi ' + estLabel(o) + ' di atas.</div>'
       : '<div class="warn big"><b>Pesanan siap! Segera ke booth</b> dan tunjukkan tiket <b class="mono">' + esc(o.ticket) + '</b>.</div>';
   const tUrl = ticketUrl(SLUG, o.id);
   body.innerHTML =
