@@ -816,7 +816,6 @@ function renderLanding(){
   '<section class="hero">' +
     '<div class="hero-grid">' +
       '<div>' +
-        '<span class="badge"><span class="dot"></span>Demo langsung &middot; Gelar Karya Technopreneurship UNNES</span>' +
         '<h1>Antrean bazar pindah ke <em>HP</em>.</h1>' +
         '<p class="lede">Scan QR di booth, pilih menu, dapat nomor antrean dan estimasi waktu. Pembeli bebas jelajah — dagangan tetap terkendali.</p>' +
         '<div class="cta-row">' +
