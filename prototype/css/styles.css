@@ -448,6 +448,25 @@ h1{font-size:clamp(2rem,4.6vw + 1rem,3.5rem)}
   .hero{padding:var(--s3) 0}
 }
 
+/* ---------- Tailwind recipe → CSS murni (tanpa dependensi baru) ----------
+   Navbar: bg-white/70 + backdrop-blur-md + border-b slate-200/50, px-6 py-4.
+   Tombol: rounded-xl, primary blue-600→700 + shadow, hover lift, active scale-95. */
+.top{background:rgb(255 255 255 / .7);-webkit-backdrop-filter:blur(12px) saturate(1.5);backdrop-filter:blur(12px) saturate(1.5);border-bottom:1px solid rgb(226 232 240 / .55);box-shadow:0 8px 24px rgb(15 23 42 / .06),inset 0 1px 0 rgb(255 255 255 / .6)}
+.brand{color:var(--navy)}
+.nav a{color:#475569}
+.nav a:hover{color:var(--navy);background:rgb(15 23 42 / .06)}
+.nav a.on{background:#2563EB;color:#fff;box-shadow:0 4px 12px rgb(37 99 235 / .35)}
+.presence-badge{border-color:var(--line);background:rgb(255 255 255 / .7);color:var(--ink-soft)}
+.presence-dot{background:var(--emerald)}
+#btnExit{border-color:var(--line);color:var(--ink)}
+#btnExit:hover{border-color:var(--ink-soft)}
+.btn{transition:transform .2s,background .2s,border-color .2s,box-shadow .2s}
+.btn:active{transform:scale(.95)}
+.btn-primary{background:#2563EB;box-shadow:0 1px 2px rgb(15 23 42 / .12)}
+.btn-primary:hover{background:#1D4ED8;box-shadow:0 6px 16px rgb(37 99 235 / .35);transform:translateY(-2px)}
+.btn-ghost{background:rgb(255 255 255 / .8);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-color:rgb(226 232 240 / .9)}
+.btn-ghost:hover{background:#fff;border-color:#CBD5E1;transform:translateY(-2px);box-shadow:0 6px 16px rgb(15 23 42 / .10)}
+
 /* ---------- lapisan hidup: aurora + denyut (filosofi "web yang bernapas") ----------
    Semua loop lembut, non-interaktif, mati otomatis saat prefers-reduced-motion. */
 body::before{content:"";position:fixed;inset:-20%;z-index:0;pointer-events:none;
