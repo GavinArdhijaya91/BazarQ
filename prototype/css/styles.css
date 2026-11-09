@@ -592,138 +592,228 @@ body::before{content:"";position:fixed;inset:-20%;z-index:0;pointer-events:none;
 }
 
 /* ============================================================
-   BazarQ Interactive Landing System (AirLume + Schematics ITS)
-   - 3D Floating Ticket & Live Simulator
-   - Dimensional Fluted Hero & Glowing Badges
-   - Bento Feature Grid with Animated QR Laser & Audio Synth
-   - Origami-style 5-Step Stepper & Role Showcase
+   BazarQ Interactive Landing System — Premium Dark Tech Edition
+   Terinspirasi dari: AirLume.Ai (dark navy glassmorphism) &
+   Travel Around The World (clean cinematic + trust cards)
+   ============================================================
+   Arsitektur bagian ini:
+   8A. Hero Dark Navy — Aurora mesh, glassmorphism, layout split
+   8B. Trust Strip — Pill tags horizontal pasca hero
+   8C. Bento Grid PRD — Dark cards dengan visual diversity
+   8D. Stepper Dimensional — 5 langkah dengan nomor bercahaya
+   8E. Role Switcher — Tab interaktif 4 perspektif pengguna
+   8F. Metrics Banner — Strip bottom dark
+   8G. Animasi Tambahan — keyframes floatY, glowBlob, ctaShimmer
+   8H. Responsif — 960px dan 580px breakpoints
    ============================================================ */
 
-/* --- Hero Layout & Fluted Backdrop --- */
+/* ===================================================================
+   8A. HERO DARK NAVY
+   Latar penuh dark (#060D1F), aurora radial blobs biru,
+   teks headline putih besar, dua CTA saja, showcase 3D di kanan.
+   =================================================================== */
+
+/* Wrapper hero: dark full-bleed, bukan warna canvas */
 .hero-modern {
   position: relative;
-  padding: 40px 0 50px;
-  overflow: visible;
-}
-.hero-modern-grid {
-  display: grid;
-  grid-template-columns: 1.12fr 0.98fr;
-  gap: 40px;
+  padding: 72px 0 80px;
+  overflow: hidden;
+  background: linear-gradient(165deg, #060D1F 0%, #09142A 50%, #0D1A35 100%);
+  min-height: 90vh;
+  display: flex;
   align-items: center;
 }
-.hero-content {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+
+/* Blob aurora kiri bawah — teal glow */
+.hero-modern::before {
+  content: "";
+  position: absolute;
+  width: 640px;
+  height: 640px;
+  border-radius: 50%;
+  bottom: -180px;
+  left: -160px;
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.22) 0%, transparent 68%);
+  pointer-events: none;
+  animation: glowBlob 7s ease-in-out infinite alternate;
+}
+
+/* Blob aurora kanan atas — biru listrik */
+.hero-modern::after {
+  content: "";
+  position: absolute;
+  width: 780px;
+  height: 780px;
+  border-radius: 50%;
+  top: -220px;
+  right: -200px;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.3) 0%, transparent 65%);
+  pointer-events: none;
+  animation: glowBlob 9s ease-in-out infinite alternate-reverse;
+}
+
+/* Grid dua kolom: konten kiri + showcase kanan */
+.hero-modern-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 48px;
+  align-items: center;
   position: relative;
   z-index: 2;
 }
 
-/* --- Badge & Typography --- */
+/* Teks konten kiri: flex vertikal */
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  position: relative;
+  z-index: 2;
+}
+
+/* --- Badge Pill Aktif (kecil, satu saja di halaman) --- */
 .hero-pill-badge {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 18px;
+  padding: 7px 16px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.9);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
-  border: 1.5px solid rgba(147, 197, 253, 0.6);
-  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.08), inset 0 1px 0 #fff;
-  font-size: 0.86rem;
+  background: rgba(37, 99, 235, 0.14);
+  border: 1px solid rgba(96, 165, 250, 0.4);
+  font-size: 0.84rem;
   font-weight: 700;
-  color: #1E40AF;
+  color: #93C5FD;
   width: fit-content;
+  letter-spacing: 0.01em;
 }
+
+/* Titik pulsasi hijau di dalam badge */
 .hero-pill-dot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: #2563EB;
-  box-shadow: 0 0 10px #60A5FA;
+  background: #34D399;
+  box-shadow: 0 0 8px #10B981;
   position: relative;
+  flex: none;
 }
 .hero-pill-dot::after {
   content: "";
   position: absolute;
   inset: -4px;
   border-radius: 50%;
-  border: 1.5px solid #60A5FA;
-  animation: ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+  border: 1.5px solid rgba(52, 211, 153, 0.5);
+  animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
+
+/* Judul headline — putih besar, tight tracking */
 .hero-title {
-  font-size: clamp(2.4rem, 4.8vw, 3.8rem);
-  line-height: 1.08;
-  letter-spacing: -0.03em;
+  font-size: clamp(2.8rem, 5.2vw, 4.2rem);
+  line-height: 1.06;
+  letter-spacing: -0.035em;
   font-weight: 800;
-  color: #0F172A;
+  color: #F1F5F9;
   margin: 0;
 }
+
+/* Gradient accent text dalam judul */
 .gradient-text {
-  background: linear-gradient(135deg, #1E40AF 0%, #2563EB 45%, #0284C7 90%);
+  background: linear-gradient(130deg, #60A5FA 0%, #38BDF8 50%, #818CF8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
 }
+
+/* Subtitle: slate muted, pendek maksimal ~20 kata */
 .hero-subtitle {
   font-size: 1.08rem;
   line-height: 1.65;
-  color: #475569;
-  max-width: 48ch;
+  color: #94A3B8;
+  max-width: 46ch;
   margin: 0;
 }
+
+/* Grup CTA: hanya 2 tombol (primary + ghost) */
 .hero-cta-group {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   flex-wrap: wrap;
   align-items: center;
-  margin-top: 6px;
+  margin-top: 4px;
 }
+
+/* CTA utama: biru listrik dengan glow shadow */
 .btn-glow {
   position: relative;
-  background: linear-gradient(135deg, #2563EB, #1D4ED8);
+  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
   color: #fff !important;
   font-weight: 700;
   border-radius: 14px;
-  padding: 14px 24px;
-  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  padding: 15px 26px;
+  box-shadow:
+    0 8px 28px rgba(37, 99, 235, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
   display: inline-flex;
   align-items: center;
   gap: 10px;
-}
-.btn-glow:hover {
-  background: linear-gradient(135deg, #1D4ED8, #1E40AF);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(37, 99, 235, 0.48);
-}
-.btn-glass {
-  background: rgba(255, 255, 255, 0.85);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  border: 1.5px solid rgba(203, 213, 225, 0.9);
-  color: #1E293B;
-  font-weight: 700;
-  border-radius: 14px;
-  padding: 14px 22px;
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
-}
-.btn-glass:hover {
-  background: #fff;
-  border-color: #94A3B8;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* --- 3D Floating Interactive Ticket (AirLume + Schematics) --- */
+/* Shimmer bergerak di dalam btn-glow */
+.btn-glow::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -80%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+  animation: ctaShimmer 3s ease-in-out infinite;
+  pointer-events: none;
+}
+.btn-glow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 36px rgba(37, 99, 235, 0.52), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+/* CTA sekunder: glassmorphism gelap */
+.btn-glass {
+  background: rgba(255, 255, 255, 0.07);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  color: #CBD5E1;
+  font-weight: 700;
+  border-radius: 14px;
+  padding: 15px 22px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.btn-glass:hover {
+  background: rgba(255, 255, 255, 0.13);
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #F1F5F9;
+  transform: translateY(-2px);
+}
+
+/* ===================================================================
+   8B. HERO SHOWCASE — 3D TICKET INTERAKTIF
+   Kartu tiket dengan efek tilt 3D via JS, floating widget kaca gelap.
+   =================================================================== */
+
+/* Area perspektif 3D untuk kartu tiket */
 .hero-showcase {
   perspective: 1200px;
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 24px 10px;
+  padding: 32px 10px;
+  animation: floatY 6s ease-in-out infinite;
 }
+
+/* Wrapper kartu tiket: transform-style 3D untuk hover tilt */
 .ticket-3d-wrap {
   width: 100%;
   max-width: 400px;
@@ -731,15 +821,22 @@ body::before{content:"";position:fixed;inset:-20%;z-index:0;pointer-events:none;
   transform-style: preserve-3d;
   position: relative;
 }
+
+/* Kartu tiket utama: dark gradient navy */
 .ticket-card-modern {
   position: relative;
-  background: linear-gradient(165deg, #0B1936 0%, #0F172A 70%, #15203B 100%);
+  background: linear-gradient(165deg, #0B1936 0%, #0F172A 65%, #152040 100%);
   border-radius: 24px;
   padding: 26px 28px;
   color: #F8FAFC;
-  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.45), 0 0 0 1px rgba(96, 165, 250, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 28px 70px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(96, 165, 250, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
   overflow: hidden;
 }
+
+/* Lubang tiket kanan-kiri (efek tiket sobek) */
 .ticket-card-modern::before,
 .ticket-card-modern::after {
   content: "";
@@ -748,20 +845,27 @@ body::before{content:"";position:fixed;inset:-20%;z-index:0;pointer-events:none;
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background: var(--canvas);
+  background: #060D1F;
   transform: translateY(-50%);
-  box-shadow: inset 0 0 8px rgba(15, 23, 42, 0.2);
   z-index: 3;
 }
 .ticket-card-modern::before { left: -13px; }
 .ticket-card-modern::after  { right: -13px; }
 
+/* Latar bermotif garis vertikal transparan (fluted) */
 .ticket-fluted-bg {
   position: absolute;
   inset: 0;
-  background-image: repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(96, 165, 250, 0.04) 20px, rgba(96, 165, 250, 0.04) 21px);
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent, transparent 20px,
+    rgba(96, 165, 250, 0.03) 20px,
+    rgba(96, 165, 250, 0.03) 21px
+  );
   pointer-events: none;
 }
+
+/* Header tiket: nama brand + status chip */
 .ticket-card-header {
   display: flex;
   justify-content: space-between;
@@ -769,6 +873,8 @@ body::before{content:"";position:fixed;inset:-20%;z-index:0;pointer-events:none;
   position: relative;
   z-index: 2;
 }
+
+/* Chip nama platform di header tiket */
 .ticket-brand-chip {
   display: inline-flex;
   align-items: center;
@@ -782,6 +888,8 @@ body::before{content:"";position:fixed;inset:-20%;z-index:0;pointer-events:none;
   letter-spacing: 0.02em;
   color: #BAE6FD;
 }
+
+/* Chip status antrean (hijau = siap, oranye = penuh) */
 .ticket-status-chip {
   font-size: 0.8rem;
   font-weight: 700;
@@ -799,6 +907,8 @@ body::before{content:"";position:fixed;inset:-20%;z-index:0;pointer-events:none;
   border-color: #F97316;
   color: #FDBA74;
 }
+
+/* Kotak nomor tiket besar di tengah kartu */
 .ticket-number-box {
   text-align: center;
   margin: 18px 0 14px;
@@ -812,6 +922,8 @@ body::before{content:"";position:fixed;inset:-20%;z-index:0;pointer-events:none;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
+
+/* Angka nomor tiket: besar, font DynaPuff, glow biru */
 .ticket-number-val {
   font-family: var(--ticket);
   font-size: clamp(3.2rem, 7.5vw, 4.2rem);
@@ -822,6 +934,8 @@ body::before{content:"";position:fixed;inset:-20%;z-index:0;pointer-events:none;
   text-shadow: 0 0 24px rgba(96, 165, 250, 0.6), 0 4px 10px rgba(0, 0, 0, 0.5);
   letter-spacing: 0.04em;
 }
+
+/* Baris metadata (estimasi waktu, jumlah antrean) */
 .ticket-meta-row {
   display: flex;
   justify-content: space-between;
@@ -834,12 +948,16 @@ body::before{content:"";position:fixed;inset:-20%;z-index:0;pointer-events:none;
   position: relative;
   z-index: 2;
 }
+
+/* Garis putus-putus pemisah bagian tiket */
 .ticket-dash-line {
-  border-top: 2px dashed rgba(255, 255, 255, 0.2);
+  border-top: 2px dashed rgba(255, 255, 255, 0.15);
   margin: 16px 0;
   position: relative;
   z-index: 2;
 }
+
+/* Wrapper tombol interaktif bawah tiket */
 .ticket-interactive-actions {
   display: flex;
   gap: 8px;
@@ -847,11 +965,13 @@ body::before{content:"";position:fixed;inset:-20%;z-index:0;pointer-events:none;
   position: relative;
   z-index: 2;
 }
+
+/* Tombol aksi kecil di tiket (Tes Chime, Dapur Penuh) */
 .ticket-action-btn {
   flex: 1;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #F8FAFC;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #CBD5E1;
   padding: 9px 10px;
   border-radius: 10px;
   font-size: 0.78rem;
@@ -864,80 +984,487 @@ body::before{content:"";position:fixed;inset:-20%;z-index:0;pointer-events:none;
   transition: all 0.15s ease;
 }
 .ticket-action-btn:hover {
-  background: rgba(255, 255, 255, 0.24);
-  transform: scale(1.02);
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  transform: scale(1.03);
 }
 
-/* Floating overlay widgets around 3D ticket (AirLume style) */
+/* Floating widgets glassmorphism gelap (AirLume style) */
 .floating-widget {
   position: absolute;
-  background: rgba(255, 255, 255, 0.94);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
-  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  background: rgba(10, 20, 45, 0.82);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   padding: 10px 16px;
   border-radius: 16px;
-  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.15), 0 2px 6px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.08);
   display: flex;
   align-items: center;
   gap: 12px;
-  z-index: 4;
+  z-index: 10;
   pointer-events: auto;
   transition: transform 0.2s ease;
 }
 .floating-widget:hover {
   transform: translateY(-4px) scale(1.03);
 }
+
+/* Posisi widget bawah-kiri (WhatsApp notifikasi) */
 .float-wa {
-  bottom: -16px;
-  left: -20px;
-  max-width: 290px;
+  bottom: -18px;
+  left: -24px;
+  max-width: 300px;
 }
+
+/* Posisi widget atas-kanan (Live Sync status) */
 .float-sync {
-  top: -14px;
-  right: -14px;
+  top: -16px;
+  right: -16px;
 }
+
+/* Ikon bulat kecil dalam floating widget */
 .widget-ic {
   width: 36px;
   height: 36px;
   border-radius: 10px;
   display: grid;
   place-items: center;
-  font-size: 1.1rem;
   flex: none;
 }
-.widget-ic.green { background: #DCFCE7; color: #15803D; }
-.widget-ic.blue  { background: #DBEAFE; color: #1D4ED8; }
-.widget-text b    { display: block; font-size: 0.86rem; color: #0F172A; }
-.widget-text span { font-size: 0.76rem; color: #64748B; line-height: 1.3; display: block; }
+.widget-ic.green { background: rgba(16, 185, 129, 0.2); color: #34D399; }
+.widget-ic.blue  { background: rgba(37, 99, 235, 0.25); color: #60A5FA; }
 
-/* --- Interactive Role Showcase Tabs (Schematics ITS style) --- */
+/* Teks dalam floating widget */
+.widget-text b    { display: block; font-size: 0.84rem; color: #E2E8F0; }
+.widget-text span { font-size: 0.74rem; color: #64748B; line-height: 1.3; display: block; }
+
+/* ===================================================================
+   8C. TRUST STRIP — Jalur informasi ringkas antara hero dan bento
+   =================================================================== */
+
+/* Wrapper strip kepercayaan: dark, border tipis */
+.trust-strip {
+  background: rgba(255, 255, 255, 0.03);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 18px 0;
+}
+
+/* Daftar pill item dalam trust strip */
+.trust-strip-list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Pemisah titik antara pill */
+.trust-sep {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  flex: none;
+}
+
+/* Tiap pill berisi ikon SVG + label */
+.trust-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #94A3B8;
+  white-space: nowrap;
+}
+.trust-pill svg { color: #60A5FA; }
+
+/* ===================================================================
+   8D. SECTION WRAPPER GELAP — digunakan oleh bento, stepper, role
+   Berbeda dari .sec yang terang; semua landing memakai .sec-dark
+   =================================================================== */
+
+/* Bagian gelap yang selaras dengan tema hero */
+.sec-dark {
+  padding: 80px 0;
+  background: #070F20;
+  position: relative;
+}
+
+/* Judul bagian: putih, besar */
+.sec-dark-heading {
+  font-size: clamp(1.9rem, 3.6vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #F1F5F9;
+  margin: 0 0 10px;
+  line-height: 1.1;
+}
+
+/* Teks sub-judul bagian: slate muted */
+.sec-dark-sub {
+  font-size: 1rem;
+  color: #64748B;
+  line-height: 1.6;
+  max-width: 56ch;
+  margin: 0 auto 32px;
+}
+
+/* ===================================================================
+   8E. BENTO GRID PRD — Visual diversity, NOT white-on-white
+   Tiap kartu punya background berbeda sesuai fitur PRD-nya.
+   =================================================================== */
+
+/* Grid 12-kolom bento */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 18px;
+  margin-top: 32px;
+}
+
+/* Kartu bento base: dark glass, hover naik */
+.bento-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.bento-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(96, 165, 250, 0.3);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+}
+
+/* Kartu QR scan: latar biru listrik bergradient (featured) */
+.bento-card.card-qr {
+  background: linear-gradient(145deg, #0D2057 0%, #122D77 60%, #0E1E50 100%);
+  border-color: rgba(96, 165, 250, 0.2);
+}
+
+/* Kartu throttling: latar oranye-gelap (sinyal bahaya/peringatan) */
+.bento-card.card-throttle {
+  background: linear-gradient(145deg, #1A0D00 0%, #2A1500 60%, #1F1000 100%);
+  border-color: rgba(249, 115, 22, 0.2);
+}
+
+/* Kartu audio: latar teal gelap (nuansa suara) */
+.bento-card.card-audio {
+  background: linear-gradient(145deg, #001A1A 0%, #002424 60%, #001515 100%);
+  border-color: rgba(20, 184, 166, 0.2);
+}
+
+/* Kartu payment/WA: latar hijau gelap (kepercayaan) */
+.bento-card.card-payment {
+  background: linear-gradient(145deg, #001A0F 0%, #002A18 60%, #001A10 100%);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+/* Rentang kolom bento */
+.bento-card.col-7 { grid-column: span 7; }
+.bento-card.col-5 { grid-column: span 5; }
+.bento-card.col-6 { grid-column: span 6; }
+.bento-card.col-4 { grid-column: span 4; }
+.bento-card.col-8 { grid-column: span 8; }
+
+/* Label mono uppercase kecil di atas setiap kartu bento */
+.bento-badge {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: rgba(96, 165, 250, 0.12);
+  color: #60A5FA;
+  width: fit-content;
+  margin-bottom: 16px;
+  border: 1px solid rgba(96, 165, 250, 0.2);
+}
+
+/* Badge warna oranye untuk kartu throttle */
+.bento-badge.badge-orange {
+  background: rgba(249, 115, 22, 0.12);
+  color: #FB923C;
+  border-color: rgba(249, 115, 22, 0.25);
+}
+
+/* Badge warna teal untuk kartu audio */
+.bento-badge.badge-teal {
+  background: rgba(20, 184, 166, 0.12);
+  color: #2DD4BF;
+  border-color: rgba(20, 184, 166, 0.25);
+}
+
+/* Badge warna hijau untuk kartu payment */
+.bento-badge.badge-green {
+  background: rgba(16, 185, 129, 0.12);
+  color: #34D399;
+  border-color: rgba(16, 185, 129, 0.25);
+}
+
+/* Judul kartu bento: putih terang */
+.bento-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin: 0 0 10px;
+  color: #F1F5F9;
+  letter-spacing: -0.015em;
+}
+
+/* Deskripsi kartu bento: slate muted */
+.bento-desc {
+  font-size: 0.93rem;
+  color: #64748B;
+  line-height: 1.6;
+  margin: 0 0 20px;
+}
+
+/* Thumbnail 3D asset studio dalam bento card */
+.bento-3d-thumb {
+  width: 88px;
+  height: 88px;
+  border-radius: 18px;
+  object-fit: cover;
+  display: block;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease;
+  flex: none;
+}
+.bento-card:hover .bento-3d-thumb {
+  transform: translateY(-5px) scale(1.05);
+}
+
+/* Wrapper QR scanner animasi di dalam bento card */
+.bento-scanner-vis {
+  position: relative;
+  width: 130px;
+  height: 130px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 18px;
+  padding: 12px;
+  border: 1px solid rgba(96, 165, 250, 0.25);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  flex: none;
+}
+
+/* Garis laser scanner berjalan dari atas ke bawah */
+.scanner-laser-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #38BDF8, #60A5FA, #38BDF8, transparent);
+  box-shadow: 0 0 10px #38BDF8, 0 0 20px rgba(56, 189, 248, 0.5);
+  animation: scanMove 2.6s ease-in-out infinite alternate;
+}
+@keyframes scanMove {
+  from { top: 10%; }
+  to   { top: 85%; }
+}
+
+/* Chip "estimasi waktu" di dalam kartu throttle */
+.throttle-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(249, 115, 22, 0.1);
+  border: 1px solid rgba(249, 115, 22, 0.25);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #FB923C;
+  margin-top: auto;
+}
+
+/* Visualisasi gelombang audio (equalizer bars) */
+.audio-wave-wrap {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 4px;
+  height: 50px;
+  padding: 6px 0;
+  margin-top: auto;
+  cursor: pointer;
+}
+.audio-wave-bar {
+  width: 5px;
+  background: linear-gradient(180deg, #2DD4BF, #0EA5E9);
+  border-radius: 3px;
+  height: 10px;
+  animation: wavePulse 1.2s ease-in-out infinite alternate;
+}
+.audio-wave-bar:nth-child(2) { animation-delay: 0.12s; height: 22px; }
+.audio-wave-bar:nth-child(3) { animation-delay: 0.3s;  height: 38px; }
+.audio-wave-bar:nth-child(4) { animation-delay: 0.18s; height: 28px; }
+.audio-wave-bar:nth-child(5) { animation-delay: 0.42s; height: 16px; }
+.audio-wave-bar:nth-child(6) { animation-delay: 0.08s; height: 32px; }
+.audio-wave-bar:nth-child(7) { animation-delay: 0.36s; height: 20px; }
+@keyframes wavePulse {
+  from { transform: scaleY(0.35); opacity: 0.5; }
+  to   { transform: scaleY(1.1); opacity: 1; }
+}
+
+/* Baris chip pembayaran dalam kartu payment */
+.payment-chip-row {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  flex: 1;
+}
+.payment-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: #94A3B8;
+}
+.payment-chip svg { color: #34D399; flex: none; }
+
+/* Media split dalam bento: gambar + konten */
+.bento-split-media {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  margin-top: auto;
+  flex-wrap: wrap;
+}
+
+/* ===================================================================
+   8F. STEPPER DIMENSIONAL — 5 langkah dengan nomor bercahaya
+   =================================================================== */
+
+/* Grid 5 kolom stepper — responsive ke 2 lalu 1 */
+.stepper-container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  margin-top: 32px;
+  position: relative;
+}
+
+/* Kartu stepper individu: dark glass */
+.stepper-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 24px 18px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  overflow: hidden;
+}
+.stepper-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(96, 165, 250, 0.35);
+  background: rgba(37, 99, 235, 0.08);
+}
+
+/* Badge nomor besar bercahaya biru */
+.step-num-badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.25), rgba(14, 165, 233, 0.15));
+  border: 1px solid rgba(96, 165, 250, 0.35);
+  color: #60A5FA;
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 1.1rem;
+  display: grid;
+  place-items: center;
+  margin-bottom: 16px;
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.2);
+}
+
+/* Judul langkah stepper */
+.stepper-card h4 {
+  font-size: 1rem;
+  margin: 0 0 8px;
+  color: #E2E8F0;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+/* Deskripsi langkah stepper */
+.stepper-card p {
+  font-size: 0.83rem;
+  color: #64748B;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* Garis konektor antara kartu stepper (desktop) */
+.stepper-container::before {
+  content: "";
+  position: absolute;
+  top: 36px;
+  left: calc(10% + 24px);
+  right: calc(10% + 24px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.2), transparent);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ===================================================================
+   8G. ROLE SWITCHER — Tab interaktif 4 perspektif pengguna (gelap)
+   =================================================================== */
+
+/* Wrapper role tabs: dark glass card */
 .role-tabs-wrap {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 24px;
   padding: 32px;
-  border: 1.5px solid rgba(226, 232, 240, 0.9);
-  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.06);
-  margin-top: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+  margin-top: 24px;
 }
+
+/* Nav tabs: pill selector bar */
 .role-tabs-nav {
   display: flex;
-  gap: 8px;
-  background: #F1F5F9;
-  padding: 6px;
-  border-radius: 16px;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 5px;
+  border-radius: 14px;
   max-width: 680px;
   margin: 0 auto 28px;
   overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.07);
 }
+
+/* Tombol tab individual */
 .role-tab-btn {
   flex: 1;
-  padding: 12px 18px;
-  border-radius: 12px;
+  padding: 11px 18px;
+  border-radius: 10px;
   border: none;
   background: transparent;
   font-family: var(--sans);
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   font-weight: 700;
   color: #64748B;
   cursor: pointer;
@@ -948,32 +1475,42 @@ body::before{content:"";position:fixed;inset:-20%;z-index:0;pointer-events:none;
   justify-content: center;
   gap: 8px;
 }
+
+/* Tab aktif: biru dengan glow */
 .role-tab-btn.active {
-  background: #fff;
-  color: #1D4ED8;
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+  background: rgba(37, 99, 235, 0.2);
+  color: #60A5FA;
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.2);
 }
 .role-tab-btn:hover:not(.active) {
-  color: #0F172A;
+  color: #CBD5E1;
+  background: rgba(255, 255, 255, 0.05);
 }
+
+/* Preview konten tab: grid 2 kolom */
 .role-tab-preview {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 32px;
   align-items: center;
 }
+
+/* Kolom teks kiri dalam preview tab */
 .role-preview-text h3 {
   font-size: 1.5rem;
   margin: 0 0 10px;
-  color: #0F172A;
+  color: #F1F5F9;
   font-weight: 800;
 }
 .role-preview-text p {
-  color: #475569;
+  color: #64748B;
   line-height: 1.6;
   margin: 0 0 20px;
   font-size: 1rem;
 }
+
+/* Daftar fitur centang di bawah deskripsi */
 .role-feature-list {
   list-style: none;
   padding: 0;
@@ -986,25 +1523,30 @@ body::before{content:"";position:fixed;inset:-20%;z-index:0;pointer-events:none;
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  color: #334155;
+  color: #94A3B8;
 }
+
+/* Lingkaran ikon centang di tiap item fitur */
 .role-feature-list li span.chk {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #DCFCE7;
-  color: #15803D;
+  background: rgba(16, 185, 129, 0.15);
+  color: #34D399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
   display: inline-grid;
   place-items: center;
   font-size: 0.8rem;
   flex: none;
 }
+
+/* Kotak mockup UI di kanan preview tab */
 .role-mockup-box {
-  background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+  background: rgba(0, 0, 0, 0.3);
   border-radius: 18px;
-  border: 1.5px solid #BFDBFE;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 24px;
   min-height: 240px;
   display: flex;
@@ -1014,274 +1556,93 @@ body::before{content:"";position:fixed;inset:-20%;z-index:0;pointer-events:none;
   overflow: hidden;
 }
 
-/* --- Bento Grid PRD Features (High-End Modular) --- */
-.bento-grid {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: 20px;
-  margin-top: 24px;
-}
-.bento-card {
-  background: #fff;
-  border: 1.5px solid rgba(226, 232, 240, 0.9);
-  border-radius: 24px;
-  padding: 28px;
-  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.05);
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.25s ease;
-}
-.bento-card:hover {
-  transform: translateY(-3px);
-  border-color: #93C5FD;
-  box-shadow: 0 18px 40px rgba(37, 99, 235, 0.1);
-}
-.bento-card.col-7 { grid-column: span 7; }
-.bento-card.col-5 { grid-column: span 5; }
-.bento-card.col-6 { grid-column: span 6; }
-.bento-card.col-4 { grid-column: span 4; }
-.bento-card.col-8 { grid-column: span 8; }
-.bento-badge {
-  font-family: var(--mono);
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: 4px 10px;
-  border-radius: 8px;
-  background: #EFF6FF;
-  color: #1D4ED8;
-  width: fit-content;
-  margin-bottom: 14px;
-}
-.bento-title {
-  font-size: 1.35rem;
-  font-weight: 800;
-  margin: 0 0 8px;
-  color: #0F172A;
-  letter-spacing: -0.01em;
-}
-.bento-desc {
-  font-size: 0.95rem;
-  color: #64748B;
-  line-height: 1.55;
-  margin: 0 0 20px;
-}
+/* ===================================================================
+   8H. METRICS BANNER — Strip statistik platform
+   =================================================================== */
 
-/* Scanner simulation element inside Bento card */
-.bento-scanner-vis {
-  position: relative;
-  width: 140px;
-  height: 140px;
-  margin: 0 auto 10px;
-  background: #fff;
-  border-radius: 18px;
-  padding: 12px;
-  border: 2px solid #E2E8F0;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-}
-.scanner-laser-line {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, #2563EB, #60A5FA, #2563EB, transparent);
-  box-shadow: 0 0 10px #3B82F6, 0 0 18px #60A5FA;
-  animation: scanMove 2.6s ease-in-out infinite alternate;
-}
-@keyframes scanMove {
-  from { top: 10%; }
-  to   { top: 85%; }
-}
-
-/* Audio wave simulator inside Bento card */
-.audio-wave-wrap {
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 5px;
-  height: 54px;
-  padding: 8px 0;
-}
-.audio-wave-bar {
-  width: 6px;
-  background: linear-gradient(180deg, #60A5FA, #2563EB);
-  border-radius: 4px;
-  height: 12px;
-  animation: wavePulse 1.2s ease-in-out infinite alternate;
-}
-.audio-wave-bar:nth-child(2) { animation-delay: 0.15s; height: 24px; }
-.audio-wave-bar:nth-child(3) { animation-delay: 0.35s; height: 42px; }
-.audio-wave-bar:nth-child(4) { animation-delay: 0.2s;  height: 30px; }
-.audio-wave-bar:nth-child(5) { animation-delay: 0.45s; height: 18px; }
-@keyframes wavePulse {
-  from { transform: scaleY(0.4); opacity: 0.6; }
-  to   { transform: scaleY(1.1); opacity: 1;   }
-}
-
-/* --- 5-Step Origami Dimensional Stepper (Travel Around The World style) --- */
-.stepper-container {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 16px;
-  margin-top: 24px;
-  position: relative;
-}
-.stepper-card {
-  background: #fff;
-  border: 1.5px solid #E2E8F0;
-  border-radius: 20px;
-  padding: 22px 18px;
-  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.04);
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  transition: all 0.2s ease;
-}
-.stepper-card:hover {
-  transform: translateY(-3px);
-  border-color: #3B82F6;
-  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.1);
-}
-.step-num-badge {
-  width: 36px;
-  height: 36px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #EFF6FF, #DBEAFE);
-  border: 1.5px solid #BFDBFE;
-  color: #1D4ED8;
-  font-family: var(--mono);
-  font-weight: 800;
-  font-size: 0.95rem;
-  display: grid;
-  place-items: center;
-  margin-bottom: 14px;
-}
-.stepper-card h4 {
-  font-size: 1.05rem;
-  margin: 0 0 6px;
-  color: #0F172A;
-  font-weight: 700;
-}
-.stepper-card p {
-  font-size: 0.84rem;
-  color: #64748B;
-  line-height: 1.5;
-  margin: 0;
-}
-
-/* --- Modern Live Metrics Strip (Bottom Banner) --- */
+/* Strip metrik: gradient navy-biru, sudut membulat */
 .metrics-strip {
-  margin-top: 48px;
-  background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%);
-  border-radius: 24px;
-  padding: 36px 32px;
+  margin-top: 0;
+  background: linear-gradient(135deg, #060D1F 0%, #0F2056 60%, #0A1A45 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 56px 0;
   color: #fff;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
-  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
   position: relative;
   overflow: hidden;
 }
+
+/* Efek aurora di tengah strip */
 .metrics-strip::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 50% -20%, rgba(96, 165, 250, 0.2), transparent 70%);
+  background: radial-gradient(ellipse at 50% 0%, rgba(37, 99, 235, 0.18), transparent 70%);
   pointer-events: none;
 }
+
+/* Grid 4 kotak metrik dalam satu baris */
+.metrics-inner {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  position: relative;
+  z-index: 2;
+}
+
+/* Tiap kotak metrik: border kiri tipis sebagai pemisah */
 .metric-box {
   position: relative;
   z-index: 2;
-  border-left: 1px solid rgba(255, 255, 255, 0.14);
-  padding-left: 20px;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  padding-left: 24px;
 }
 .metric-box:first-child {
   border-left: none;
   padding-left: 0;
 }
+
+/* Nilai angka besar metrik */
 .metric-val {
-  font-size: clamp(1.8rem, 3.2vw, 2.4rem);
+  font-size: clamp(1.9rem, 3.2vw, 2.6rem);
   font-weight: 800;
   font-family: var(--mono);
-  color: #BAE6FD;
-  letter-spacing: -0.02em;
-  margin-bottom: 4px;
+  color: #60A5FA;
+  letter-spacing: -0.025em;
+  margin-bottom: 6px;
+  line-height: 1;
 }
+
+/* Label deskripsi metrik */
 .metric-label {
   font-size: 0.92rem;
   font-weight: 700;
-  color: #fff;
-  margin-bottom: 2px;
+  color: #E2E8F0;
+  margin-bottom: 3px;
 }
+
+/* Sub-label kecil di bawah label */
 .metric-sub {
-  font-size: 0.78rem;
-  color: #94A3B8;
+  font-size: 0.77rem;
+  color: #475569;
   line-height: 1.4;
 }
 
-/* --- Responsive Adjustments --- */
-@media (max-width: 960px) {
-  .hero-modern-grid {
-    grid-template-columns: 1fr;
-    gap: 36px;
-  }
-  .role-tab-preview {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-  .bento-card.col-7,
-  .bento-card.col-5,
-  .bento-card.col-6,
-  .bento-card.col-4,
-  .bento-card.col-8 {
-    grid-column: span 12;
-  }
-  .stepper-container {
-    grid-template-columns: 1fr 1fr;
-  }
-  .metrics-strip {
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-  }
-  .metric-box {
-    border-left: none;
-    padding-left: 0;
-  }
-}
-@media (max-width: 580px) {
-  .stepper-container {
-    grid-template-columns: 1fr;
-  }
-  .metrics-strip {
-    grid-template-columns: 1fr;
-  }
-  .float-wa, .float-sync {
-    position: relative;
-    bottom: auto;
-    left: auto;
-    right: auto;
-    top: auto;
-    margin: 8px 0;
-    max-width: 100%;
-  }
-}
+/* ===================================================================
+   8I. HERO VISUAL CARD — Kartu visual gambar 3D studio di hero
+   =================================================================== */
 
-
-/* --- 3D Visual Asset Containers (Real Studio Renders) --- */
+/* Kartu utama gambar 3D (di area showcase kanan hero) */
 .hero-visual-card {
   position: relative;
-  border-radius: 26px;
+  border-radius: 24px;
   overflow: hidden;
-  box-shadow: 0 28px 70px rgba(15, 23, 42, 0.45), 0 0 0 1px rgba(147, 197, 253, 0.35);
+  box-shadow:
+    0 32px 80px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(96, 165, 250, 0.2);
   background: #0B1936;
 }
+
+/* Gambar 3D studio booth: cover, skala ringan */
 .hero-visual-img {
   width: 100%;
   height: 290px;
@@ -1291,47 +1652,120 @@ body::before{content:"";position:fixed;inset:-20%;z-index:0;pointer-events:none;
   transition: transform 0.4s ease;
 }
 .hero-visual-card:hover .hero-visual-img {
-  transform: scale(1.05);
+  transform: scale(1.055);
 }
+
+/* Overlay gradien bawah untuk bottom bar tiket */
 .hero-visual-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 40%, rgba(11, 25, 54, 0.85) 75%, #0F172A 100%);
+  background: linear-gradient(180deg, transparent 35%, rgba(6, 13, 31, 0.9) 75%, #060D1F 100%);
   pointer-events: none;
 }
+
+/* Bar bawah: status antrean live + tombol aksi */
 .hero-visual-bottom-bar {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 16px 20px;
-  background: rgba(15, 23, 42, 0.84);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 14px 18px;
+  background: rgba(6, 13, 31, 0.86);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;
   z-index: 3;
 }
-.bento-3d-thumb {
-  width: 96px;
-  height: 96px;
-  border-radius: 20px;
-  object-fit: cover;
-  display: block;
-  margin: 0 auto 16px;
-  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(226, 232, 240, 0.8);
-  transition: transform 0.3s ease;
+
+/* ===================================================================
+   8J. ANIMASI GLOBAL LANDING
+   =================================================================== */
+
+/* Animasi mengambang naik-turun untuk hero showcase */
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-14px); }
 }
-.bento-card:hover .bento-3d-thumb {
-  transform: translateY(-4px) scale(1.05);
+
+/* Animasi blur glow blob hero (nafas lembut) */
+@keyframes glowBlob {
+  0%   { opacity: 0.7; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1.08); }
 }
-.bento-split-media {
-  display: flex;
-  gap: 18px;
-  align-items: center;
+
+/* Shimmer bergerak kiri-ke-kanan pada btn-glow */
+@keyframes ctaShimmer {
+  0%   { left: -80%; }
+  60%  { left: 120%; }
+  100% { left: 120%; }
 }
+
+/* ===================================================================
+   8K. RESPONSIF LANDING PAGE
+   =================================================================== */
+
+@media (max-width: 960px) {
+  /* Hero: satu kolom, showcase pindah ke bawah */
+  .hero-modern {
+    padding: 56px 0 60px;
+    min-height: auto;
+  }
+  .hero-modern-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .hero-showcase {
+    animation: none;
+  }
+
+  /* Bento: semua kartu full-width di tablet */
+  .bento-card.col-7,
+  .bento-card.col-5,
+  .bento-card.col-6,
+  .bento-card.col-4,
+  .bento-card.col-8 {
+    grid-column: span 12;
+  }
+
+  /* Stepper: 2 kolom di tablet */
+  .stepper-container { grid-template-columns: 1fr 1fr; }
+  .stepper-container::before { display: none; }
+
+  /* Metrik: 2 kolom di tablet */
+  .metrics-inner { grid-template-columns: 1fr 1fr; gap: 20px; }
+  .metric-box { border-left: none; padding-left: 0; }
+
+  /* Role tabs: 1 kolom di tablet */
+  .role-tab-preview { grid-template-columns: 1fr; gap: 20px; }
+}
+
+@media (max-width: 580px) {
+  /* Hero title lebih kecil di mobile */
+  .hero-title { font-size: clamp(2.2rem, 8vw, 2.8rem); }
+
+  /* Stepper: 1 kolom di mobile */
+  .stepper-container { grid-template-columns: 1fr; }
+
+  /* Metrik: 1 kolom di mobile */
+  .metrics-inner { grid-template-columns: 1fr; }
+
+  /* Floating widgets: lepas dari posisi absolut, jadi inline */
+  .float-wa, .float-sync {
+    position: relative;
+    bottom: auto; left: auto; right: auto; top: auto;
+    margin: 8px 0;
+    max-width: 100%;
+  }
+
+  /* Role tabs nav: scroll horizontal */
+  .role-tabs-nav { gap: 4px; }
+  .role-tab-btn { padding: 10px 12px; font-size: 0.82rem; }
+}
+
+/* SVG ikon wrapper */
 .svg-icon {
   display: inline-flex;
   align-items: center;
