@@ -1595,7 +1595,7 @@ body:not(.app-mode) footer.foot {
 }
 .hero-modern {
   min-height: 0;
-  padding: 44px 0 56px;
+  padding: 56px 0 68px;
   background: linear-gradient(180deg, #f1f8ff 0%, #fff 100%);
 }
 .hero-modern::before,
@@ -1610,11 +1610,11 @@ body:not(.app-mode) footer.foot {
 }
 .hero-modern-grid {
   grid-template-columns: minmax(0, .94fr) minmax(0, 1.06fr);
-  gap: clamp(32px, 5vw, 64px);
+  gap: clamp(40px, 6vw, 76px);
 }
 .hero-content {
   max-width: 540px;
-  gap: 16px;
+  gap: 22px;
 }
 .hero-pill-badge {
   padding: 7px 13px;
@@ -1649,7 +1649,7 @@ body:not(.app-mode) footer.foot {
   line-height: 1.65;
 }
 .hero-cta-group {
-  gap: 12px;
+  gap: 16px;
 }
 .btn-glow,
 .btn-glass {
@@ -1741,7 +1741,7 @@ body:not(.app-mode) footer.foot {
   color: #2563eb;
 }
 .sec-light {
-  padding: 68px 0;
+  padding: 88px 0;
   background: #fff;
 }
 .sec-light.sec-flow {
@@ -1753,16 +1753,20 @@ body:not(.app-mode) footer.foot {
 .sec-light-heading {
   color: #102a50;
   letter-spacing: -.03em;
+  margin-bottom: 16px;
 }
 .sec-light-sub {
   color: #52647a;
+  margin-bottom: 44px;
 }
 .bento-grid {
-  gap: 16px;
+  gap: 24px;
+  margin-top: 40px;
 }
 .bento-card {
   min-height: 270px;
-  padding: 24px;
+  padding: 30px;
+  gap: 8px;
   border: 1px solid #dce7f3 !important;
   border-radius: 18px;
   box-shadow: 0 5px 18px rgb(22 61 107 / .05) !important;
@@ -1792,15 +1796,30 @@ body:not(.app-mode) footer.foot {
 }
 .bento-desc {
   color: #52647a;
+  margin-bottom: 24px;
 }
 .bento-scanner-vis {
+  isolation: isolate;
   border-color: #d8e6f5;
   box-shadow: none;
 }
 .scanner-laser-line {
+  top: 43px;
+  right: 42px;
+  left: 42px;
+  z-index: 1;
   background: #60a5fa;
-  box-shadow: none;
+  box-shadow: 0 0 8px rgb(37 99 235 / .42);
   animation: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .scanner-laser-line {
+    animation: qr-scan 1.8s ease-in-out infinite alternate;
+  }
+  @keyframes qr-scan {
+    from { transform: translateY(0); }
+    to { transform: translateY(40px); }
+  }
 }
 .audio-wave-bar {
   background: #3b82f6;
@@ -1809,9 +1828,11 @@ body:not(.app-mode) footer.foot {
   opacity: .8;
 }
 .stepper-container {
-  gap: 12px;
+  gap: 18px;
 }
 .stepper-card {
+  gap: 8px;
+  padding: 28px 22px;
   border: 1px solid #dce7f3;
   border-radius: 16px;
   box-shadow: 0 4px 14px rgb(22 61 107 / .04);
@@ -1834,9 +1855,14 @@ body:not(.app-mode) footer.foot {
   color: #52647a;
 }
 .role-tabs-wrap {
+  padding: 42px;
   border: 1px solid #dce7f3;
   border-radius: 18px;
   box-shadow: 0 6px 20px rgb(22 61 107 / .05);
+  gap: 44px;
+}
+.role-feature-list {
+  gap: 14px;
 }
 .role-tabs-nav {
   border-color: #e2eaf4;
@@ -1864,7 +1890,7 @@ body:not(.app-mode) footer.foot {
   display: none;
 }
 .metrics-inner {
-  gap: 18px;
+  gap: 28px;
 }
 .metric-box {
   border-color: #c9dbef;
@@ -1896,6 +1922,15 @@ body:not(.app-mode) footer.foot {
     width: 100%;
     margin: 0 auto;
   }
+  .sec-light {
+    padding: 72px 0;
+  }
+  .bento-grid {
+    gap: 20px;
+  }
+  .role-tabs-wrap {
+    padding: 32px;
+  }
   .ticket-3d-wrap {
     max-width: 560px;
   }
@@ -1917,10 +1952,13 @@ body:not(.app-mode) footer.foot {
 }
 @media (max-width: 580px) {
   .hero-modern {
-    padding: 32px 0 40px;
+    padding: 40px 0 48px;
   }
   .hero-modern-grid {
-    gap: 22px;
+    gap: 30px;
+  }
+  .hero-content {
+    gap: 18px;
   }
   .hero-title {
     max-width: 11ch;
@@ -1954,14 +1992,27 @@ body:not(.app-mode) footer.foot {
     white-space: normal;
   }
   .sec-light {
-    padding: 52px 0;
+    padding: 60px 0;
   }
   .sec-light-heading {
     font-size: clamp(1.8rem, 7vw, 2.25rem);
+    margin-bottom: 12px;
+  }
+  .sec-light-sub {
+    margin-bottom: 32px;
   }
   .bento-card {
     min-height: 0;
-    padding: 20px;
+    padding: 24px;
+  }
+  .stepper-card {
+    padding: 24px;
+  }
+  .role-tabs-wrap {
+    padding: 24px 18px;
+  }
+  .role-tabs-nav {
+    margin-bottom: 32px;
   }
   .metrics-strip {
     padding: 32px 0;
