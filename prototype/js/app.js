@@ -30,27 +30,74 @@ const DEFAULT_MENU = [
 const PIN_HASH_DEFAULT = '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4'; // sha256('1234')
 const DEFAULT_PROFILE = { name:'Geprek Bintang', desc:'Booth contoh · Gelar Karya UNNES', pinHash:PIN_HASH_DEFAULT, qrisImageUrl:'' };
 
-/* ---------- helpers ---------- */
+/* ============================================================
+   1. ELEMEN DOM & UTILITAS DASAR
+   ============================================================ */
 const appEl = document.getElementById('app');
-const $     = (s, el=document) => el.querySelector(s);
-const $$    = (s, el=document) => Array.from(el.querySelectorAll(s));
-async function sha256hex(s){
-  try {
-    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(String(s)));
-    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
-  } catch(e){ let h1=0xdeadbeef,h2=0x41c6ce57; const str=String(s); for(let i=0;i<str.length;i++){const ch=str.charCodeAt(i); h1=Math.imul(h1^ch,2654435761); h2=Math.imul(h2^ch,1597334677);} h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909); h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909); return (h2>>>0).toString(16).padStart(8,'0')+(h1>>>0).toString(16).padStart(8,'0'); }
-}
-const rp    = n => 'Rp' + Number(n || 0).toLocaleString('id-ID');
-const pad2  = n => String(n).padStart(2,'0');
-const pad3  = n => String(n).padStart(3,'0');
-const tk    = id => 'A-' + pad3(id);
-const hhmm  = t => new Date(t).toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' });
-const esc   = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const maskPhone = p => { const d = String(p).replace(/\D/g,''); return d.length <= 6 ? d : d.slice(0,4) + '•••' + d.slice(-3); };
-const mmss  = ms => { const s = Math.max(0, Math.floor(ms/1000)); return pad2(Math.floor(s/60)) + ':' + pad2(s%60); };
-const slugify = s => String(s || 'booth').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,32) || 'booth';
+const $     = (selector, el = document) => el.querySelector(selector);
+const $$    = (selector, el = document) => Array.from(el.querySelectorAll(selector));
 
-/* ---------- booth routing ---------- */
+/**
+ * Menghasilkan hash heksadesimal SHA-256 dari string input.
+ * Menggunakan Web Crypto API jika tersedia; menggunakan algoritma fallback jika di non-HTTPS.
+ * @param {string|number} input
+ * @returns {Promise<string>} 64-karakter string heksadesimal
+ */
+async function sha256hex(input) {
+  const str = String(input);
+  if (window.crypto && crypto.subtle) {
+    try {
+      const buffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buffer))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+    } catch (e) {
+      console.warn('[BazarQ] WebCrypto SHA-256 gagal, menggunakan fallback algoritma', e);
+    }
+  }
+  let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+  for (let i = 0; i < str.length; i++) {
+    const ch = str.charCodeAt(i);
+    h1 = Math.imul(h1 ^ ch, 2654435761);
+    h2 = Math.imul(h2 ^ ch, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return (h2 >>> 0).toString(16).padStart(8, '0') + (h1 >>> 0).toString(16).padStart(8, '0');
+}
+
+/* Helper format mata uang, waktu, padding dan pembersih karakter */
+const rp        = n => 'Rp' + Number(n || 0).toLocaleString('id-ID');
+const pad2      = n => String(n).padStart(2, '0');
+const pad3      = n => String(n).padStart(3, '0');
+const tk        = id => 'A-' + pad3(id);
+const hhmm      = t => new Date(t).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+const esc       = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const maskPhone = p => { const d = String(p).replace(/\D/g, ''); return d.length <= 6 ? d : d.slice(0, 4) + '•••' + d.slice(-3); };
+const mmss      = ms => { const s = Math.max(0, Math.floor(ms / 1000)); return pad2(Math.floor(s / 60)) + ':' + pad2(s % 60); };
+const slugify   = s => String(s || 'booth').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 32) || 'booth';
+
+/* ============================================================
+   2. SISTEM IKON VEKTOR SVG (Presisi & Anti-Slop)
+   ============================================================ */
+const ICONS = {
+  zap:        (s = 16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+  chat:       (s = 16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+  ticket:     (s = 16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"/><line x1="13" y1="5" x2="13" y2="19" stroke-dasharray="2 2"/></svg>',
+  volume:     (s = 16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>',
+  bell:       (s = 16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h24s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',
+  user:       (s = 16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+  store:      (s = 16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+  chart:      (s = 16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
+  plusCircle: (s = 16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>',
+  qr:         (s = 16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>',
+  check:      (s = 14) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  cash:       (s = 16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/></svg>'
+};
+
+/* ============================================================
+   3. ROUTING & RESOLUSI URL MULTI-BOOTH
+   ============================================================ */
 function boothFromUrl(){
   const q = new URLSearchParams(location.search).get('booth');
   if (q && /^[a-z0-9-]{2,50}$/.test(q)) return q;
@@ -111,7 +158,9 @@ function adoptTicketFromUrl(){
   return false;
 }
 
-/* ---------- state ---------- */
+/* ============================================================
+   4. MODEL DATA LOKAL & REAKTIVITAS STATE
+   ============================================================ */
 let S = null;
 let sel = {};
 let stage = 'scan';
@@ -123,9 +172,14 @@ let myPresenceRef = null;
 let boothMissing = false;
 let lastRoute = '';
 
-/* ---------- sound engine (hardened buat bazar berisik) ----------
-   - ctx suspended saat event realtime datang → chime antre, dibunyikan di gestur pertama.
-   - Pesanan siap = double-burst keras + getar + judul tab kedip (cadangan kalau kalah berisik). */
+/* ============================================================
+   5. AUDIO & HAPTICS ENGINE (Web Audio API Berbasis Sintesis)
+   ============================================================ */
+/**
+ * Mesin suara Web Audio API tanpa file audio eksternal.
+ * - AudioContext suspended saat event realtime datang -> chime di-queue, dibunyikan di gestur pertama.
+ * - Pesanan siap = alert double-burst harmonik + getar haptik navigator.vibrate + judul tab berkedip.
+ */
 const BazarQAudio = {
   ctx: null, enabled: true, pending: null,
   init(){
@@ -187,7 +241,9 @@ document.addEventListener('pointerdown', stopFlash, { passive: true });
 document.addEventListener('keydown', stopFlash);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) stopFlash(); });
 
-/* ---------- state bersama & seed ---------- */
+/* ============================================================
+   6. SINKRONISASI REALTIME & CACHE STATE (Firebase RTDB)
+   ============================================================ */
 function freshState(profile, menu){ return { v:1, seq:0, kitchenFull:false, orders:[], log:[], profile: profile || DEFAULT_PROFILE, menu: menu || DEFAULT_MENU }; }
 function pushLog(st, type, text, extra){
   st.log.unshift(Object.assign({ at:Date.now(), type, text }, extra || {}));
@@ -339,7 +395,9 @@ function load(){
   });
 }
 
-/* ---------- presence per booth ---------- */
+/* ============================================================
+   7. PRESENSI PERANGKAT REALTIME (Heartbeat Koneksi)
+   ============================================================ */
 function setupPresence(){
   try {
     const presRef = db.ref('bazarq/v2/presence/' + SLUG);
@@ -367,7 +425,9 @@ function onSync(){
   renderAll();
 }
 
-/* ---------- QR: asli (qrcodejs) + fallback pola ---------- */
+/* ============================================================
+   8. GENERATOR QR CODE & MODAL LENGKAP
+   ============================================================ */
 function mulberry32(a){
   return function(){
     a |= 0; a = a + 0x6D2B79F5 | 0;
@@ -426,9 +486,10 @@ function showQRFullscreen(){
   document.addEventListener('keydown', escH);
 }
 
-/* ---------- ilustrasi 2D flat inline (tanpa network, <2KB per scene) ----------
-   Palet ikut tema kertas hangat: biru sambal, kunyit, daun, tinta.
-   Karakter tanpa wajah detail, gaya flat ala unDraw/Storyset. */
+/* ============================================================
+   9. KOMPONEN VISUAL & ILUSTRASI FLAT 2D
+   Palet: Biru UMKM (#2563EB), Kuning Hangat (#FBEFD4), Tinta (#0F172A).
+   ============================================================ */
 function illusHero(){
   return '<svg viewBox="0 0 320 210" role="img" aria-label="Ilustrasi booth bazar dengan antrean pembeli">' +
     '<circle cx="282" cy="32" r="13" fill="#FBEFD4" stroke="#6E5106" stroke-width="3"/>' +
@@ -538,7 +599,9 @@ function illusGarland(){
     '<path d="' + d + '" fill="none" stroke="#0F172A" stroke-width="4" stroke-linecap="round"/>' + flags + '</svg>';
 }
 
-/* ---------- tur interaktif 1 menit: coachmark per tombol asli ---------- */
+/* ============================================================
+   10. PANDUAN INTERAKTIF ONBOARDING & TOAST NOTIFIKASI
+   ============================================================ */
 const TOUR_STEPS = [
   { t:'Mulai sebagai pembeli', d:'Tombol biru ini membuka halaman pemesanan. Di sinilah pengunjung memilih menu, mengisi WhatsApp, dan menerima nomor antrean.', img:'scan', sel:'.cta-row .btn-primary', cta:['Coba sebagai pembeli', 'pembeli'] },
   { t:'Kelola sebagai penjual', d:'Tombol ini membuka dasbor kasir dan dapur. Penjual masuk cukup dengan PIN booth, tanpa email dan tanpa kata sandi.', img:'hero', sel:'.cta-row a[href^="#merchant"]', cta:['Buka dasbor penjual', 'merchant'] },
@@ -668,7 +731,9 @@ function toast(msg){
   toastTimer = setTimeout(() => t.classList.remove('show'), 4400);
 }
 
-/* ---------- turunan state ---------- */
+/* ============================================================
+   11. LOGIKA DOMAIN BISNIS & STATE MACHINE ANTREAN
+   ============================================================ */
 const activeOrders = () => S.orders
   .filter(o => o.status === 'waiting' || o.status === 'processing')
   .sort((a,b) => a.createdAt - b.createdAt);
@@ -845,7 +910,9 @@ function checkNotifs(){
   }
 }
 
-/* ---------- router multi-booth ---------- */
+/* ============================================================
+   12. ROUTER MULTI-BOOTH & KONTROLER TAMPILAN
+   ============================================================ */
 const VIEWS = { beranda:renderLanding, pembeli:renderPembeli, order:renderPembeli, merchant:renderMerchant, eo:renderEO, daftar:renderDaftar };
 function view(){
   const h = location.hash.replace(/^#/, '').split('?')[0];
@@ -893,23 +960,7 @@ function refreshMenuGate(){
   updateMenuBits(body);
 }
 
-/* ---------- Ikon Vektor SVG Presisi (Anti-Slop / Standar Desain Sistem) ---------- */
-const ICONS = {
-  zap: (s=16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
-  chat: (s=16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
-  ticket: (s=16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"/><line x1="13" y1="5" x2="13" y2="19" stroke-dasharray="2 2"/></svg>',
-  volume: (s=16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>',
-  bell: (s=16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h24s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',
-  user: (s=16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
-  store: (s=16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
-  chart: (s=16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
-  plusCircle: (s=16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>',
-  qr: (s=16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>',
-  check: (s=14) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
-  cash: (s=16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/></svg>'
-};
-
-/* ---------- beranda ---------- */
+/* --- 12.1 Kontroler Beranda (Landing Page & 3D Interactive Card) --- */
 function renderLanding(){
   const live = activeOrders().find(o => o.status === 'processing') || activeOrders().slice(-1)[0] || null;
   const flow = [
@@ -1254,7 +1305,7 @@ function renderLanding(){
   updateRolePreview('pembeli');
 }
 
-/* ---------- pembeli ---------- */
+/* --- 12.2 Kontroler Pembeli (Katalog Menu, Keranjang & Tiket Digital) --- */
 function renderPembeli(){
   const mine = myOrder();
   const actives = myOrders().filter(o => o.status !== 'completed');
@@ -1487,7 +1538,7 @@ function renderTicket(body, o){
   }
 }
 
-/* ---------- daftar booth (untuk orang lain) ---------- */
+/* --- 12.3 Kontroler Registrasi Booth Baru (Self-Service) --- */
 function renderDaftar(){
   appEl.innerHTML =
   '<section class="view buyer-wrap"><div class="panel">' +
@@ -1537,10 +1588,7 @@ function renderDaftar(){
   });
 }
 
-/* ---------- merchant: View B Kasir + View C Dapur + Display (sesuai PRD + skill rules) ----------
-   Fondasi lama dipertahankan: #merchant/{slug} = dashboard gabungan.
-   Sub-route baru (tanpa framework, palette & class lama dipakai ulang):
-   /kasir = 1 layar 1 keputusan (lunas/belum) · /dapur = fokus masak · /display = read-only TV. */
+/* --- 12.4 Kontroler Merchant (Kasir, Dapur Board & Display Publik) --- */
 let merchantTab = 'kasir';
 function renderMerchant(){
   const sub = merchantSub();
@@ -1827,7 +1875,7 @@ function renderPinLogin(){
   $('#pin').focus();
 }
 
-/* ---------- dasbor EO ---------- */
+/* --- 12.5 Kontroler Penyelenggara Event (Dasbor EO) --- */
 function renderEO(){
   const contoh = [
     { name:'Sate Klathak Mas Yog', n:41 },
@@ -1882,7 +1930,9 @@ function renderEO(){
   '</section>';
 }
 
-/* ---------- live tick ---------- */
+/* ============================================================
+   13. SIKLUS HIDUP APLIKASI, AMBIENT & EVENT LISTENERS
+   ============================================================ */
 function liveTick(){
   if (!S) return;
   if (view() === 'beranda'){

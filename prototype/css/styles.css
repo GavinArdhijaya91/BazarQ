@@ -1,3 +1,23 @@
+/**
+ * @file styles.css
+ * @summary Sistem Desain & Gaya Tampilan Antarmuka BazarQ.
+ * 
+ * Struktur Arsitektur CSS:
+ * 1. Token Desain & Variabel Global (:root)
+ * 2. Reset Dasar & Tipografi Global
+ * 3. Header & Navigasi Kaca Terang (Glassmorphism)
+ * 4. Tombol & Komponen UI Atomik
+ * 5. Kartu Antrean, Tiket Digital & Timeline Status
+ * 6. Tampilan Dasbor Merchant (Kasir, Dapur Board, TV Display)
+ * 7. Lapisan Visual Ambient & Ilustrasi Flat 2D
+ * 8. Sistem Landing Page Interaktif Modern (AirLume + Schematics ITS):
+ *    - 3D Floating Ticket Showcase & Live Simulator
+ *    - Bento Grid Fitur PRD (Zero-App, Throttling, Web Audio, Hybrid Pay)
+ *    - Stepper Dimensional 5 Langkah & Role Switcher
+ *    - Strip Metrik Gelar Karya
+ * 9. Desain Responsif & Optimasi Aksesibilitas (Reduced-Motion)
+ */
+
 :root{
   /* Netral 60% */
   --paper:#FFFFFF; --paper-2:#FFFFFF; --canvas:#EFF6FF;
@@ -570,11 +590,6 @@ body::before{content:"";position:fixed;inset:-20%;z-index:0;pointer-events:none;
   .stub-glow{animation:glowPulse 5s ease-in-out infinite}
   @keyframes glowPulse{50%{opacity:.55}}
 }
-
-
-
-
-
 
 /* ============================================================
    BazarQ Interactive Landing System (AirLume + Schematics ITS)
