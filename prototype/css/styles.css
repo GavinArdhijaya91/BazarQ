@@ -47,6 +47,10 @@ a{color:inherit}
 .mono{font-family:var(--mono)}
 .wrap{max-width:1080px;margin:0 auto;padding-left:var(--s3);padding-right:var(--s3)}
 #app{display:block;min-height:60vh}
+/* Di luar app-mode (landing page), kontainer #app membentang penuh 100vw untuk efek dark-tech */
+body:not(.app-mode) #app{max-width:100%;padding-left:0;padding-right:0}
+body:not(.app-mode){background:#060D1F}
+body:not(.app-mode) footer.foot{background:#040914;border-top:1px solid rgba(255,255,255,0.08);margin-top:0;padding:24px 20px;color:#64748B;max-width:100%}
 #app > section:first-child{margin-top:0}
 .wide{width:100%;justify-content:center}
 .tiny{font-size:.85rem;color:var(--ink-soft);line-height:1.5}

@@ -92,7 +92,9 @@ const ICONS = {
   plusCircle: (s = 16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>',
   qr:         (s = 16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>',
   check:      (s = 14) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
-  cash:       (s = 16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/></svg>'
+  cash:       (s = 16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/></svg>',
+  phone:      (s = 16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>',
+  shield:     (s = 16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>'
 };
 
 /* ============================================================
@@ -382,13 +384,19 @@ function load(){
     adoptTicketFromUrl();
     if (myOrder() && myOrder().status !== 'completed') stage = 'ticket';
     checkNotifs();
-    renderAll();
+    try {
+      renderAll();
+    } catch(renderErr){
+      console.error('[BazarQ] Kesalahan render UI:', renderErr);
+    }
     setupPresence();
   }).catch(err => {
     console.error('BazarQ Firebase error:', err);
     let msg = 'Gagal terhubung.<br>Periksa koneksi internet, lalu refresh halaman.';
     if (err && (err.code === 'PERMISSION_DENIED' || String(err).includes('PERMISSION_DENIED') || String(err).includes('permission_denied'))){
       msg = '<b>Akses database ditolak (Firebase Security Rules)</b>.<br><span style="font-size:0.85rem;color:var(--text-sub);display:inline-block;margin-top:8px">Rules database di Firebase Console belum diizinkan.<br>Buka Firebase Console &rarr; Realtime Database &rarr; Rules, lalu terapkan isi file <code>backend/database.rules.json</code>.</span>';
+    } else if (err instanceof TypeError || err instanceof ReferenceError){
+      msg = '<b>Terjadi kesalahan skrip antarmuka</b>.<br><span style="font-size:0.85rem;color:var(--text-sub);display:inline-block;margin-top:8px">' + esc(err.message) + '</span>';
     }
     appEl.innerHTML =
       '<div class="loading-screen"><p style="color:#DC2626;text-align:center;padding:24px">' + msg + '</p></div>';
