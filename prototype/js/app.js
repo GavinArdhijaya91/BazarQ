@@ -950,9 +950,9 @@ function renderAll(){
   if (boothMissing){ document.body.classList.add('app-mode'); renderNotFound(); return; }
   if (!S) return;
   const r = view();
-  // Mode aplikasi penuh: pembeli/merchant/tiket = UI fungsional saja,
+  // Mode aplikasi penuh: pembeli/merchant/tiket/penyelenggara = UI fungsional saja,
   // landing (nav marketing, reset, footer) disembunyikan total.
-  const isApp = r === 'pembeli' || r === 'order' || r === 'merchant';
+  const isApp = r === 'pembeli' || r === 'order' || r === 'merchant' || r === 'eo';
   document.body.classList.toggle('app-mode', isApp);
   const btnExit = document.getElementById('btnExit');
   if (btnExit) btnExit.hidden = (r === 'beranda');
