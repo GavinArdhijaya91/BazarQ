@@ -325,9 +325,12 @@ function load(){
     setupPresence();
   }).catch(err => {
     console.error('BazarQ Firebase error:', err);
+    let msg = 'Gagal terhubung.<br>Periksa koneksi internet, lalu refresh halaman.';
+    if (err && (err.code === 'PERMISSION_DENIED' || String(err).includes('PERMISSION_DENIED') || String(err).includes('permission_denied'))){
+      msg = '<b>Akses database ditolak (Firebase Security Rules)</b>.<br><span style="font-size:0.85rem;color:var(--text-sub);display:inline-block;margin-top:8px">Rules database di Firebase Console belum diizinkan.<br>Buka Firebase Console &rarr; Realtime Database &rarr; Rules, lalu terapkan isi file <code>backend/database.rules.json</code>.</span>';
+    }
     appEl.innerHTML =
-      '<div class="loading-screen"><p style="color:#DC2626;text-align:center;padding:24px">' +
-      'Gagal terhubung.<br>Periksa koneksi internet, lalu refresh halaman.</p></div>';
+      '<div class="loading-screen"><p style="color:#DC2626;text-align:center;padding:24px">' + msg + '</p></div>';
   });
 }
 
