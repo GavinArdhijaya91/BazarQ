@@ -1705,7 +1705,7 @@ function renderMerchantAll(){
    Badge = antrean menunggu pembayaran (butuh aksi kasir). Klik = lompat ke kasir + baca ringkasan. */
 function bellBtn(){
   const n = S.orders.filter(o => o.status === 'waiting' && !o.paid).length;
-  return '<button class="sound-btn" id="btnBell" type="button">🔔 Pesan' + (n ? ' <span class="chip off" style="margin-left:2px">' + n + '</span>' : '') + '</button>';
+  return '<button class="sound-btn" id="btnBell" type="button">' + ICONS.bell(14) + ' <span>Pesan</span>' + (n ? ' <span class="chip off" style="margin-left:4px">' + n + '</span>' : '') + '</button>';
 }
 function bindBell(){
   const b = $('#btnBell'); if (!b) return;
@@ -1756,7 +1756,7 @@ function renderMerchantKasir(){
       '<div class="ocard"><div class="top-row"><span class="tk">' + esc(o.ticket) + '</span><span class="el mono" data-el="' + o.id + '">' + elapsedLabel(o) + '</span></div>' +
       '<div class="items">' + o.items.map(i => i.qty + '× ' + esc(i.name)).join(' &middot; ') + '<span class="mono tot">' + rp(o.total) + '</span></div>' +
       '<div class="tiny">Bayar via ' + (o.payMethod === 'qris' ? 'QRIS' : 'Tunai') + ' · WA ' + esc(maskPhone(o.phone)) + ' · ' + hhmm(o.createdAt) + '</div>' +
-      '<div class="act"><button class="btn btn-primary wide" data-paid="' + o.id + '" type="button">✅ Konfirmasi Lunas</button></div></div>'
+      '<div class="act"><button class="btn btn-primary wide" data-paid="' + o.id + '" type="button">' + ICONS.check(14) + ' <span>Konfirmasi Lunas</span></button></div></div>'
     ).join('') : '<div class="empty-illus">' + illusEmpty() + '<span>Tidak ada antrean menunggu.</span></div>') +
     '</div><div class="btn-row"><a class="btn btn-ghost btn-sm" href="#merchant/' + esc(SLUG) + '">Pesanan langsung · Menu habis · QRIS → tampilan gabungan</a></div></section>';
   bindMHead();
@@ -1770,9 +1770,9 @@ function renderMerchantDapur(){
     '<div class="items">' + o.items.map(i => i.qty + '× ' + esc(i.name)).join(' &middot; ') + '</div><div class="act">' + btn + '</div></div>';
   appEl.innerHTML = '<section class="view mode-dapur">' + mHeadRow('Dapur') + mSubNav('dapur') +
     '<div class="board"><div class="col"><h3>Diproses <span class="count">' + proc.length + '</span></h3>' +
-    (proc.length ? proc.map(o => card(o, '<button class="btn btn-primary wide" data-set="' + o.id + ':ready" type="button">🔔 Pesanan Siap / Panggil</button>')).join('') : '<div class="empty">Belum ada yang diproses.</div>') + '</div>' +
+    (proc.length ? proc.map(o => card(o, '<button class="btn btn-primary wide" data-set="' + o.id + ':ready" type="button">' + ICONS.bell(14) + ' <span>Pesanan Siap / Panggil</span></button>')).join('') : '<div class="empty">Belum ada yang diproses.</div>') + '</div>' +
     '<div class="col"><h3>Siap Diambil <span class="count">' + ready.length + '</span></h3>' +
-    (ready.length ? ready.map(o => card(o, '<button class="btn btn-primary wide" data-set="' + o.id + ':completed" type="button">✅ Diserahkan / Selesai</button>')).join('') : '<div class="empty">Belum ada pesanan siap.</div>') + '</div></div></section>';
+    (ready.length ? ready.map(o => card(o, '<button class="btn btn-primary wide" data-set="' + o.id + ':completed" type="button">' + ICONS.check(14) + ' <span>Diserahkan / Selesai</span></button>')).join('') : '<div class="empty">Belum ada pesanan siap.</div>') + '</div></div></section>';
   bindMHead();
   $$('[data-set]').forEach(b => b.addEventListener('click', () => { const p = b.dataset.set.split(':'); setStatus(Number(p[0]), p[1]); renderAll(); }));
 }
