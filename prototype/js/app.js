@@ -1,12 +1,17 @@
 'use strict';
 
-/* ============================================================
-   BazarQ · Multi-booth serverless backend (Firebase RTDB)
-   Tiap booth = namespace sendiri: bazarq/v2/booths/{slug}
-   QR berisi URL penuh: {app}/#pembeli/{slug} → bisa di-scan
-   siapa pun, tanpa server sendiri. Legacy bazarq/state tetap
-   didukung sebagai booth "demo-geprek".
-   ============================================================ */
+/**
+ * @file app.js
+ * @summary Aplikasi klien inti sistem antrean dan pemesanan digital BazarQ.
+ * 
+ * Kontrak Komponen:
+ * - Routing: Mengambil slug booth aktif via parameter query, hash URL, atau sessionStorage.
+ * - Manajemen State: Sinkronisasi state lokal `S` dengan Firebase RTDB di `/bazarq/v2/booths/{slug}`.
+ * - Sintesis Audio: Menghasilkan notifikasi audio via Web Audio API tanpa unduh file suara eksternal.
+ * - Keamanan: Memvalidasi akses penjual menggunakan hash SHA-256 PIN; menolak penyimpanan PIN plaintext.
+ * - Rendering Tampilan: Mengontrol mutasi DOM dinamis di dalam `#app` berdasarkan rute hash:
+ *   #beranda (Landing), #pembeli (Pembeli), #merchant (Penjual/Dapur/Display), #eo (Penyelenggara), #daftar (Buka Booth).
+ */
 
 firebase.initializeApp(window.FIREBASE_CONFIG);
 const db = firebase.database();
@@ -892,76 +897,346 @@ function refreshMenuGate(){
 function renderLanding(){
   const live = activeOrders().find(o => o.status === 'processing') || activeOrders().slice(-1)[0] || null;
   const flow = [
-    ['Scan QR', 'Standee QR di booth, buka lewat browser di perangkat digital. Tanpa install aplikasi.'],
-    ['Pilih menu', 'Tandai pesanan dan masukkan nomor WhatsApp.'],
-    ['Terima tiket', 'Nomor antrean dan estimasi tunggu langsung tampil.'],
-    ['Bebas jelajah', 'Notifikasi WA masuk saat tinggal 2 nomor.'],
-    ['Ambil pesanan', 'Tunjukkan tiket saat pesanan siap.']
+    { n:'01', t:'Scan QR di Booth', d:'Pindai QR standee di meja booth lewat kamera HP pembeli. Langsung terbuka tanpa install aplikasi.' },
+    { n:'02', t:'Pilih Menu & No WA', d:'Pilih makanan/minuman favorit dan masukkan nomor WhatsApp untuk notifikasi antrean.' },
+    { n:'03', t:'Terima Tiket Digital', d:'Nomor antrean dan estimasi waktu langsung muncul real-time di layar perangkat.' },
+    { n:'04', t:'Bebas Menjelajah', d:'Pembeli bebas jalan-jalan keliling bazar. Notifikasi otomatis berbunyi saat giliran mendekat.' },
+    { n:'05', t:'Ambil Pesanan', d:'Tunjukkan tiket digital di booth saat status berubah hijau "Siap Diambil".' }
   ];
+
   appEl.innerHTML =
-  '<section class="hero">' +
-    '<div class="hero-grid">' +
-      '<div>' +
-        '<h1>Antrean bazar pindah ke <em>Digital</em>.</h1>' +
-        '<p class="lede">Scan QR di booth, pilih menu, dapat nomor antrean dan estimasi waktu. Pembeli bebas jelajah, dagangan tetap terkendali.</p>' +
-        '<div class="cta-row">' +
-          '<a class="btn btn-primary" href="#pembeli/' + esc(SLUG) + '">Coba sebagai Pembeli</a>' +
-          '<button class="btn btn-ghost" id="btnTour" type="button">Ikuti Tur 1 Menit</button>' +
-          '<a class="btn btn-ghost" href="#merchant/' + esc(SLUG) + '">Buka Dasbor Penjual</a>' +
-          '<a class="btn btn-ghost" href="#daftar">Buka Booth Sendiri</a>' +
+  /* --- HERO SECTION MODERN --- */
+  '<section class="hero-modern">' +
+    '<div class="hero-modern-grid">' +
+      '<div class="hero-content">' +
+        '<div class="hero-pill-badge">' +
+          '<span class="hero-pill-dot"></span>' +
+          '<span>Inovasi Gelar Karya &bull; Zero-App Antrean</span>' +
         '</div>' +
-        '<p class="tiny" style="margin-top:10px">Booth aktif: <b class="mono">' + esc(SLUG) + '</b> · <b>' + esc(BOOTH().name) + '</b></p>' +
+        '<h1 class="hero-title">Antrean Bazar Jadi <span class="gradient-text">Cepat, Rapi & Seru</span>.</h1>' +
+        '<p class="hero-subtitle">Scan QR di booth, ambil nomor antrean di HP, bebas jalan-jalan tanpa takut kelewatan giliran. Tanpa install aplikasi, tanpa ribet.</p>' +
+        '<div class="hero-cta-group">' +
+          '<a class="btn btn-glow" href="#pembeli/' + esc(SLUG) + '"><span>Coba sebagai Pembeli</span> <span style="font-size:1.15rem">&rarr;</span></a>' +
+          '<button class="btn btn-glass" id="btnTour" type="button">Ikuti Tur 1 Menit</button>' +
+          '<a class="btn btn-glass" href="#merchant/' + esc(SLUG) + '">Dasbor Penjual</a>' +
+          '<a class="btn btn-glass" href="#daftar">Buka Booth</a>' +
+        '</div>' +
+        '<p class="tiny" style="margin-top:6px;color:#64748B">' +
+          'Booth aktif: <b class="mono" style="color:#1D4ED8">' + esc(SLUG) + '</b> &bull; <b>' + esc(BOOTH().name) + '</b>' +
+        '</p>' +
       '</div>' +
-      '<div>' +
-        '<div class="illus-card">' + illusHero() +
-          '<p class="illus-cap">Booth UMKM, penjual, dan pembeli mengantre dengan tiket digital.</p>' +
+
+      /* --- 3D TICKET & INTERACTIVE SIMULATOR (AirLume + Schematics ITS) --- */
+      '<div class="hero-showcase" id="heroShowcase">' +
+        '<div class="floating-widget float-sync">' +
+          '<div class="widget-ic blue">⚡</div>' +
+          '<div class="widget-text"><b>Live WebSocket</b><span>Firebase RTDB Sync</span></div>' +
         '</div>' +
-        '<div class="stub print">' +
-          '<div class="stub-glow"></div>' +
-          '<div class="row"><span class="cap">Sedang dipanggil</span><span class="chip">' + esc(BOOTH().name) + '</span></div>' +
-          '<div class="num" data-live-num>' + (live ? esc(live.ticket) : 'A-···') + '</div>' +
-          '<div class="row sub"><span data-live-sub>' + (live ? estLabel(live) + ' &middot; ' + activeCount() + ' antrean aktif' : 'Belum ada antrean aktif') + '</span><span class="mono">BazarQ</span></div>' +
+
+        '<div class="ticket-3d-wrap" id="heroTicket3D">' +
+          '<div class="ticket-card-modern">' +
+            '<div class="ticket-fluted-bg"></div>' +
+            '<div class="ticket-card-header">' +
+              '<div class="ticket-brand-chip"><span>🎫 Tiket Live BazarQ</span></div>' +
+              '<div class="ticket-status-chip" id="heroSimBadge"><span>🟢 ' + (live && live.status === 'processing' ? 'Sedang Dimasak' : 'Siap Diambil') + '</span></div>' +
+            '</div>' +
+            '<div class="ticket-number-box">' +
+              '<div class="ticket-label-sm">Nomor Antrean Booth</div>' +
+              '<div class="ticket-number-val" id="heroLiveNum">' + (live ? esc(live.ticket) : 'A-007') + '</div>' +
+              '<div style="font-size:0.85rem;color:#93C5FD;font-weight:600">' + esc(BOOTH().name) + '</div>' +
+            '</div>' +
+            '<div class="ticket-meta-row">' +
+              '<span id="heroSimMeta"><b>' + (live ? estLabel(live) : '~4-8 mnt') + '</b> &bull; ' + activeCount() + ' antrean aktif</span>' +
+              '<span class="mono" style="color:#38BDF8;font-weight:700">ONLINE</span>' +
+            '</div>' +
+            '<div class="ticket-dash-line"></div>' +
+            '<div class="ticket-interactive-actions">' +
+              '<button class="ticket-action-btn" id="btnHeroChime" type="button" title="Membunyikan Web Audio Chime">🔊 Tes Chime</button>' +
+              '<button class="ticket-action-btn" id="btnSimThrot" type="button" title="Simulasi Tombol Dapur Penuh">⚡ Dapur Penuh</button>' +
+            '</div>' +
+          '</div>' +
         '</div>' +
-        '<p class="stub-cap">Tiket contoh booth <b class="mono">' + esc(SLUG) + '</b>. Tersinkron langsung antar perangkat.</p>' +
+
+        '<div class="floating-widget float-wa">' +
+          '<div class="widget-ic green">💬</div>' +
+          '<div class="widget-text"><b>Notifikasi WA Otomatis</b><span>"Pesanan segera siap, sisa 1 antrean lagi"</span></div>' +
+        '</div>' +
       '</div>' +
     '</div>' +
   '</section>' +
+
+  /* --- BENTO GRID: FITUR UTAMA PRD V1.0 --- */
   '<section class="sec">' +
-    '<h2>Kendala lama, jawaban sederhana</h2>' +
-    '<p class="sub">Di bazar dan pasar kaget, antrean fisik membuat pembeli pergi dan UMKM kehilangan penjualan. BazarQ menggantinya dengan nomor antrean digital yang berjalan di perangkat digital standar, tanpa aplikasi, tanpa akun.</p>' +
-    '<div class="vs">' +
-      '<div class="card"><h3>Tanpa BazarQ</h3><ul class="tight">' +
-        '<li>Antrean fisik tidak tertata di depan booth.</li>' +
-        '<li>Pembeli pergi karena tidak tahu estimasi tunggu.</li>' +
-        '<li>Dapur kewalahan saat lonjakan pengunjung.</li>' +
-      '</ul></div>' +
-      '<div class="card good"><h3>Dengan BazarQ</h3><ul class="tight">' +
-        '<li>Nomor antrean dan estimasi langsung di perangkat digital pembeli.</li>' +
-        '<li>Pembeli bebas menjelajah, dipanggil lewat notifikasi.</li>' +
-        '<li>Tombol Dapur Penuh menjaga kualitas saat ramai.</li>' +
-      '</ul></div>' +
+    '<div class="center" style="margin-bottom:14px"><span class="bento-badge">KEUNGGULAN PRD V1.0</span></div>' +
+    '<h2 class="center" style="font-size:clamp(1.8rem, 3.5vw, 2.3rem);font-weight:800;letter-spacing:-0.02em;margin:0 0 10px">Dirancang untuk Riuhnya Bazar & Pop-Up Market</h2>' +
+    '<p class="center tiny" style="max-width:58ch;margin:0 auto 28px;font-size:1.02rem;color:#64748B">Kombinasi teknologi zero-friction yang memecahkan masalah antrean fisik tanpa membebani penjual maupun pembeli.</p>' +
+    '<div class="bento-grid">' +
+      '<div class="bento-card col-7">' +
+        '<div class="bento-badge">ZERO-APP SCAN</div>' +
+        '<h3 class="bento-title">Scan QR, Langsung Buka Menu & Tiket</h3>' +
+        '<p class="bento-desc">Pembeli tidak perlu mengunduh aplikasi apapun dari toko aplikasi atau registrasi akun yang membuang waktu. Kamera bawaan HP langsung membuka web booth seketika.</p>' +
+        '<div class="bento-scanner-vis">' +
+          '<div class="scanner-laser-line"></div>' +
+          '<svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="#1E40AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+            '<rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect>' +
+            '<rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect>' +
+          '</svg>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="bento-card col-5">' +
+        '<div class="bento-badge" style="background:#FEF3C7;color:#B45309">SMART THROTTLING</div>' +
+        '<h3 class="bento-title">Pengaman Dapur Penuh</h3>' +
+        '<p class="bento-desc">Saat pesanan menumpuk, penjual cukup menekan toggle Dapur Penuh. Estimasi waktu tunggu otomatis digandakan dan order baru ditahan secara cerdas.</p>' +
+        '<div style="background:#FFFBEB;border:1.5px solid #FDE68A;border-radius:14px;padding:16px;text-align:center;margin-top:auto">' +
+          '<span style="font-size:0.85rem;font-weight:700;color:#B45309">Estimasi Normal: 4 Mnt &rarr; Penuh: 8 Mnt</span>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="bento-card col-5">' +
+        '<div class="bento-badge" style="background:#EFF6FF;color:#1D4ED8">WEB AUDIO SYNTH</div>' +
+        '<h3 class="bento-title">Chime Tembus Suara Bising</h3>' +
+        '<p class="bento-desc">Sintesis audio 880Hz murni tanpa file mp3 berat. Double-burst keras + getaran + judul tab berkedip menjamin panggilan terdengar di tengah keramaian konser bazar.</p>' +
+        '<div class="audio-wave-wrap" id="landingAudioWave" style="cursor:pointer" title="Klik untuk memicu gelombang audio">' +
+          '<div class="audio-wave-bar"></div><div class="audio-wave-bar"></div><div class="audio-wave-bar"></div><div class="audio-wave-bar"></div><div class="audio-wave-bar"></div>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="bento-card col-7">' +
+        '<div class="bento-badge" style="background:#ECFDF5;color:#047857">HYBRID PAYMENT & WA ALERT</div>' +
+        '<h3 class="bento-title">QRIS Statis, Cash, & Pengingat WA</h3>' +
+        '<p class="bento-desc">Mendukung pembayaran langsung di booth via QRIS maupun uang tunai. Sistem otomatis mengingatkan pembeli lewat simulasi notifikasi WA saat antrean tinggal 2 nomor.</p>' +
+        '<div style="display:flex;gap:12px;margin-top:auto;flex-wrap:wrap">' +
+          '<div style="flex:1;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:10px;font-size:0.85rem">💳 <b>QRIS Statis</b> &bull; Scan di HP</div>' +
+          '<div style="flex:1;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:10px;font-size:0.85rem">💵 <b>Tunai Kasir</b> &bull; Bayar di Meja</div>' +
+        '</div>' +
+      '</div>' +
     '</div>' +
   '</section>' +
+
+  /* --- 5-STEP ORIGAMI / PAPER DIMENSIONAL STEPPER --- */
   '<section class="sec">' +
-    '<h2>Alur pembeli, dari scan sampai ambil</h2>' +
-    '<p class="sub">Lima langkah inilah yang kami peragakan langsung di booth, dari awal sampai akhir.</p>' +
-    '<div class="steps">' + flow.map((s,i) =>
-      '<div class="step"><span class="n">0' + (i+1) + '</span><b>' + s[0] + '</b><p>' + s[1] + '</p></div>'
-    ).join('') + '</div>' +
+    '<div class="center" style="margin-bottom:12px"><span class="bento-badge">ALUR PENGUNJUNG</span></div>' +
+    '<h2 class="center" style="font-size:1.8rem;font-weight:800;letter-spacing:-0.01em;margin:0 0 10px">Lima Langkah Mulus Tanpa Antre Berdiri</h2>' +
+    '<p class="center tiny" style="max-width:54ch;margin:0 auto 24px;font-size:1rem;color:#64748B">Dari pertama kali melihat standee QR hingga menikmati hidangan lezat pesanan.</p>' +
+    '<div class="stepper-container">' +
+      flow.map(s =>
+        '<div class="stepper-card">' +
+          '<div class="step-num-badge">' + s.n + '</div>' +
+          '<h4>' + s.t + '</h4>' +
+          '<p>' + s.d + '</p>' +
+        '</div>'
+      ).join('') +
+    '</div>' +
   '</section>' +
+
+  /* --- INTERACTIVE ROLE SHOWCASE (Schematics ITS style) --- */
   '<section class="sec">' +
-    '<h2>Pilih peran untuk mencoba</h2>' +
-    '<p class="sub">Buka peran berbeda di perangkat digital berbeda, semua tersinkron otomatis di booth <b class="mono">' + esc(SLUG) + '</b>.</p>' +
-    '<div class="roles">' +
-      '<a class="role" href="#pembeli/' + esc(SLUG) + '"><span class="t">Pembeli</span><span class="d">Pesan tanpa aplikasi, pantau nomor antrean dan notifikasinya secara live.</span><span class="go">Buka tab pembeli &rarr;</span></a>' +
-      '<a class="role" href="#merchant/' + esc(SLUG) + '"><span class="t">Penjual UMKM</span><span class="d">Panggil antrean, ubah status pesanan, tampilkan QR standee, atur Dapur Penuh.</span><span class="go">Buka dasbor penjual &rarr;</span></a>' +
-      '<a class="role" href="#eo"><span class="t">Penyelenggara Acara</span><span class="d">Pantau volume antrean semua booth dan jam sibuk acara secara keseluruhan.</span><span class="go">Buka dasbor penyelenggara &rarr;</span></a>' +
-      '<a class="role" href="#daftar"><span class="t">Buka Booth Sendiri</span><span class="d">Daftar 1 menit, dapat QR asli siap cetak untuk booth-mu sendiri.</span><span class="go">Daftar booth &rarr;</span></a>' +
+    '<div class="center" style="margin-bottom:12px"><span class="bento-badge">SIMULASI 4 PERAN</span></div>' +
+    '<h2 class="center" style="font-size:1.8rem;font-weight:800;letter-spacing:-0.01em;margin:0 0 10px">Coba Pengalaman dari Berbagai Sudut Pandang</h2>' +
+    '<p class="center tiny" style="max-width:58ch;margin:0 auto 24px;font-size:1rem;color:#64748B">Pilih peran di bawah ini untuk melihat bagaimana masing-masing pihak berinteraksi di BazarQ secara tersinkronisasi.</p>' +
+    '<div class="role-tabs-wrap">' +
+      '<div class="role-tabs-nav" id="roleTabsNav">' +
+        '<button class="role-tab-btn active" data-role-tab="pembeli" type="button">🛒 Pembeli</button>' +
+        '<button class="role-tab-btn" data-role-tab="merchant" type="button">👨‍🍳 Penjual (Merchant)</button>' +
+        '<button class="role-tab-btn" data-role-tab="eo" type="button">📊 Penyelenggara (EO)</button>' +
+        '<button class="role-tab-btn" data-role-tab="daftar" type="button">🚀 Buka Booth</button>' +
+      '</div>' +
+      '<div class="role-tab-preview" id="roleTabContent"></div>' +
+    '</div>' +
+  '</section>' +
+
+  /* --- LIVE METRICS BANNER --- */
+  '<section class="metrics-strip">' +
+    '<div class="metric-box">' +
+      '<div class="metric-val">0 Detik</div>' +
+      '<div class="metric-label">Tanpa Instalasi</div>' +
+      '<div class="metric-sub">Zero-App via browser kamera</div>' +
+    '</div>' +
+    '<div class="metric-box">' +
+      '<div class="metric-val">&lt; 100ms</div>' +
+      '<div class="metric-label">Sinkronisasi WebSocket</div>' +
+      '<div class="metric-sub">Realtime Firebase RTDB</div>' +
+    '</div>' +
+    '<div class="metric-box">' +
+      '<div class="metric-val">2x Notif</div>' +
+      '<div class="metric-label">Pengingat Otomatis</div>' +
+      '<div class="metric-sub">WhatsApp + Web Audio Chime</div>' +
+    '</div>' +
+    '<div class="metric-box">' +
+      '<div class="metric-val">100%</div>' +
+      '<div class="metric-label">Anti-Overload Dapur</div>' +
+      '<div class="metric-sub">Smart Throttling terkendali</div>' +
     '</div>' +
   '</section>';
+
+  /* --- EVENT LISTENERS & INTERAKTIVITAS (Schematics ITS style) --- */
+
+  // 1. Tour button
   const bt = document.getElementById('btnTour');
   if (bt) bt.addEventListener('click', () => startTour());
   maybeAutoTour();
+
+  // 2. 3D Hover Tilt Effect pada Kartu Tiket
+  const showcaseEl = document.getElementById('heroShowcase');
+  const ticketCardEl = document.getElementById('heroTicket3D');
+  if (showcaseEl && ticketCardEl){
+    showcaseEl.addEventListener('mousemove', e => {
+      const rect = showcaseEl.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      ticketCardEl.style.transform = 'rotateY(' + (x * 16) + 'deg) rotateX(' + (-y * 16) + 'deg) translateY(-4px)';
+    });
+    showcaseEl.addEventListener('mouseleave', () => {
+      ticketCardEl.style.transform = 'rotateY(0deg) rotateX(0deg) translateY(0px)';
+    });
+  }
+
+  // 3. Tes Suara Chime Web Audio Langsung dari Hero
+  const btnChime = document.getElementById('btnHeroChime');
+  if (btnChime){
+    btnChime.addEventListener('click', () => {
+      BazarQAudio.unlock();
+      BazarQAudio.playReadyAlert();
+      toast('🔔 Membunyikan nada panggil pesanan siap (Web Audio 880Hz)!');
+    });
+  }
+  const audioWave = document.getElementById('landingAudioWave');
+  if (audioWave){
+    audioWave.addEventListener('click', () => {
+      BazarQAudio.unlock();
+      BazarQAudio.playPing();
+      toast('🎵 Ping Web Audio synthesizer aktif');
+    });
+  }
+
+  // 4. Simulasi Interaktif Dapur Penuh
+  let simFull = false;
+  const btnSimThrot = document.getElementById('btnSimThrot');
+  const simBadge = document.getElementById('heroSimBadge');
+  const simMeta = document.getElementById('heroSimMeta');
+  if (btnSimThrot && simBadge && simMeta){
+    btnSimThrot.addEventListener('click', () => {
+      simFull = !simFull;
+      if (simFull){
+        simBadge.className = 'ticket-status-chip warn';
+        simBadge.innerHTML = '<span>🔴 Dapur Penuh</span>';
+        simMeta.innerHTML = '<b>~14-18 mnt (2x)</b> &bull; ' + activeCount() + ' antrean';
+        toast('⚠️ Mode Dapur Penuh aktif: Estimasi antrean digandakan otomatis.');
+      } else {
+        simBadge.className = 'ticket-status-chip';
+        simBadge.innerHTML = '<span>🟢 Siap Diambil</span>';
+        simMeta.innerHTML = '<b>~4-8 mnt</b> &bull; ' + activeCount() + ' antrean';
+        toast('✅ Mode Dapur Normal: Order baru mengalir lancar.');
+      }
+    });
+  }
+
+  // 5. Interactive Role Tabs Switcher (Schematics ITS style)
+  const roleData = {
+    pembeli: {
+      title: 'Pembeli: Zero-App, Pesan & Jelajah Bebas',
+      desc: 'Cukup scan QR standee di meja booth, menu langsung terbuka di browser HP. Tanpa perlu download APK atau registrasi akun.',
+      checks: [
+        'Scan QR &rarr; Langsung buka menu tanpa install aplikasi',
+        'Pilih pesanan & masukkan no WA',
+        'Dapat nomor tiket digital & estimasi waktu live',
+        'Simulasi notifikasi WA saat giliran mendekat'
+      ],
+      btnText: 'Buka Halaman Pembeli',
+      link: '#pembeli/' + esc(SLUG),
+      mockupHtml: '<div style="background:#fff;padding:20px;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,0.06);max-width:280px;margin:0 auto;text-align:center">' +
+        '<div class="ticket-status-chip" style="margin-bottom:8px"><span>🟢 Pesanan Diproses</span></div>' +
+        '<div style="font-family:var(--ticket);font-size:2.4rem;font-weight:800;color:#1D4ED8">A-007</div>' +
+        '<div style="font-size:0.85rem;color:#64748B">Estimasi: <b>~4 Menit</b></div>' +
+        '<div style="margin-top:12px;font-size:0.75rem;background:#F1F5F9;padding:6px 10px;border-radius:8px">' + esc(BOOTH().name) + ' &bull; 1x Menu Pilihan</div>' +
+      '</div>'
+    },
+    merchant: {
+      title: 'Penjual: Kendali Penuh dari Satu Layar',
+      desc: 'Kelola kasir, dapur, dan pemanggilan antrean dari smartphone atau tablet dengan autentikasi PIN aman.',
+      checks: [
+        'Autentikasi PIN aman (SHA-256)',
+        'Ubah status 1-klik: Menunggu &rarr; Masak &rarr; Siap Ambil',
+        'Toggle Dapur Penuh untuk menahan lonjakan pesanan',
+        'Tampilkan QR Standee layar penuh untuk discan pengunjung'
+      ],
+      btnText: 'Buka Dasbor Penjual',
+      link: '#merchant/' + esc(SLUG),
+      mockupHtml: '<div style="background:#fff;padding:18px;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,0.06);max-width:300px;margin:0 auto">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><b style="font-size:0.92rem">Dasbor Penjual</b><span class="chip on" style="font-size:0.72rem">Live Sync</span></div>' +
+        '<div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:10px;padding:10px;display:flex;justify-content:space-between;align-items:center">' +
+          '<div><b style="font-size:1.15rem;color:#1D4ED8">A-007</b><div style="font-size:0.75rem;color:#64748B">Rp20.000 &bull; QRIS</div></div>' +
+          '<button class="btn btn-sm btn-primary" style="padding:5px 10px;font-size:0.75rem">Siap Ambil &rarr;</button>' +
+        '</div>' +
+      '</div>'
+    },
+    eo: {
+      title: 'Event Organizer: Pantau Seluruh Acara Realtime',
+      desc: 'Pantau lalu lintas dan antrean semua booth bazar secara agregat dari layar proyektor atau tablet panitia.',
+      checks: [
+        'Volume antrean & status Dapur Penuh tiap booth',
+        'Analisis jam sibuk (peak hours) acara secara keseluruhan',
+        'Metrik rata-rata durasi tunggu pengunjung bazar',
+        'Tampilan live monitoring ramah proyektor stand'
+      ],
+      btnText: 'Buka Dasbor Penyelenggara',
+      link: '#eo',
+      mockupHtml: '<div style="background:#0F172A;color:#fff;padding:18px;border-radius:16px;max-width:300px;margin:0 auto">' +
+        '<div style="display:flex;justify-content:space-between;font-size:0.76rem;margin-bottom:10px;color:#94A3B8"><span>MONITOR ACARA</span><span>LIVE STATS</span></div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">' +
+          '<div style="background:rgba(255,255,255,0.08);padding:10px;border-radius:8px"><div style="font-size:0.7rem;color:#94A3B8">Antrean Aktif</div><div style="font-size:1.4rem;font-weight:800;color:#60A5FA">48</div></div>' +
+          '<div style="background:rgba(255,255,255,0.08);padding:10px;border-radius:8px"><div style="font-size:0.7rem;color:#94A3B8">Booth Buka</div><div style="font-size:1.4rem;font-weight:800;color:#34D399">12</div></div>' +
+        '</div>' +
+      '</div>'
+    },
+    daftar: {
+      title: 'Buka Booth Baru: Siap Dipakai dalam 1 Menit',
+      desc: 'Siapa pun bisa mendaftarkan booth UMKM mereka sendiri, mengisi nama dan PIN, langsung mendapatkan QR resmi siap cetak.',
+      checks: [
+        'Tanpa registrasi akun yang berbelit-belit',
+        'Namespace database terisolasi otomatis per booth',
+        'URL unik dan QR Code resolusi tinggi langsung jadi',
+        'Dapat digunakan langsung untuk bazar sekolah atau pop-up market'
+      ],
+      btnText: 'Buka Booth Sekarang',
+      link: '#daftar',
+      mockupHtml: '<div style="background:#fff;padding:18px;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,0.06);max-width:280px;margin:0 auto;text-align:center">' +
+        '<div style="font-size:0.85rem;font-weight:700;margin-bottom:8px">QR Standee Siap Cetak</div>' +
+        '<div style="width:74px;height:74px;background:#F1F5F9;border:2px dashed #94A3B8;border-radius:10px;margin:0 auto 10px;display:grid;place-items:center;font-size:0.72rem;color:#64748B">QR RESMI</div>' +
+        '<div style="font-family:var(--mono);font-size:0.72rem;color:#2563EB">bazar-q.vercel.app/#pembeli/kopi-rame</div>' +
+      '</div>'
+    }
+  };
+
+  function updateRolePreview(tabKey){
+    const d = roleData[tabKey];
+    if (!d) return;
+    const cont = document.getElementById('roleTabContent');
+    if (!cont) return;
+    cont.innerHTML =
+      '<div class="role-preview-text">' +
+        '<h3>' + d.title + '</h3>' +
+        '<p>' + d.desc + '</p>' +
+        '<ul class="role-feature-list">' +
+          d.checks.map(c => '<li><span class="chk">✓</span> <span>' + c + '</span></li>').join('') +
+        '</ul>' +
+        '<a class="btn btn-primary" href="' + d.link + '">' + d.btnText + ' &rarr;</a>' +
+      '</div>' +
+      '<div class="role-mockup-box">' +
+        d.mockupHtml +
+      '</div>';
+  }
+
+  const roleTabBtns = Array.from(document.querySelectorAll('#roleTabsNav .role-tab-btn'));
+  roleTabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      roleTabBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      updateRolePreview(btn.getAttribute('data-role-tab'));
+    });
+  });
+  updateRolePreview('pembeli');
 }
 
 /* ---------- pembeli ---------- */

@@ -1,44 +1,41 @@
-# BazarQ · Prototipe Demo Gelar Karya
+# Klien Prototipe BazarQ
 
-Fondasi web prototipe untuk demo di stand: antrean digital UMKM sesuai **PRD BazarQ v1.0**. Tanpa server, tanpa build, tanpa internet. Cukup buka satu file.
+Klien web untuk sistem manajemen antrean dan pemesanan digital BazarQ. Diimplementasikan menggunakan HTML standar, CSS, dan JavaScript murni tanpa tahapan build maupun bundler.
 
-## Menjalankan & Demo 4 Device (Gelar Karya)
+## Cara Menjalankan
 
-Aplikasi telah terhubung ke **Firebase Realtime Database** sehingga sinkron secara nyata antar perangkat secara instan tanpa perlu berada di satu browser yang sama!
+Sajikan direktori repository menggunakan web server statis apa pun, atau buka file `prototype/index.html` langsung di browser.
 
-### Skenario Demo 4 Device:
-1. **Device 1 (Laptop/Tablet / Perangkat Digital Penjual)**:
-   - Buka `https://<domain-vercel-kamu>.vercel.app/#merchant`
-   - Masukkan PIN: `1234`
-   - Buka QR Code Standee via tombol **"Lihat QR Standee"** agar bisa langsung di-scan kamera digital pengunjung/pembeli.
-2. **Device 2 (Perangkat Digital Pembeli 1)**:
-   - Scan QR Code atau buka `https://<domain-vercel-kamu>.vercel.app/#pembeli`
-   - Pilih menu, isi no WA (misal `081234567891`), klik **Ambil Nomor Antrean** -> Mendapat nomor `A-001`.
-3. **Device 3 (Perangkat Digital Pembeli 2)**:
-   - Buka `#pembeli` -> Ambil nomor antrean -> Mendapat nomor `A-002`.
-4. **Device 4 (Perangkat Digital Pembeli 3)**:
-   - Buka `#pembeli` -> Ambil nomor antrean -> Mendapat nomor `A-003`.
+Pada lingkungan produksi Vercel, semua permintaan URL diarahkan ke direktori ini melalui konfigurasi `vercel.json`.
 
-### Aksi Real-time yang Terjadi Sesuai PRD:
-- **Di Device Penjual**: Muncul suara chime notifikasi pesanan masuk! Ketiga antrean langsung muncul di kolom **"Menunggu"**.
-- **Di Device Pembeli 2 & 3**: Tampil estimasi waktu dan sisa antrean di depan mereka secara live.
-- **Penjual klik "Mulai Proses" pada A-001**: Di perangkat digital Pembeli 1, status tiket langsung berubah real-time jadi biru ("Sedang Disiapkan").
-- **Penjual klik "Selesai (Siap)" pada A-001**: Di perangkat digital Pembeli 1, berbunyi notifikasi siap + tampil banner hijau besar "Silakan Ambil Pesanan di Booth!". Di perangkat digital Pembeli 2, muncul simulasi notifikasi WhatsApp: *"Pesanan Anda segera diproses (sisa 1 antrean lagi)"*.
-- **Penjual aktifkan toggle "Dapur Penuh"**: Jika pembeli baru mencoba order, sistem menahan/memperingatkan dan estimasi waktu otomatis dikalikan 2.
-- **Monitoring Event Organizer**: Buka `#eo` di layar proyektor stand untuk menampilkan metrik volume UMKM, peak hour, dan status Dapur Penuh secara live.
+## Matriks Verifikasi Multi-Perangkat
 
-### Catatan Simulasi:
-- Notifikasi WhatsApp disimulasikan sebagai bubble; tidak mengirim pesan sungguhan.
-- QR pada halaman pembeli adalah pola visual standee, bukan kode yang bisa discan.
-- Data EO selain booth demo adalah contoh statis untuk menggambarkan agregasi multi-tenant.
+Pengujian fungsional memerlukan minimal satu perangkat terminal penjual dan satu perangkat pembeli yang terhubung ke namespace booth yang sama (`demo-geprek` secara default).
 
-## Struktur
+| Peran Perangkat | Target URL | Kontrak Interaksi & State |
+|---|---|---|
+| **Terminal Penjual** | `#merchant/{slug}` | Autentikasi dengan PIN (`1234`). Menampilkan pesanan masuk pada kolom `waiting`. Menyediakan tombol pengubah status ke `processing` dan `ready`. Mengontrol toggle `kitchenFull`. |
+| **Perangkat Pembeli 1** | `#pembeli/{slug}` | Memilih menu, mengisi nomor telepon, dan mengirim pesanan. Menerima tiket `A-001`. Berada pada status `waiting` hingga penjual mengonfirmasi pembayaran. |
+| **Perangkat Pembeli 2** | `#pembeli/{slug}` | Mengirim pesanan berikutnya. Menerima tiket `A-002`. Menampilkan posisi antrean relatif terhadap pesanan aktif di depannya. |
+| **Layar Dapur** | `#merchant/{slug}/dapur` | Tampilan dapur baca/tulis tanpa kontrol pembayaran kasir. Menampilkan antrean racik pesanan aktif. |
+| **Layar Publik (TV/Monitor)** | `#merchant/{slug}/display` | Layar monitor read-only tanpa tombol kontrol interaktif. Memperbarui status secara live via WebSocket. |
+| **Penyelenggara Acara** | `#eo` | Mengagregasi metrik volume antrean seluruh namespace booth dalam acara. |
+
+## Event Sinkronisasi Real-Time
+
+* **Pembuatan Pesanan**: Pengiriman pesanan oleh pembeli menambah nilai counter `seq`, menambahkan objek pesanan ke array `S.orders`, dan menyimpannya ke `bazarq/v2/booths/{slug}`. Terminal penjual membunyikan audio `BazarQAudio.playNewOrder()`.
+* **Transisi Status (`waiting` → `processing` → `ready`)**: Pembaruan status oleh penjual disimpan ke Firebase. Tampilan pembeli secara reaktif memperbarui warna badge tiket, banner informasi, dan langkah timeline.
+* **Notifikasi Pesanan Siap**: Saat status pesanan berubah menjadi `ready`, perangkat pembeli memicu `BazarQAudio.playReadyAlert()` (sapuan 4-nada ganda), kedipan judul tab browser, serta pola getar ponsel (`[180, 120, 220]`).
+* **Pengaman Dapur (Kitchen Throttling)**: Saat toggle `kitchenFull` bernilai `true`, estimasi waktu tunggu otomatis digandakan (2x) di seluruh tampilan pembeli.
+
+## Struktur Direktori
 
 ```
 prototype/
-  index.html            # kerangka + header/footer + presence indicator
-  css/styles.css        # token desain BazarQ Blue Spectrum + semua komponen
-  js/
-    firebase-config.js  # kredensial Firebase RTDB & demo URL
-    app.js              # sinkronisasi realtime, audio synth, 4 tampilan peran
+├── assets/          # Ikon aplikasi dan favicon
+├── css/styles.css   # Token desain, layout responsif, kartu 3D, dan animasi
+├── index.html       # Kerangka shell, pemuat pustaka CDN, dan kontainer mount
+└── js/
+    ├── app.js       # Router aplikasi, sinkronisasi state, sintesis audio, dan perender peran
+    └── firebase-config.js # Konfigurasi proyek Firebase sisi klien
 ```

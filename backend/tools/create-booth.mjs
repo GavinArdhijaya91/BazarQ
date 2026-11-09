@@ -1,8 +1,21 @@
-// BazarQ · tool daftar booth terdesentralisasi (tanpa server sendiri).
-// Cara pakai:
-//   node backend/tools/create-booth.mjs --name "Kopi Rame" --pin 1234
-// Menulis ke Firebase RTDB via REST API publik (butuh rules backend/database.rules.json).
-// Output: slug + link order + link merchant yang bisa langsung dijadikan QR.
+/**
+ * @file create-booth.mjs
+ * @summary Mendaftarkan namespace booth baru ke Firebase Realtime Database.
+ * 
+ * Kontrak:
+ * - Parameter Input:
+ *   --name <string>  Nama tampilan booth (3-60 karakter).
+ *   --pin <digits>   PIN autentikasi penjual (4-6 digit angka, di-hash ke SHA-256).
+ *   --desc <string>  Deskripsi singkat booth (<= 80 karakter, opsional).
+ * - Variabel Lingkungan:
+ *   BAZARQ_DB_URL    Basis URL REST Firebase Realtime Database.
+ *   BAZARQ_APP_URL   Basis URL web frontend aplikasi.
+ * - Efek Samping (Side Effects):
+ *   1. Menulis `{ name, createdAt }` ke `/bazarq/v2/registry/{slug}.json`.
+ *   2. Menulis data awal `{ profile, menu, seq, kitchenFull, orders, log }` ke `/bazarq/v2/booths/{slug}.json`.
+ * - Penanganan Kegagalan (Failure Modes):
+ *   Melempar Error jika panjang nama < 3 karakter, format PIN tidak valid, atau penolakan HTTP 4xx/5xx dari REST API.
+ */
 
 const DB = process.env.BAZARQ_DB_URL || 'https://bazarq-7adbe-default-rtdb.asia-southeast1.firebasedatabase.app';
 const APP = process.env.BAZARQ_APP_URL || 'https://bazar-q.vercel.app';

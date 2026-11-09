@@ -1,10 +1,3 @@
-/* ============================================================
-   BazarQ · prototipe demo gelar karya
-   Tema: BazarQ Blue Spectrum + aksen hangat (60-30-10).
-   60% netral paper/ice · 30% biru navy/azure · 10% aksen status.
-   Outdoor-first: kontras AA, tombol >=48px, tanpa teks tipis
-   di atas warna muda.
-   ============================================================ */
 :root{
   /* Netral 60% */
   --paper:#FFFFFF; --paper-2:#FFFFFF; --canvas:#EFF6FF;
@@ -581,3 +574,686 @@ body::before{content:"";position:fixed;inset:-20%;z-index:0;pointer-events:none;
 
 
 
+
+
+/* ============================================================
+   BazarQ Interactive Landing System (AirLume + Schematics ITS)
+   - 3D Floating Ticket & Live Simulator
+   - Dimensional Fluted Hero & Glowing Badges
+   - Bento Feature Grid with Animated QR Laser & Audio Synth
+   - Origami-style 5-Step Stepper & Role Showcase
+   ============================================================ */
+
+/* --- Hero Layout & Fluted Backdrop --- */
+.hero-modern {
+  position: relative;
+  padding: 40px 0 50px;
+  overflow: visible;
+}
+.hero-modern-grid {
+  display: grid;
+  grid-template-columns: 1.12fr 0.98fr;
+  gap: 40px;
+  align-items: center;
+}
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+/* --- Badge & Typography --- */
+.hero-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border: 1.5px solid rgba(147, 197, 253, 0.6);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.08), inset 0 1px 0 #fff;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #1E40AF;
+  width: fit-content;
+}
+.hero-pill-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #2563EB;
+  box-shadow: 0 0 10px #60A5FA;
+  position: relative;
+}
+.hero-pill-dot::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1.5px solid #60A5FA;
+  animation: ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+.hero-title {
+  font-size: clamp(2.4rem, 4.8vw, 3.8rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0;
+}
+.gradient-text {
+  background: linear-gradient(135deg, #1E40AF 0%, #2563EB 45%, #0284C7 90%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+.hero-subtitle {
+  font-size: 1.08rem;
+  line-height: 1.65;
+  color: #475569;
+  max-width: 48ch;
+  margin: 0;
+}
+.hero-cta-group {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 6px;
+}
+.btn-glow {
+  position: relative;
+  background: linear-gradient(135deg, #2563EB, #1D4ED8);
+  color: #fff !important;
+  font-weight: 700;
+  border-radius: 14px;
+  padding: 14px 24px;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.btn-glow:hover {
+  background: linear-gradient(135deg, #1D4ED8, #1E40AF);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(37, 99, 235, 0.48);
+}
+.btn-glass {
+  background: rgba(255, 255, 255, 0.85);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(203, 213, 225, 0.9);
+  color: #1E293B;
+  font-weight: 700;
+  border-radius: 14px;
+  padding: 14px 22px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+}
+.btn-glass:hover {
+  background: #fff;
+  border-color: #94A3B8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.1);
+}
+
+/* --- 3D Floating Interactive Ticket (AirLume + Schematics) --- */
+.hero-showcase {
+  perspective: 1200px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 10px;
+}
+.ticket-3d-wrap {
+  width: 100%;
+  max-width: 400px;
+  transition: transform 0.15s ease-out;
+  transform-style: preserve-3d;
+  position: relative;
+}
+.ticket-card-modern {
+  position: relative;
+  background: linear-gradient(165deg, #0B1936 0%, #0F172A 70%, #15203B 100%);
+  border-radius: 24px;
+  padding: 26px 28px;
+  color: #F8FAFC;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.45), 0 0 0 1px rgba(96, 165, 250, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+}
+.ticket-card-modern::before,
+.ticket-card-modern::after {
+  content: "";
+  position: absolute;
+  top: 52%;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--canvas);
+  transform: translateY(-50%);
+  box-shadow: inset 0 0 8px rgba(15, 23, 42, 0.2);
+  z-index: 3;
+}
+.ticket-card-modern::before { left: -13px; }
+.ticket-card-modern::after  { right: -13px; }
+
+.ticket-fluted-bg {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(96, 165, 250, 0.04) 20px, rgba(96, 165, 250, 0.04) 21px);
+  pointer-events: none;
+}
+.ticket-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+.ticket-brand-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #BAE6FD;
+}
+.ticket-status-chip {
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid #10B981;
+  color: #6EE7B7;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.ticket-status-chip.warn {
+  background: rgba(249, 115, 22, 0.2);
+  border-color: #F97316;
+  color: #FDBA74;
+}
+.ticket-number-box {
+  text-align: center;
+  margin: 18px 0 14px;
+  position: relative;
+  z-index: 2;
+}
+.ticket-label-sm {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #94A3B8;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.ticket-number-val {
+  font-family: var(--ticket);
+  font-size: clamp(3.2rem, 7.5vw, 4.2rem);
+  font-weight: 800;
+  line-height: 1;
+  margin: 8px 0;
+  color: #FFFFFF;
+  text-shadow: 0 0 24px rgba(96, 165, 250, 0.6), 0 4px 10px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.04em;
+}
+.ticket-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.9rem;
+  position: relative;
+  z-index: 2;
+}
+.ticket-dash-line {
+  border-top: 2px dashed rgba(255, 255, 255, 0.2);
+  margin: 16px 0;
+  position: relative;
+  z-index: 2;
+}
+.ticket-interactive-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  position: relative;
+  z-index: 2;
+}
+.ticket-action-btn {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #F8FAFC;
+  padding: 9px 10px;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.ticket-action-btn:hover {
+  background: rgba(255, 255, 255, 0.24);
+  transform: scale(1.02);
+}
+
+/* Floating overlay widgets around 3D ticket (AirLume style) */
+.floating-widget {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.94);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  padding: 10px 16px;
+  border-radius: 16px;
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.15), 0 2px 6px rgba(15, 23, 42, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 4;
+  pointer-events: auto;
+  transition: transform 0.2s ease;
+}
+.floating-widget:hover {
+  transform: translateY(-4px) scale(1.03);
+}
+.float-wa {
+  bottom: -16px;
+  left: -20px;
+  max-width: 290px;
+}
+.float-sync {
+  top: -14px;
+  right: -14px;
+}
+.widget-ic {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-size: 1.1rem;
+  flex: none;
+}
+.widget-ic.green { background: #DCFCE7; color: #15803D; }
+.widget-ic.blue  { background: #DBEAFE; color: #1D4ED8; }
+.widget-text b    { display: block; font-size: 0.86rem; color: #0F172A; }
+.widget-text span { font-size: 0.76rem; color: #64748B; line-height: 1.3; display: block; }
+
+/* --- Interactive Role Showcase Tabs (Schematics ITS style) --- */
+.role-tabs-wrap {
+  background: #fff;
+  border-radius: 24px;
+  padding: 32px;
+  border: 1.5px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.06);
+  margin-top: 20px;
+}
+.role-tabs-nav {
+  display: flex;
+  gap: 8px;
+  background: #F1F5F9;
+  padding: 6px;
+  border-radius: 16px;
+  max-width: 680px;
+  margin: 0 auto 28px;
+  overflow-x: auto;
+}
+.role-tab-btn {
+  flex: 1;
+  padding: 12px 18px;
+  border-radius: 12px;
+  border: none;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #64748B;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.role-tab-btn.active {
+  background: #fff;
+  color: #1D4ED8;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+}
+.role-tab-btn:hover:not(.active) {
+  color: #0F172A;
+}
+.role-tab-preview {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: center;
+}
+.role-preview-text h3 {
+  font-size: 1.5rem;
+  margin: 0 0 10px;
+  color: #0F172A;
+  font-weight: 800;
+}
+.role-preview-text p {
+  color: #475569;
+  line-height: 1.6;
+  margin: 0 0 20px;
+  font-size: 1rem;
+}
+.role-feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.role-feature-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #334155;
+}
+.role-feature-list li span.chk {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #DCFCE7;
+  color: #15803D;
+  display: inline-grid;
+  place-items: center;
+  font-size: 0.8rem;
+  flex: none;
+}
+.role-mockup-box {
+  background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+  border-radius: 18px;
+  border: 1.5px solid #BFDBFE;
+  padding: 24px;
+  min-height: 240px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* --- Bento Grid PRD Features (High-End Modular) --- */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 20px;
+  margin-top: 24px;
+}
+.bento-card {
+  background: #fff;
+  border: 1.5px solid rgba(226, 232, 240, 0.9);
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.05);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s ease;
+}
+.bento-card:hover {
+  transform: translateY(-3px);
+  border-color: #93C5FD;
+  box-shadow: 0 18px 40px rgba(37, 99, 235, 0.1);
+}
+.bento-card.col-7 { grid-column: span 7; }
+.bento-card.col-5 { grid-column: span 5; }
+.bento-card.col-6 { grid-column: span 6; }
+.bento-card.col-4 { grid-column: span 4; }
+.bento-card.col-8 { grid-column: span 8; }
+.bento-badge {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: #EFF6FF;
+  color: #1D4ED8;
+  width: fit-content;
+  margin-bottom: 14px;
+}
+.bento-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin: 0 0 8px;
+  color: #0F172A;
+  letter-spacing: -0.01em;
+}
+.bento-desc {
+  font-size: 0.95rem;
+  color: #64748B;
+  line-height: 1.55;
+  margin: 0 0 20px;
+}
+
+/* Scanner simulation element inside Bento card */
+.bento-scanner-vis {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 10px;
+  background: #fff;
+  border-radius: 18px;
+  padding: 12px;
+  border: 2px solid #E2E8F0;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.scanner-laser-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #2563EB, #60A5FA, #2563EB, transparent);
+  box-shadow: 0 0 10px #3B82F6, 0 0 18px #60A5FA;
+  animation: scanMove 2.6s ease-in-out infinite alternate;
+}
+@keyframes scanMove {
+  from { top: 10%; }
+  to   { top: 85%; }
+}
+
+/* Audio wave simulator inside Bento card */
+.audio-wave-wrap {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 5px;
+  height: 54px;
+  padding: 8px 0;
+}
+.audio-wave-bar {
+  width: 6px;
+  background: linear-gradient(180deg, #60A5FA, #2563EB);
+  border-radius: 4px;
+  height: 12px;
+  animation: wavePulse 1.2s ease-in-out infinite alternate;
+}
+.audio-wave-bar:nth-child(2) { animation-delay: 0.15s; height: 24px; }
+.audio-wave-bar:nth-child(3) { animation-delay: 0.35s; height: 42px; }
+.audio-wave-bar:nth-child(4) { animation-delay: 0.2s;  height: 30px; }
+.audio-wave-bar:nth-child(5) { animation-delay: 0.45s; height: 18px; }
+@keyframes wavePulse {
+  from { transform: scaleY(0.4); opacity: 0.6; }
+  to   { transform: scaleY(1.1); opacity: 1;   }
+}
+
+/* --- 5-Step Origami Dimensional Stepper (Travel Around The World style) --- */
+.stepper-container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  margin-top: 24px;
+  position: relative;
+}
+.stepper-card {
+  background: #fff;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 20px;
+  padding: 22px 18px;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.04);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: all 0.2s ease;
+}
+.stepper-card:hover {
+  transform: translateY(-3px);
+  border-color: #3B82F6;
+  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.1);
+}
+.step-num-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #EFF6FF, #DBEAFE);
+  border: 1.5px solid #BFDBFE;
+  color: #1D4ED8;
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 0.95rem;
+  display: grid;
+  place-items: center;
+  margin-bottom: 14px;
+}
+.stepper-card h4 {
+  font-size: 1.05rem;
+  margin: 0 0 6px;
+  color: #0F172A;
+  font-weight: 700;
+}
+.stepper-card p {
+  font-size: 0.84rem;
+  color: #64748B;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* --- Modern Live Metrics Strip (Bottom Banner) --- */
+.metrics-strip {
+  margin-top: 48px;
+  background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%);
+  border-radius: 24px;
+  padding: 36px 32px;
+  color: #fff;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+.metrics-strip::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% -20%, rgba(96, 165, 250, 0.2), transparent 70%);
+  pointer-events: none;
+}
+.metric-box {
+  position: relative;
+  z-index: 2;
+  border-left: 1px solid rgba(255, 255, 255, 0.14);
+  padding-left: 20px;
+}
+.metric-box:first-child {
+  border-left: none;
+  padding-left: 0;
+}
+.metric-val {
+  font-size: clamp(1.8rem, 3.2vw, 2.4rem);
+  font-weight: 800;
+  font-family: var(--mono);
+  color: #BAE6FD;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+.metric-label {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 2px;
+}
+.metric-sub {
+  font-size: 0.78rem;
+  color: #94A3B8;
+  line-height: 1.4;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 960px) {
+  .hero-modern-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+  .role-tab-preview {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .bento-card.col-7,
+  .bento-card.col-5,
+  .bento-card.col-6,
+  .bento-card.col-4,
+  .bento-card.col-8 {
+    grid-column: span 12;
+  }
+  .stepper-container {
+    grid-template-columns: 1fr 1fr;
+  }
+  .metrics-strip {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .metric-box {
+    border-left: none;
+    padding-left: 0;
+  }
+}
+@media (max-width: 580px) {
+  .stepper-container {
+    grid-template-columns: 1fr;
+  }
+  .metrics-strip {
+    grid-template-columns: 1fr;
+  }
+  .float-wa, .float-sync {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    top: auto;
+    margin: 8px 0;
+    max-width: 100%;
+  }
+}
