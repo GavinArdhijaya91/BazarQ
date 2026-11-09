@@ -80,7 +80,7 @@ BazarQ adalah aplikasi web sistem antrean dan pemesanan digital serverless untuk
 * `setupPresence()`: Mendaftarkan node efemeral di `bazarq/v2/presence/{slug}/{pushId}` dengan instruksi `onDisconnect().remove()`. Mendengarkan jumlah child node aktif untuk menampilkan metrik perangkat terhubung secara live.
 
 #### E. Perender Tampilan
-* `renderLanding()`: Merender hero modern interaktif, pratinjau kartu 3D dengan deteksi posisi kursor mouse, tombol penguji chime audio, simulator interaktif pengaman dapur, bento grid fitur PRD, stepper alur 5-langkah, dan switcher tab peran.
+* `renderLanding()`: Merender landing page premium dark-tech (terinspirasi dari AirLume.Ai & Schematics ITS) dengan latar belakang dark navy (`#060D1F`), animasi aurora mesh radial blobs, headline tipografi besar, 2 tombol aksi terarah (CTA), showcase kartu visual 3D interaktif yang merespons posisi mouse, simulator interaktif Dapur Penuh dan Chime audio Web Audio API, trust strip horizontal, bento grid fitur PRD dengan diversitas visual tematik kartu, stepper alur 5-langkah dengan nomor lencana bercahaya, dan switcher tab 4 peran pengguna berbasis mockup kaca gelap.
 * `renderPembeli()`: Merender alur pembeli: pemilihan katalog menu, input nomor WhatsApp, pemantauan status tiket live, dan simulasi balon notifikasi WhatsApp.
 * `renderMerchant()`: Merender konsol penjual yang dibagi ke dalam sub-rute:
   * `#merchant/{slug}/kasir`: Validasi pesanan 1-keputusan dan konfirmasi pelunasan kasir (tunai/QRIS).
@@ -95,12 +95,15 @@ BazarQ adalah aplikasi web sistem antrean dan pemesanan digital serverless untuk
   * Palet: 60% warna dasar kertas/es (`--paper`, `--canvas`), 30% identitas biru (`--azure`, `--navy`, `--sky`), 10% indikator status semantik (`--emerald`, `--orange`, `--danger`).
   * Ritme Spasi: Kelipatan unit dasar 8px (`--s1` hingga `--s6`).
   * Tipografi: Teks judul (`--sans`), Numerik tiket (`--ticket`), Metadata (`--mono`).
-* **Lapisan Komponen**:
-  * `.hero-modern` / `.hero-modern-grid`: Tata letak hero asimetris dengan tekstur garis vertikal fluted.
-  * `.ticket-card-modern`: Kontainer tiket fisik dengan lekukan sobekan samping (`::before`, `::after`), pencahayaan radial, dan gaya 3D preserve.
-  * `.bento-grid`: Grid modular 12 kolom responsif dilengkapi animasi pemindai laser QR dan visualisasi gelombang equalizer audio.
-  * `.stepper-container`: Alur alur proses 5 langkah dengan efek hover interaktif.
-  * `.metrics-strip`: Banner gelap kontras tinggi yang menampilkan jaminan keandalan arsitektur aplikasi.
+* **Lapisan Komponen Landing Page**:
+  * `.hero-modern` / `.hero-modern-grid`: Tata letak hero asimetris bertema dark navy (`#060D1F`) dengan animasi aurora radial blobs (`glowBlob`), tipografi judul besar dengan teks aksen gradien listrik (`.gradient-text`), dan tombol primer berefek kilau (`.btn-glow`).
+  * `.ticket-3d-wrap` / `.hero-visual-card`: Kontainer 3D interaktif yang merespons pergerakan kursor mouse dengan baris aksi simulasi langsung di kartu tiket.
+  * `.floating-widget`: Komponen penunjuk status kaca gelap (*dark glassmorphism*) dengan blur 20px dan bayangan dalam.
+  * `.trust-strip`: Jalur ringkasan fitur horizontal post-hero berisi pil informasi berikon SVG.
+  * `.bento-grid`: Grid modular 12-kolom dengan diferensiasi atmosfer warna kartu (biru elektrik untuk pemindaian QR, oranye gelap untuk throttling, teal gelap untuk sintesis audio, dan hijau gelap untuk pembayaran ganda).
+  * `.stepper-container`: Alur proses 5 langkah dengan lencana angka tebal bercahaya (`.step-num-badge`).
+  * `.role-tabs-wrap`: Panel simulator 4 peran pengguna dengan mockup antarmuka bertema kaca gelap yang menjaga konsistensi tema halaman (*Page Theme Lock*).
+  * `.metrics-strip`: Strip metrik operasional terintegrasi dengan 4 indikator performa sistem.
 
 ---
 
