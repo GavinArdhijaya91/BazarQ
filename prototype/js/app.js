@@ -980,7 +980,7 @@ function renderLanding(){
   ];
 
   appEl.innerHTML =
-  /* --- HERO SECTION DARK NAVY (AirLume style) --- */
+  /* --- HERO SECTION LIGHT (BazarQ blue) --- */
   '<section class="hero-modern">' +
     '<div class="wrap hero-modern-grid">' +
       '<div class="hero-content">' +
@@ -988,7 +988,7 @@ function renderLanding(){
           '<span class="hero-pill-dot"></span>' +
           '<span>Inovasi Gelar Karya &bull; Zero-App Antrean</span>' +
         '</div>' +
-        '<h1 class="hero-title">Antrean Bazar <br>Jadi <span class="gradient-text">Cepat &amp; Rapi</span>.</h1>' +
+        '<h1 class="hero-title">Antrean Bazar<br><span class="gradient-text">Cepat &amp; Rapi.</span></h1>' +
         '<p class="hero-subtitle">Scan QR di booth, ambil nomor antrean digital, bebas jalan-jalan tanpa takut kelewatan giliran. Tanpa install aplikasi.</p>' +
         '<div class="hero-cta-group">' +
           '<a class="btn btn-glow" href="#pembeli/' + esc(SLUG) + '"><span>Coba sebagai Pembeli</span> <span>&rarr;</span></a>' +
@@ -1050,16 +1050,16 @@ function renderLanding(){
   '</div>' +
 
   /* --- BENTO GRID: FITUR UTAMA PRD V1.0 --- */
-  '<section class="sec-dark">' +
+  '<section class="sec-light">' +
     '<div class="wrap">' +
-      '<h2 class="sec-dark-heading center">Dirancang untuk Riuhnya<br>Bazar &amp; Pop-Up Market</h2>' +
-      '<p class="sec-dark-sub center">Kombinasi teknologi zero-friction yang memecahkan masalah antrean fisik tanpa membebani penjual maupun pembeli.</p>' +
+      '<h2 class="sec-light-heading center">Dirancang untuk Riuhnya<br>Bazar &amp; Pop-Up Market</h2>' +
+      '<p class="sec-light-sub center">Kombinasi teknologi zero-friction yang memecahkan masalah antrean fisik tanpa membebani penjual maupun pembeli.</p>' +
       '<div class="bento-grid">' +
 
         '<div class="bento-card col-7 card-qr">' +
           '<div class="bento-badge">ZERO-APP SCAN</div>' +
           '<h3 class="bento-title">Scan QR, Langsung Buka Menu &amp; Tiket</h3>' +
-          '<p class="bento-desc">Pembeli tidak perlu unduh aplikasi apapun dari app store. Kamera bawaan HP langsung membuka web booth seketika — zero friction.</p>' +
+          '<p class="bento-desc">Kamera HP membuka menu booth secara langsung, tanpa akun dan tanpa unduh aplikasi.</p>' +
           '<div class="bento-split-media">' +
             '<img src="assets/icon-qr-3d.jpg" alt="Standee QR Akrilik 3D" class="bento-3d-thumb" width="88" height="88">' +
             '<div class="bento-scanner-vis">' +
@@ -1080,7 +1080,7 @@ function renderLanding(){
         '<div class="bento-card col-5 card-audio">' +
           '<div class="bento-badge badge-teal">WEB AUDIO SYNTH</div>' +
           '<h3 class="bento-title">Chime Tembus Suara Bising</h3>' +
-          '<p class="bento-desc">Sintesis audio 880Hz murni tanpa file mp3 berat. Double-burst keras + getaran + judul tab berkedip menjamin panggilan terdengar di tengah keramaian konser bazar.</p>' +
+          '<p class="bento-desc">BazarQ membunyikan nada panggil dengan Web Audio, tanpa file suara tambahan. Penjual bisa menguji suara langsung dari demo.</p>' +
           '<img src="assets/icon-sound-3d.jpg" alt="Speaker Akustik 3D" class="bento-3d-thumb" width="88" height="88">' +
           '<div class="audio-wave-wrap" id="landingAudioWave" title="Klik untuk memicu gelombang audio">' +
             '<div class="audio-wave-bar"></div><div class="audio-wave-bar"></div><div class="audio-wave-bar"></div>' +
@@ -1106,10 +1106,10 @@ function renderLanding(){
   '</section>' +
 
   /* --- 5-STEP STEPPER DIMENSIONAL --- */
-  '<section class="sec-dark" style="padding-top:20px;border-top:1px solid rgba(255,255,255,0.05)">' +
+  '<section class="sec-light sec-flow">' +
     '<div class="wrap">' +
-      '<h2 class="sec-dark-heading center">Lima Langkah Mulus<br>Tanpa Antre Berdiri</h2>' +
-      '<p class="sec-dark-sub center">Dari pertama kali melihat standee QR hingga menikmati hidangan lezat pesanan.</p>' +
+      '<h2 class="sec-light-heading center">Lima Langkah Mulus<br>Tanpa Antre Berdiri</h2>' +
+      '<p class="sec-light-sub center">Dari pertama kali melihat standee QR hingga menikmati hidangan lezat pesanan.</p>' +
       '<div class="stepper-container">' +
         flow.map(s =>
           '<div class="stepper-card">' +
@@ -1123,10 +1123,10 @@ function renderLanding(){
   '</section>' +
 
   /* --- INTERACTIVE ROLE SHOWCASE --- */
-  '<section class="sec-dark" style="padding-top:20px;border-top:1px solid rgba(255,255,255,0.05)">' +
+  '<section class="sec-light sec-roles">' +
     '<div class="wrap">' +
-      '<h2 class="sec-dark-heading center">Coba Pengalaman dari<br>Berbagai Sudut Pandang</h2>' +
-      '<p class="sec-dark-sub center">Pilih peran di bawah ini untuk melihat bagaimana masing-masing pihak berinteraksi di BazarQ secara tersinkronisasi.</p>' +
+      '<h2 class="sec-light-heading center">Coba Pengalaman dari<br>Berbagai Sudut Pandang</h2>' +
+      '<p class="sec-light-sub center">Pilih peran di bawah ini untuk melihat bagaimana masing-masing pihak berinteraksi di BazarQ secara tersinkronisasi.</p>' +
       '<div class="role-tabs-wrap">' +
         '<div class="role-tabs-nav" id="roleTabsNav">' +
           '<button class="role-tab-btn active" data-role-tab="pembeli" type="button">' + ICONS.user(16) + ' <span>Pembeli</span></button>' +
@@ -1144,24 +1144,24 @@ function renderLanding(){
     '<div class="wrap">' +
       '<div class="metrics-inner">' +
         '<div class="metric-box">' +
-          '<div class="metric-val">0 Detik</div>' +
-          '<div class="metric-label">Tanpa Instalasi</div>' +
-          '<div class="metric-sub">Zero-App via kamera bawaan HP</div>' +
+          '<div class="metric-val">Tanpa Install</div>' +
+          '<div class="metric-label">Langsung dari Kamera</div>' +
+          '<div class="metric-sub">Menu dan antrean terbuka lewat QR booth</div>' +
         '</div>' +
         '<div class="metric-box">' +
-          '<div class="metric-val">&lt; 100ms</div>' +
-          '<div class="metric-label">Sinkronisasi WebSocket</div>' +
-          '<div class="metric-sub">Real-time Firebase RTDB</div>' +
+          '<div class="metric-val">Real-time</div>' +
+          '<div class="metric-label">Status Antrean</div>' +
+          '<div class="metric-sub">Perubahan pesanan langsung terlihat</div>' +
         '</div>' +
         '<div class="metric-box">' +
-          '<div class="metric-val">2x Notif</div>' +
-          '<div class="metric-label">Pengingat Otomatis</div>' +
-          '<div class="metric-sub">WhatsApp + Web Audio Chime 880Hz</div>' +
+          '<div class="metric-val">Notifikasi</div>' +
+          '<div class="metric-label">WhatsApp &amp; Suara</div>' +
+          '<div class="metric-sub">Pengingat saat pesanan mendekati giliran</div>' +
         '</div>' +
         '<div class="metric-box">' +
-          '<div class="metric-val">100%</div>' +
-          '<div class="metric-label">Anti-Overload Dapur</div>' +
-          '<div class="metric-sub">Smart Throttling terkendali</div>' +
+          '<div class="metric-val">Kontrol Dapur</div>' +
+          '<div class="metric-label">Saat Bazar Ramai</div>' +
+          '<div class="metric-sub">Atur penerimaan pesanan sesuai kapasitas</div>' +
         '</div>' +
       '</div>' +
     '</div>' +
@@ -1195,7 +1195,7 @@ function renderLanding(){
     btnChime.addEventListener('click', () => {
       BazarQAudio.unlock();
       BazarQAudio.playReadyAlert();
-      toast('Membunyikan nada panggil pesanan siap (Web Audio 880Hz)!');
+      toast('Memutar nada panggil pesanan siap.');
     });
   }
   const audioWave = document.getElementById('landingAudioWave');
