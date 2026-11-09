@@ -893,6 +893,22 @@ function refreshMenuGate(){
   updateMenuBits(body);
 }
 
+/* ---------- Ikon Vektor SVG Presisi (Anti-Slop / Standar Desain Sistem) ---------- */
+const ICONS = {
+  zap: (s=16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+  chat: (s=16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+  ticket: (s=16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"/><line x1="13" y1="5" x2="13" y2="19" stroke-dasharray="2 2"/></svg>',
+  volume: (s=16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>',
+  bell: (s=16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h24s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',
+  user: (s=16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+  store: (s=16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+  chart: (s=16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
+  plusCircle: (s=16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>',
+  qr: (s=16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>',
+  check: (s=14) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  cash: (s=16) => '<svg class="svg-icon" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/></svg>'
+};
+
 /* ---------- beranda ---------- */
 function renderLanding(){
   const live = activeOrders().find(o => o.status === 'processing') || activeOrders().slice(-1)[0] || null;
@@ -926,46 +942,40 @@ function renderLanding(){
         '</p>' +
       '</div>' +
 
-      /* --- 3D TICKET & INTERACTIVE SIMULATOR (AirLume + Schematics ITS) --- */
+      /* --- 3D TICKET & INTERACTIVE SIMULATOR (Aset Studio 3D Nyata) --- */
       '<div class="hero-showcase" id="heroShowcase">' +
         '<div class="floating-widget float-sync">' +
-          '<div class="widget-ic blue">⚡</div>' +
+          '<div class="widget-ic blue">' + ICONS.zap(18) + '</div>' +
           '<div class="widget-text"><b>Live WebSocket</b><span>Firebase RTDB Sync</span></div>' +
         '</div>' +
 
         '<div class="ticket-3d-wrap" id="heroTicket3D">' +
-          '<div class="ticket-card-modern">' +
-            '<div class="ticket-fluted-bg"></div>' +
-            '<div class="ticket-card-header">' +
-              '<div class="ticket-brand-chip"><span>🎫 Tiket Live BazarQ</span></div>' +
-              '<div class="ticket-status-chip" id="heroSimBadge"><span>🟢 ' + (live && live.status === 'processing' ? 'Sedang Dimasak' : 'Siap Diambil') + '</span></div>' +
-            '</div>' +
-            '<div class="ticket-number-box">' +
-              '<div class="ticket-label-sm">Nomor Antrean Booth</div>' +
-              '<div class="ticket-number-val" id="heroLiveNum">' + (live ? esc(live.ticket) : 'A-007') + '</div>' +
-              '<div style="font-size:0.85rem;color:#93C5FD;font-weight:600">' + esc(BOOTH().name) + '</div>' +
-            '</div>' +
-            '<div class="ticket-meta-row">' +
-              '<span id="heroSimMeta"><b>' + (live ? estLabel(live) : '~4-8 mnt') + '</b> &bull; ' + activeCount() + ' antrean aktif</span>' +
-              '<span class="mono" style="color:#38BDF8;font-weight:700">ONLINE</span>' +
-            '</div>' +
-            '<div class="ticket-dash-line"></div>' +
-            '<div class="ticket-interactive-actions">' +
-              '<button class="ticket-action-btn" id="btnHeroChime" type="button" title="Membunyikan Web Audio Chime">🔊 Tes Chime</button>' +
-              '<button class="ticket-action-btn" id="btnSimThrot" type="button" title="Simulasi Tombol Dapur Penuh">⚡ Dapur Penuh</button>' +
+          '<div class="hero-visual-card">' +
+            '<img src="assets/hero-bazaar-3d.jpg" alt="Render 3D Standee Booth dan Tiket Digital BazarQ" class="hero-visual-img" width="400" height="290">' +
+            '<div class="hero-visual-overlay"></div>' +
+            '<div class="hero-visual-bottom-bar">' +
+              '<div>' +
+                '<span class="ticket-status-chip" id="heroSimBadge">' + ICONS.check(13) + ' <span>' + (live && live.status === 'processing' ? 'Sedang Dimasak' : 'Siap Diambil') + '</span></span>' +
+                '<div style="font-family:var(--ticket);font-size:1.7rem;font-weight:800;color:#fff;line-height:1.15;margin-top:4px" id="heroLiveNum">' + (live ? esc(live.ticket) : 'A-007') + '</div>' +
+                '<span class="tiny" style="color:#93C5FD;font-size:0.75rem" id="heroSimMeta">' + (live ? estLabel(live) : '~4-8 mnt') + ' &bull; ' + activeCount() + ' antrean</span>' +
+              '</div>' +
+              '<div style="display:flex;flex-direction:column;gap:6px">' +
+                '<button class="ticket-action-btn" id="btnHeroChime" type="button" title="Membunyikan Web Audio Chime">' + ICONS.volume(14) + ' <span>Tes Chime</span></button>' +
+                '<button class="ticket-action-btn" id="btnSimThrot" type="button" title="Simulasi Tombol Dapur Penuh">' + ICONS.bell(14) + ' <span>Dapur Penuh</span></button>' +
+              '</div>' +
             '</div>' +
           '</div>' +
         '</div>' +
 
         '<div class="floating-widget float-wa">' +
-          '<div class="widget-ic green">💬</div>' +
+          '<div class="widget-ic green">' + ICONS.chat(18) + '</div>' +
           '<div class="widget-text"><b>Notifikasi WA Otomatis</b><span>"Pesanan segera siap, sisa 1 antrean lagi"</span></div>' +
         '</div>' +
       '</div>' +
     '</div>' +
   '</section>' +
 
-  /* --- BENTO GRID: FITUR UTAMA PRD V1.0 --- */
+  /* --- BENTO GRID: FITUR UTAMA PRD V1.0 (Aset 3D Nyata) --- */
   '<section class="sec">' +
     '<div class="center" style="margin-bottom:14px"><span class="bento-badge">KEUNGGULAN PRD V1.0</span></div>' +
     '<h2 class="center" style="font-size:clamp(1.8rem, 3.5vw, 2.3rem);font-weight:800;letter-spacing:-0.02em;margin:0 0 10px">Dirancang untuk Riuhnya Bazar & Pop-Up Market</h2>' +
@@ -975,12 +985,12 @@ function renderLanding(){
         '<div class="bento-badge">ZERO-APP SCAN</div>' +
         '<h3 class="bento-title">Scan QR, Langsung Buka Menu & Tiket</h3>' +
         '<p class="bento-desc">Pembeli tidak perlu mengunduh aplikasi apapun dari toko aplikasi atau registrasi akun yang membuang waktu. Kamera bawaan HP langsung membuka web booth seketika.</p>' +
-        '<div class="bento-scanner-vis">' +
-          '<div class="scanner-laser-line"></div>' +
-          '<svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="#1E40AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
-            '<rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect>' +
-            '<rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect>' +
-          '</svg>' +
+        '<div style="display:flex;gap:20px;align-items:center;margin-top:auto;flex-wrap:wrap">' +
+          '<img src="assets/icon-qr-3d.jpg" alt="Standee QR Akrilik 3D" class="bento-3d-thumb" width="96" height="96" style="margin:0">' +
+          '<div class="bento-scanner-vis" style="margin:0">' +
+            '<div class="scanner-laser-line"></div>' +
+            ICONS.qr(48) +
+          '</div>' +
         '</div>' +
       '</div>' +
 
@@ -988,8 +998,9 @@ function renderLanding(){
         '<div class="bento-badge" style="background:#FEF3C7;color:#B45309">SMART THROTTLING</div>' +
         '<h3 class="bento-title">Pengaman Dapur Penuh</h3>' +
         '<p class="bento-desc">Saat pesanan menumpuk, penjual cukup menekan toggle Dapur Penuh. Estimasi waktu tunggu otomatis digandakan dan order baru ditahan secara cerdas.</p>' +
-        '<div style="background:#FFFBEB;border:1.5px solid #FDE68A;border-radius:14px;padding:16px;text-align:center;margin-top:auto">' +
-          '<span style="font-size:0.85rem;font-weight:700;color:#B45309">Estimasi Normal: 4 Mnt &rarr; Penuh: 8 Mnt</span>' +
+        '<img src="assets/icon-kitchen-3d.jpg" alt="Lonceng Dapur 3D" class="bento-3d-thumb" width="96" height="96">' +
+        '<div style="background:#FFFBEB;border:1.5px solid #FDE68A;border-radius:14px;padding:12px;text-align:center;margin-top:auto">' +
+          '<span style="font-size:0.85rem;font-weight:700;color:#B45309">' + ICONS.bell(15) + ' Estimasi Normal: 4 Mnt &rarr; Penuh: 8 Mnt</span>' +
         '</div>' +
       '</div>' +
 
@@ -997,6 +1008,7 @@ function renderLanding(){
         '<div class="bento-badge" style="background:#EFF6FF;color:#1D4ED8">WEB AUDIO SYNTH</div>' +
         '<h3 class="bento-title">Chime Tembus Suara Bising</h3>' +
         '<p class="bento-desc">Sintesis audio 880Hz murni tanpa file mp3 berat. Double-burst keras + getaran + judul tab berkedip menjamin panggilan terdengar di tengah keramaian konser bazar.</p>' +
+        '<img src="assets/icon-sound-3d.jpg" alt="Speaker Akustik 3D" class="bento-3d-thumb" width="96" height="96">' +
         '<div class="audio-wave-wrap" id="landingAudioWave" style="cursor:pointer" title="Klik untuk memicu gelombang audio">' +
           '<div class="audio-wave-bar"></div><div class="audio-wave-bar"></div><div class="audio-wave-bar"></div><div class="audio-wave-bar"></div><div class="audio-wave-bar"></div>' +
         '</div>' +
@@ -1006,9 +1018,12 @@ function renderLanding(){
         '<div class="bento-badge" style="background:#ECFDF5;color:#047857">HYBRID PAYMENT & WA ALERT</div>' +
         '<h3 class="bento-title">QRIS Statis, Cash, & Pengingat WA</h3>' +
         '<p class="bento-desc">Mendukung pembayaran langsung di booth via QRIS maupun uang tunai. Sistem otomatis mengingatkan pembeli lewat simulasi notifikasi WA saat antrean tinggal 2 nomor.</p>' +
-        '<div style="display:flex;gap:12px;margin-top:auto;flex-wrap:wrap">' +
-          '<div style="flex:1;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:10px;font-size:0.85rem">💳 <b>QRIS Statis</b> &bull; Scan di HP</div>' +
-          '<div style="flex:1;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:10px;font-size:0.85rem">💵 <b>Tunai Kasir</b> &bull; Bayar di Meja</div>' +
+        '<div style="display:flex;gap:18px;align-items:center;margin-top:auto;flex-wrap:wrap">' +
+          '<img src="assets/icon-notify-3d.jpg" alt="Notifikasi HP dan Tiket 3D" class="bento-3d-thumb" width="96" height="96" style="margin:0">' +
+          '<div style="flex:1;display:flex;flex-direction:column;gap:8px">' +
+            '<div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:9px 12px;font-size:0.85rem;display:flex;align-items:center;gap:8px">' + ICONS.qr(16) + ' <span><b>QRIS Statis</b> &bull; Scan di Meja</span></div>' +
+            '<div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:9px 12px;font-size:0.85rem;display:flex;align-items:center;gap:8px">' + ICONS.cash(16) + ' <span><b>Tunai Kasir</b> &bull; Bayar di Meja</span></div>' +
+          '</div>' +
         '</div>' +
       '</div>' +
     '</div>' +
@@ -1037,10 +1052,10 @@ function renderLanding(){
     '<p class="center tiny" style="max-width:58ch;margin:0 auto 24px;font-size:1rem;color:#64748B">Pilih peran di bawah ini untuk melihat bagaimana masing-masing pihak berinteraksi di BazarQ secara tersinkronisasi.</p>' +
     '<div class="role-tabs-wrap">' +
       '<div class="role-tabs-nav" id="roleTabsNav">' +
-        '<button class="role-tab-btn active" data-role-tab="pembeli" type="button">🛒 Pembeli</button>' +
-        '<button class="role-tab-btn" data-role-tab="merchant" type="button">👨‍🍳 Penjual (Merchant)</button>' +
-        '<button class="role-tab-btn" data-role-tab="eo" type="button">📊 Penyelenggara (EO)</button>' +
-        '<button class="role-tab-btn" data-role-tab="daftar" type="button">🚀 Buka Booth</button>' +
+        '<button class="role-tab-btn active" data-role-tab="pembeli" type="button">' + ICONS.user(16) + ' <span>Pembeli</span></button>' +
+        '<button class="role-tab-btn" data-role-tab="merchant" type="button">' + ICONS.store(16) + ' <span>Penjual</span></button>' +
+        '<button class="role-tab-btn" data-role-tab="eo" type="button">' + ICONS.chart(16) + ' <span>Penyelenggara (EO)</span></button>' +
+        '<button class="role-tab-btn" data-role-tab="daftar" type="button">' + ICONS.plusCircle(16) + ' <span>Buka Booth</span></button>' +
       '</div>' +
       '<div class="role-tab-preview" id="roleTabContent"></div>' +
     '</div>' +
@@ -1098,7 +1113,7 @@ function renderLanding(){
     btnChime.addEventListener('click', () => {
       BazarQAudio.unlock();
       BazarQAudio.playReadyAlert();
-      toast('🔔 Membunyikan nada panggil pesanan siap (Web Audio 880Hz)!');
+      toast('Membunyikan nada panggil pesanan siap (Web Audio 880Hz)!');
     });
   }
   const audioWave = document.getElementById('landingAudioWave');
@@ -1106,7 +1121,7 @@ function renderLanding(){
     audioWave.addEventListener('click', () => {
       BazarQAudio.unlock();
       BazarQAudio.playPing();
-      toast('🎵 Ping Web Audio synthesizer aktif');
+      toast('Ping Web Audio synthesizer aktif');
     });
   }
 
@@ -1120,14 +1135,14 @@ function renderLanding(){
       simFull = !simFull;
       if (simFull){
         simBadge.className = 'ticket-status-chip warn';
-        simBadge.innerHTML = '<span>🔴 Dapur Penuh</span>';
+        simBadge.innerHTML = ICONS.bell(13) + ' <span>Dapur Penuh</span>';
         simMeta.innerHTML = '<b>~14-18 mnt (2x)</b> &bull; ' + activeCount() + ' antrean';
-        toast('⚠️ Mode Dapur Penuh aktif: Estimasi antrean digandakan otomatis.');
+        toast('Mode Dapur Penuh aktif: Estimasi antrean digandakan otomatis.');
       } else {
         simBadge.className = 'ticket-status-chip';
-        simBadge.innerHTML = '<span>🟢 Siap Diambil</span>';
+        simBadge.innerHTML = ICONS.check(13) + ' <span>Siap Diambil</span>';
         simMeta.innerHTML = '<b>~4-8 mnt</b> &bull; ' + activeCount() + ' antrean';
-        toast('✅ Mode Dapur Normal: Order baru mengalir lancar.');
+        toast('Mode Dapur Normal: Order baru mengalir lancar.');
       }
     });
   }
@@ -1146,7 +1161,7 @@ function renderLanding(){
       btnText: 'Buka Halaman Pembeli',
       link: '#pembeli/' + esc(SLUG),
       mockupHtml: '<div style="background:#fff;padding:20px;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,0.06);max-width:280px;margin:0 auto;text-align:center">' +
-        '<div class="ticket-status-chip" style="margin-bottom:8px"><span>🟢 Pesanan Diproses</span></div>' +
+        '<div class="ticket-status-chip" style="margin-bottom:8px">' + ICONS.check(13) + ' <span>Pesanan Diproses</span></div>' +
         '<div style="font-family:var(--ticket);font-size:2.4rem;font-weight:800;color:#1D4ED8">A-007</div>' +
         '<div style="font-size:0.85rem;color:#64748B">Estimasi: <b>~4 Menit</b></div>' +
         '<div style="margin-top:12px;font-size:0.75rem;background:#F1F5F9;padding:6px 10px;border-radius:8px">' + esc(BOOTH().name) + ' &bull; 1x Menu Pilihan</div>' +
@@ -1203,7 +1218,7 @@ function renderLanding(){
       link: '#daftar',
       mockupHtml: '<div style="background:#fff;padding:18px;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,0.06);max-width:280px;margin:0 auto;text-align:center">' +
         '<div style="font-size:0.85rem;font-weight:700;margin-bottom:8px">QR Standee Siap Cetak</div>' +
-        '<div style="width:74px;height:74px;background:#F1F5F9;border:2px dashed #94A3B8;border-radius:10px;margin:0 auto 10px;display:grid;place-items:center;font-size:0.72rem;color:#64748B">QR RESMI</div>' +
+        '<div style="width:74px;height:74px;background:#F1F5F9;border:2px dashed #94A3B8;border-radius:10px;margin:0 auto 10px;display:grid;place-items:center;font-size:0.72rem;color:#64748B">' + ICONS.qr(28) + '</div>' +
         '<div style="font-family:var(--mono);font-size:0.72rem;color:#2563EB">bazar-q.vercel.app/#pembeli/kopi-rame</div>' +
       '</div>'
     }
@@ -1219,7 +1234,7 @@ function renderLanding(){
         '<h3>' + d.title + '</h3>' +
         '<p>' + d.desc + '</p>' +
         '<ul class="role-feature-list">' +
-          d.checks.map(c => '<li><span class="chk">✓</span> <span>' + c + '</span></li>').join('') +
+          d.checks.map(c => '<li><span class="chk">' + ICONS.check(14) + '</span> <span>' + c + '</span></li>').join('') +
         '</ul>' +
         '<a class="btn btn-primary" href="' + d.link + '">' + d.btnText + ' &rarr;</a>' +
       '</div>' +
